@@ -372,6 +372,17 @@ textarea {
     border-bottom: 1px solid #eee;
     overflow: hidden;
 }
+
+.post-content h3 {
+    font-size: 1.5em;
+}
+
+.post-content h4 {
+    font-size: 1.3em;
+}
+
+
+
 .post-content pre{
     padding: 1em;
 }
