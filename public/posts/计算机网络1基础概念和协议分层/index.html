@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>计算机网络1————基础概念和协议分层 | 冰炭不投day的博客</title>
+    <meta property="og:title" content="计算机网络1————基础概念和协议分层 - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2019-01-18T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2019-01-18T22:40:54&#43;08:00'>
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="计算机网络1————基础概念和协议分层">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C1%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E5%92%8C%E5%8D%8F%E8%AE%AE%E5%88%86%E5%B1%82/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">计算机网络1————基础概念和协议分层</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2019年1月18日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C'>计算机网络</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h3 id="一计算机网络基础">一.计算机网络基础</h3>
+<h4 id="1计算机网络">1.计算机网络</h4>
+<p>计算机网络将各种计算机通过通信路线和网络设备互联起来，以方便用户共享资源和相互通信。</p>
+<p>网络主要有若干结点和连接这些结点的链路组成。结点：计算设备(端系统，中间结点)。链路：物理媒体(路径,跳)
+<img src="https://img-blog.csdnimg.cn/20190101203319714.png" alt="在这里插入图片描述">
+具体的节点和链路含义可以看下面
+<img src="https://img-blog.csdnimg.cn/20190101203339942.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h4 id="2因特网的结构">2.因特网的结构</h4>
+<p>因特网的结构分为：
+<img src="https://img-blog.csdnimg.cn/20190101203412865.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>网络边缘：端系统(与其上的应用)</li>
+<li>网络核心：网络核心是为网络边缘提供连通性和交换服务，主要由大量网络和连接这些网络的路由器组成</li>
+<li>接入网：连接两者的通信链路（拨号接入，DSL接入，无线接入，无线接入）</li>
+</ul>
+<p>上面这种结构遵循“端到端原则”。其特点是：边缘智能，核心简单，即将复杂的网络处理功能(如差错控制，流量控制功能，安全保障和应用等)置于网络边缘。将相对简单的分组交付功能(如分组的选路和转发功能置于网络核心)。</p>
+<p>这样带来的好处：可以将软件和硬件分开，从不同方面来进行提升</p>
+<ul>
+<li>核心:发展高速通信技术</li>
+<li>边缘:利用TCP/IP的api，方便的再端系统中的设计各种的新型网络应用</li>
+</ul>
+<h4 id="3端系统运行程序之间的通信方式">3.端系统运行程序之间的通信方式</h4>
+<p>在网络边缘的端系统之中运行的程序可以分为两大类：</p>
+<ul>
+<li>客户服务器方式(C/S方式)</li>
+<li>对等方式(p2p方式)</li>
+</ul>
+<p>c/s方式:
+<img src="https://img-blog.csdnimg.cn/20190101203821408.png" alt="在这里插入图片描述">
+p2p方式:
+<img src="https://img-blog.csdnimg.cn/20190101203840505.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="二协议分层">二.协议分层</h3>
+<h4 id="1协议分层的好处">1.协议分层的好处</h4>
+<ul>
+<li>可以只关注一个大而复杂的系统的一个明确的部分</li>
+<li>对于大而复杂且需要不断更新的系统，某个层次进行改变后，不会应行该系统的其他部分。即各层之间相对独立，易于实现和维护。</li>
+<li>能促进标准化工作</li>
+</ul>
+<h4 id="2相关概念">2.相关概念</h4>
+<p><strong>a.协议</strong>
+协议即为进行网络数据交换而建立的规则，标准和约定。
+协议有三个要素组成：</p>
+<ul>
+<li>语法：语法规则定义了所交换信息的格式。</li>
+<li>语义：语义规则定义了发送者或者接收者所要完成的操作</li>
+<li>同步：即事件实现顺序的详细说明</li>
+</ul>
+<p><strong>b.体系结构</strong>
+计算机网络各层及其协议的集合称为网络的体系结构，即计算机网络及其部件所应完成的功能精确定义。而实现是指，在这种体系结构下，用何种软件或者硬件实现这些功能。</p>
+<p><strong>c.服务</strong>
+在协议的控制下，两个对等实体之间通信可以使得本次向上一层提供服务。要实现对等实现间的通信，还需要使用下一层提供的服务。
+<img src="https://img-blog.csdnimg.cn/20190101212225110.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h4 id="3osi参考模型">3.OSI参考模型</h4>
+<p>计算机网络体系结构有两种国际标准：</p>
+<ul>
+<li>一种是国际标准OSI标准，但未得到市场的认可</li>
+<li>一种是非国际标准TCP/IP，得到了市场的广泛认可，可用看做事实上的国际标准</li>
+</ul>
+<p>下图就是OSI七层模型的框架
+<img src="https://img-blog.csdnimg.cn/20190101214727235.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述">
+<strong>a.OSI的来源</strong>
+OSI即开发式互联网互联，一般都叫OSI参考模型，是ISO组长在1985年提出的。</p>
+<p><strong>b.OSI七层模型的划分</strong>
+OSI定义了网络互联的七层框架：物理层，数据链路层，网络层，传输层，会话层，表示层，应用层。</p>
+<p><strong>c.各层功能定义</strong></p>
+<ul>
+<li>应用层：OSI中最靠近用户的一层，是为计算机用户提供应用接口，也为用户直接提供各种网络服务。</li>
+<li>表示层：表示层提供各种用于数据层的编码和转换功能，确保一个系统的应用层发送的数据可以被另一个系统的应用层识识别。同时也可以进行加解密，压缩解压缩。</li>
+<li>会话层：不同机器上的用户之间建立和管理会话。该层的通信由不同设备的应用程序之间的服务请求和响应组成。</li>
+<li>传输层：传输层建立了主机端到端的连接，传输层的作用是为上层协议提供端到端的可靠和透明数据传输服务，包括处理差错和流量控制等问题。TCP UDP就在这一层</li>
+<li>网络层：这一层是通过IP寻址来建立两个节点之间的连接，为源端的传输层送来的分组，选择合适的路由和交换节点，正确无误的按照地址送给目的端的传输层，也就是常说的IP层.</li>
+<li>数据链路层：物理寻址，同时将原始比特流转换为逻辑传输线路层</li>
+<li>物理层：最终的信号的传输都是通过物理层来实现的。通过物理介质传输比特流。创建的设备有：集线器，中继器，双绞线，同轴电缆等</li>
+</ul>
+<h4 id="4tcpip模型">4.TCP/IP模型</h4>
+<p><strong>a.TCP/IP协议和OSI参考模型的关系</strong>
+<img src="https://img-blog.csdnimg.cn/20190101222908539.png" alt="在这里插入图片描述">
+<strong>b.TCP/IP主要的协议栈</strong>
+<img src="https://img-blog.csdnimg.cn/20190101223122714.png" alt="在这里插入图片描述"></p>
+<h4 id="5原理体系模型">5.原理体系模型</h4>
+<p>为了描述方便，一般将OSI参考模型和TCP/IP模型结合起来，采用原理五层模型
+<img src="https://img-blog.csdnimg.cn/2019010122332742.png" alt="在这里插入图片描述"></p>
+<h4 id="6原理体系模型各层数据传递的单位">6.原理体系模型各层数据传递的单位</h4>
+<p><img src="https://img-blog.csdnimg.cn/20190101223457532.png" alt="在这里插入图片描述"></p>
+<h4 id="7一张非常强大的osi七层模型图解">7.一张非常强大的OSI七层模型图解</h4>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWFnZXMyMDE1LmNuYmxvZ3MuY29tL2Jsb2cvMTA5OTY2OC8yMDE3MDIvMTA5OTY2OC0yMDE3MDIxMjE1MzMzODEzNS0xMjU0OTI0MjQuanBn?x-oss-process=image/format,png" alt="在这里插入图片描述"></p>
+<h3 id="三计算机网络性能指标">三.计算机网络性能指标</h3>
+<h4 id="1速率">1.速率</h4>
+<blockquote>
+<p>比特，位(bit)信息论中使用的信息量的单位，表示信息的最小单位。一个比特就是二进制数字的一个1或者0，一般用b表示，有时也用bit表示.</p>
+</blockquote>
+<blockquote>
+<p>字节(Byte)，一字节等于8比特。一般用B表示，有时也用byte表示，即1B = 8b（bit）</p>
+</blockquote>
+<p>速率即数据率或者比特率，单位是b/s (或者bit/s，有时也写作bps)</p>
+<h4 id="2带宽">2.带宽</h4>
+<p>在计算机网络中带宽是指 “链路”在一定时段内所能传输的比特数的额定值，即数据在信道上的发送速率。习惯上作为数据通过网络传输的最高速率的同义词。单位是b/s（或kb/s,Mb/s,Gb/s）</p>
+<blockquote>
+<p>注意，带宽并不是指同一时刻发送的比特数目，因为通信路线上的比特流都是串行的，所以带宽的提高并不是指增大某个时刻的同时发送出去的比特数目,也不是让比特在信道上跑的更快，而是指减少每个比特占用的时间或者说单位时间内发送的比特数增多。
+<img src="https://img-blog.csdnimg.cn/20190102140255701.png" alt="在这里插入图片描述"></p>
+</blockquote>
+<h4 id="3吞吐量">3.吞吐量</h4>
+<ul>
+<li>吞吐量表示单位时间内，无差错的通过某个网络的数据量。</li>
+<li>吞吐量更经常的用于对现实世界网络中的一种测量，以便知道实际上到底有多少数据量能通过网络</li>
+<li>吞吐量取决于沿途各路径的可用带宽（带宽-干扰流量），而且取决于端到端路径上最小可用带宽。</li>
+</ul>
+<h4 id="4时延">4.时延</h4>
+<p>单项时延：一个分组从网络的一端传到另一端所需要的时间
+往返时延：发送方发送数据开始，到发送方收到来自接收方的确认，总共经历的时间。</p>
+<p>分组从源结点出发，经过一系列的中间结点，到达目的端，分组在沿途经历一下面几种类型的时延：</p>
+<p><strong>a.传播时延</strong>
+电磁波在信道中传播一定的距离而花费的时间
+$$传播时延 = \frac{结点之间的距离}{传播速率}$$</p>
+<p><strong>b.发送时延</strong>
+数据块从节点进入传输媒体所需要的时间，或者说数据块从第一块比特开始发送算起，到最后一个比特发送完毕所需要的间
+$$发送时延 = \frac{数据块长度(bit)}{带宽(bit/s)}$$</p>
+<p><strong>c.处理时延</strong>
+（几微妙级或者更少）
+路由器在收到分组时要花费一定的时间进行处理：</p>
+<ul>
+<li>分析分组的首部</li>
+<li>提取分组的数据部分</li>
+<li>差错交验</li>
+<li>查找路由</li>
+</ul>
+<p><strong>d.排队时延</strong>
+（微妙级到毫秒级）
+排队时延是指结点缓存队列中分组排队所经历的时延</p>
+<p>所以总时延
+$$总时延 = 发送时延+传播时延+处理时延+排队时延$$
+<img src="https://img-blog.csdnimg.cn/20190102161229705.png" alt="在这里插入图片描述">而在一般计算中，常忽略处理时延和排队时延。
+例题：
+<img src="https://img-blog.csdnimg.cn/20190102161423667.png" alt="在这里插入图片描述"></p>
+<h4 id="5时延带宽积">5.时延带宽积</h4>
+<p>时延带宽积标识发送端连续发送数据，当第一个比特即将到达终点时，发送端已经发送到链路上的比特量，代表某一个链路所能容纳的比特数。</p>
+<p>$$时延带宽积 = 传播时延 \times 带宽$$</p>
+<p>关于时延带宽积一个比较形象的比喻
+<img src="https://img-blog.csdnimg.cn/20190102162038145.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h4 id="6丢包率">6.丢包率</h4>
+<p>丢包率是指在一定的时段内，在两结点之间传输过程中丢失分组数量和总的分组发送数量的比率。</p>
+<p>丢包的主要原因：路由器无法容纳到达的分组，只能丢弃。</p>
+<h3 id="四参考资料">四.参考资料</h3>
+<p>《计算机网络：原理与实践》</p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C1%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E5%92%8C%E5%8D%8F%E8%AE%AE%E5%88%86%E5%B1%82/">http://blog.bingtan.online/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C1%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E5%92%8C%E5%8D%8F%E8%AE%AE%E5%88%86%E5%B1%82/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/about/tools/">关于</a></li>
+        
+        <li><a href="/tools/">工具</a></li>
+        
+        <li><a href="/archives/">归档</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/%E7%BD%91%E7%BB%9C'>网络</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "your github repo"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一计算机网络基础">一.计算机网络基础</a>
+      <ul>
+        <li><a href="#1计算机网络">1.计算机网络</a></li>
+        <li><a href="#2因特网的结构">2.因特网的结构</a></li>
+        <li><a href="#3端系统运行程序之间的通信方式">3.端系统运行程序之间的通信方式</a></li>
+      </ul>
+    </li>
+    <li><a href="#二协议分层">二.协议分层</a>
+      <ul>
+        <li><a href="#1协议分层的好处">1.协议分层的好处</a></li>
+        <li><a href="#2相关概念">2.相关概念</a></li>
+        <li><a href="#3osi参考模型">3.OSI参考模型</a></li>
+        <li><a href="#4tcpip模型">4.TCP/IP模型</a></li>
+        <li><a href="#5原理体系模型">5.原理体系模型</a></li>
+        <li><a href="#6原理体系模型各层数据传递的单位">6.原理体系模型各层数据传递的单位</a></li>
+        <li><a href="#7一张非常强大的osi七层模型图解">7.一张非常强大的OSI七层模型图解</a></li>
+      </ul>
+    </li>
+    <li><a href="#三计算机网络性能指标">三.计算机网络性能指标</a>
+      <ul>
+        <li><a href="#1速率">1.速率</a></li>
+        <li><a href="#2带宽">2.带宽</a></li>
+        <li><a href="#3吞吐量">3.吞吐量</a></li>
+        <li><a href="#4时延">4.时延</a></li>
+        <li><a href="#5时延带宽积">5.时延带宽积</a></li>
+        <li><a href="#6丢包率">6.丢包率</a></li>
+      </ul>
+    </li>
+    <li><a href="#四参考资料">四.参考资料</a></li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

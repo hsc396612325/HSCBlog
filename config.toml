@@ -14,14 +14,16 @@ summaryLength = 140
 
 disqusShortname = "yourdiscussshortname"  ## 是否开启disqus评论，不要和utteranc同时开启
 
+defaultMarkdownHandler = "Goldmark"
+
 [author]
   name = "冰炭不投day"
 
 [params]
   author = "冰炭不投day"
-  subtitle = "漫漫码农路"
-  keywords = "golang,go语言,go语言笔记,飞雪无情,java,android,博客,项目管理,python,软件架构,公众号,小程序"
-  description = "专注于IT互联网，包括但不限于Go语言(golang)、Java、Android、Python、项目管理、抖音分析、软件架构等"
+  subtitle = "若向往 我敢往"
+  keywords = "Android 冰炭不投day"
+  description = "专注于Android"
   busuanzi = true #启用不算子网页统计
   googleAd = "ca-pub-4031353640611810"  #ca-pub-xxxxxxxxxxxxxx
   localSearch = true # 启用本地搜索
@@ -38,9 +40,9 @@ disqusShortname = "yourdiscussshortname"  ## 是否开启disqus评论，不要�
 ## 友情链接，可以多个
 
 [[params.links]]
-  title = "飞雪无情的博客"
-  name = "飞雪无情的博客"
-  url = "https://www.flysnow.org/"
+  title = "csdn博客链接"
+  name = "冰炭不投的博客"
+  url = "https://blog.csdn.net/qq_38499859"
 
 [[params.links]]
   title = "Android Gradle权威指南"
@@ -78,6 +80,10 @@ disqusShortname = "yourdiscussshortname"  ## 是否开启disqus评论，不要�
   [markup.highlight]
     lineNos = true
     style = "github"
+  [markup.tableOfContents]
+    startLevel = 3
+    endLevel = 4
+    ordered = false
 
 ## 配置网站菜单
 
@@ -100,3 +106,7 @@ disqusShortname = "yourdiscussshortname"  ## 是否开启disqus评论，不要�
     name = "关于"
     url = "/about/"
     weight = 4
+
+[taxonomies]
+  category = "categories"
+  tag = "tags"

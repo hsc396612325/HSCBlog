@@ -1,0 +1,737 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>计算机网络3————网络层 | 冰炭不投day的博客</title>
+    <meta property="og:title" content="计算机网络3————网络层 - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2019-01-20T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2019-01-20T22:40:54&#43;08:00'>
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="计算机网络3————网络层">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C3%E7%BD%91%E7%BB%9C%E5%B1%82/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">计算机网络3————网络层</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2019年1月20日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C'>计算机网络</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h3 id="一网络层概述">一.网络层概述</h3>
+<h4 id="1互联">1.互联</h4>
+<p>在说网络层之前，我们先说说网络互连的概念，简单来说，就是将多个相同或者不同的以太网，或者无线局域网等等通过路由器连接来构成一个更大的网络(局互联网），来达到更大范围的资源共享。</p>
+<p><img src="https://img-blog.csdnimg.cn/20190110193208950.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>上图可以看到，以太网和无线局域网，很明显这两种异构的网络采用的是不同的协议，语法，语义，时序都不同，那么他们时间如何进行分组传递呢？它们实际上是通过网络中继系统(路由器)来对不同的协议进行转换的。</p>
+<p>具体内容如下：</p>
+<blockquote>
+<p>因特网采用了一种与机器无关，操作系统无关，语言无关的中立的中继系统（IP）系统来解决异构网络互联的问题。
+<img src="https://img-blog.csdnimg.cn/20190110202431860.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+</blockquote>
+<h4 id="2交付">2.交付</h4>
+<p>网络层的交付分为两种，即直接交付和间接交付。</p>
+<ul>
+<li>直接交付：将分组直接交付给目的主机，而不需要通过路由器</li>
+<li>间接交付：源和目的不在一个网络内，分组通过路由器转发
+<img src="https://img-blog.csdnimg.cn/20190110203206561.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+</ul>
+<h4 id="3因特网的设计思路">3.因特网的设计思路</h4>
+<ul>
+<li>网络在发送分组时不需要先建立连接，每一个分组（即IP数据报）独立发送，与其前后的分组无关。</li>
+<li>网络层不提供服务质量的保证。即所传送的分组可能出错，丢失，重复和失序（不按时到达终点），也不保证分组传输的时限。</li>
+<li>所以因特网被定义为不可靠的无连接分组交付系统。</li>
+</ul>
+<h3 id="二ip协议">二.IP协议</h3>
+<p>IP及其配套协议主要是IP，ARP，RARP，ICMP,IGMP协议，这一节主要来看IP协议。剩余的三个协议，在文章后半段。</p>
+<h4 id="1ip数据的格式">1.IP数据的格式</h4>
+<p><img src="https://img-blog.csdnimg.cn/20190110205539799.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<ul>
+<li>IP数据报有两部分组成，首部+数据部分。其中首部由20字节的固定部分组成 + 1到40字节不等的可选部分</li>
+<li>版本： 占4bit，值ip协议的版本号，目前的ip协议版本号为4（即IPV4）</li>
+<li>首部长度：占4bit，可表示的最大数值是15个单位</li>
+<li>区分服务，只有在使用区分服务时，这个字段才起作用。在一般情况下都不使用这个字段。</li>
+<li>总长度：指首部和数据之和的长度，单位为字节。</li>
+<li>标识：一个计数器，用来产生数据报的标识</li>
+<li>标志：占三位，目前只有前两位有意义。最低位MF，MF= 1 表示还有分片，MF= 0 表示最后一个分片。中间位DF表示是否允许分片，DF = 0时才允许分片。</li>
+<li>偏移量，较长分组在分片后，某片在原分组中的相对位置（以8个字节为偏移单位）详见后面</li>
+<li>生存时间：记为TTL表示数据报在网络中至多可以经过多少个路由器</li>
+<li>协议：数据报中的数据部分携带那种协议<img src="https://img-blog.csdnimg.cn/20190110213203823.png" alt="在这里插入图片描述"></li>
+<li>首部校验和，只检验数据报的首部，不包括数据部分。</li>
+<li>IP源和目的地址：各占4字节。</li>
+<li>可选部分：可以用来支持排错，测量以及安全等措施。内容比较丰富。</li>
+</ul>
+<h4 id="2ip报文分片">2.IP报文分片</h4>
+<ul>
+<li>MTU的概念：物理网络对帧的数据部分的最大字节数选择，由硬件决定，比如 以太网帧中的数据长度规定最小46 字节，最大1500 字节，MTU 指数据帧中有效载荷的最大长度，不包括帧首部的长度。</li>
+<li>定义分片机制：在IP数据报长度大于网络MTU的情况下，将其分成若干较小的部分传输，每部分称为片。</li>
+<li>IP首部和分片相关的字段
+<ul>
+<li>标识：用来标识ip报文，所以分片的标识都一样</li>
+<li>标志：MF标识是否还有分片，DF表示是否允许分片</li>
+<li>偏移量：表示分片后在原分组中的相对位置</li>
+</ul>
+</li>
+<li>距离：<img src="https://img-blog.csdnimg.cn/20190115164816475.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><img src="https://img-blog.csdnimg.cn/20190115164933371.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+</ul>
+<h4 id="3ip地址">3.IP地址</h4>
+<p><strong>a.什么是IP地址</strong>
+我们把整个因特网看做一个单一的，抽象的网络。IP地址就是给每个连接在因特网上的主机或者路由器分派一个全世界唯一的32bit的标识符。</p>
+<p><strong>b.IP的编址方式</strong></p>
+<ul>
+<li>分类编址：最基本的编址方式，在1981年就通过了相应的标准协议。</li>
+<li>子网编址：这是对最基本的编址方法的改进，其标准在1985年通过</li>
+<li>CIDR：这是比较新的无分类编址方法。</li>
+</ul>
+<p><strong>c.IP地址的两种表示方法</strong></p>
+<ul>
+<li>32位二进制数码</li>
+<li>4个圆点隔开的十进制数</li>
+</ul>
+<p><strong>d.IP地址的一些重要特征</strong></p>
+<ul>
+<li>IP地址是标志一个主机（或路由器）与一条链路间的接口。而一个路由器至少应当连接到两个网络，因此一个路由器至少应当有两个不同的IP地址。</li>
+<li>用转发器或网桥连接起来的若干局域网仍为一个网络，因此这些局域网都具有相同的网络号net-id</li>
+<li>所以分配到网络号的net-id网络，无论是范围很小的局域网，还是可能覆盖很大地理范围的广域网，都是平等</li>
+</ul>
+<h4 id="4分类编址">4.分类编址</h4>
+<p><strong>a.分类IP地址的组成</strong>
+分类的IP的地址都是有两个固定长度的字段组成，其中提供是网络号net-id，它标志主机所连接到的网络，另一个字段是主机号host-id。它标志该主机。</p>
+<p>即 IP地址 :: = {&lt;网络号&gt;,&lt;主机号&gt;}
+从因特网的观点来看。具有相同的net-id的主机属于同一个网络，同一个网络中的不同主机具有不同的host-id。不同的网络通过路由器进行互联。
+<strong>b.分类的IP地址</strong>
+分类的IP地址可以分为，A，B，C，D，E五类地址。
+<img src="https://img-blog.csdnimg.cn/20190115174819579.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<ul>
+<li>A类：前一字节标识网络地址，后三字节标识主机地址。第一个字节用十进制表示的取值范围为“1~126”</li>
+<li>B类：前两字节表示网络地址，后两字节表示主机地址，第一个字节用十进制表示取值范围为“128~191”</li>
+<li>C类：前三字节表示网络地址，后一字节表示主机地址。第一个字节用十进制标识取值范围为“192~223”
+<img src="https://img-blog.csdnimg.cn/20190115182021704.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+</ul>
+<p><strong>c.特殊的ip地址</strong>
+<img src="https://img-blog.csdnimg.cn/20190115184539433.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述">
+<strong>d.分类编址下的分组转发算法</strong></p>
+<ul>
+<li>a.从数据报的首部提取出目的站的IP地址D，得出目的网络地址为N。</li>
+<li>b.若网络N于此路由器直接相连，则直接将数据报交付给目的站D；否则是间接交付，执行c</li>
+<li>c.若路由表中有目的地址为D的特定路由主机路由，则将数据报传送个路由表所指明的吓一跳路由器。否则，执行d。</li>
+<li>d.若路由表中有到达网络N的路由，则将数据报传给路由表指明的下一跳路由器；否则，执行e</li>
+<li>e.若路由表中有一个默认路由，则将数据报传送给路由表中所指明的默认路由，否则，执行，执行f</li>
+<li>f报告转发分组出错。</li>
+</ul>
+<blockquote>
+<p>默认路由：路由器可以采用默认路由以减少路由表所占用的空间和搜索路由表所占用的时间。默认路由就是在找不到匹配的路由表项时，选择的路由。</p>
+</blockquote>
+<h4 id="5子网编址">5.子网编址</h4>
+<p>由于分类编址的种种缺点，比如IP地址空间的利用率低，浪费地理空间，两级的IP地址不够灵活，所以在1985年后，在IP地址中有增加了一个子网号字段，使两级IP地址变为三级IP地址，这种做法就是划分子网。</p>
+<p><strong>a.划分子网思路</strong></p>
+<ul>
+<li>从主机号借用若干个比特作为子网号subnet-id，而主机号host-id也就相应的减少若干个比特，即IP地址::={&lt;网络号&gt;,&lt;子网号&gt;,&lt;主机号&gt;}</li>
+<li>从其他网络发送给本单位某个主机IP数据报，仍然是根据IP数据报的目的网络号net-id，先找的连接在本单位的网络上的路由器，</li>
+<li>然后此路由器在收到IP数据包后，在按目的网络号net-id和子网号subnet-id找找到目的子网。</li>
+<li>最后就将IP数据报直接交付给目的主机</li>
+</ul>
+<p><img src="https://img-blog.csdnimg.cn/20190117130526815.png" alt="在这里插入图片描述">
+<strong>b.子网掩码</strong>
+子网掩码的作用是为从ip数据首部找出，IP地址中的子网部分。
+<img src="https://img-blog.csdnimg.cn/20190117131718221.png" alt="在这里插入图片描述"></p>
+<p>子网掩码的作用有两个，一是来划分子网，二是来获得网络地址。</p>
+<ul>
+<li>划分子网：比如将c类地址划分6个子网，此时的子网掩码就是255.255.255.224(最后一字节二进制为111000)。</li>
+<li>获取网络地址：IP AND 子网掩码 = 网络地址。</li>
+</ul>
+<p><strong>c.使用子网掩码的分组转发</strong></p>
+<ul>
+<li>a.从收到的分组的首部提取目的IP地址D。</li>
+<li>b.先用路由器直接相连的网络子网掩码和D进行与操作，看其是否和对应的网络地址匹配若匹配，则将其分组直接交付。否则就是间接交付，执行c。</li>
+<li>c.若路由表中有目的地址为D的特定主机路由，则将分组传送给指明的下一跳路由，否则执行d</li>
+<li>d.对路由表的每一行的子网掩码和D进行与操作，若其结果与该行的目的网络地址匹配，则将分组传送给改行指明的下一跳路由器，否则执行e</li>
+<li>e.若路由器表中有一个默认路由，则将分组传送给路由表中所指明的路由器，否则，执行f.</li>
+<li>f.报告转发分组出错</li>
+</ul>
+<blockquote>
+<p>规定特定主机路由对应的子网掩码为全1 ，默认路由的子网掩码是全0</p>
+</blockquote>
+<h4 id="6cidr编址">6.CIDR编址</h4>
+<p>随着因特网的飞速发展，可用的IP地址正在缩小，实际上A类和B类的地址已经耗尽，引入子网划分之后，虽然可以利用分配多个C类地址取代分配一个B类地址。但是这样子会增加路由表项，所以就引入了无分类编址方式，即无分类域间路由选择CIDR。</p>
+<p>CIDR和之前限制网络表示前缀不同，它允许任意长度的网络地址前缀存在。即它使用各种长度的网络前缀来代替分类地址中的网络号和子网号。</p>
+<p><strong>a.CIDR编址的思路</strong></p>
+<ul>
+<li>一个CIDR地址结构由网络前缀，主机号，即IP地址::={&lt;网络缀&gt;,&lt;主机号&gt;}</li>
+<li>CIDR表示的时候，采用的是斜线记法，即IP地址/掩码中1的位数，例如202.1.1.130/25,这里的25被称为网络前缀长度</li>
+</ul>
+<p><strong>b.CIDR的好处</strong></p>
+<ul>
+<li>提高了IPV4的可扩展性和效率</li>
+<li>将有类别的寻址方式替换成更灵活的，浪费更少的无类别方案。</li>
+<li>加强啦路由聚合，即超网，它是的路由表中一个项目可以表示多个原来传统分类地址的路由。</li>
+</ul>
+<p><strong>c.路由聚合和超网</strong>
+超网是指用一个掩码将多个有类别的网络聚合成&quot;单个网络&quot;的过程</p>
+<p>例如可以将几个C类地址合并成一个更大的地址块。但是这些C类地址必须满足下面两个条件</p>
+<ul>
+<li>C类地址个数必须是2的整数c方</li>
+<li>这些地址必须是连续的。</li>
+<li>这些C类地址中最小的那个地址中，聚合的那个字节的十进制值必须是要聚合地址个数的整数倍
+比如，将下面8个网络地址合并成一个公共网络号
+<img src="https://img-blog.csdnimg.cn/20190117152536501.png" alt="在这里插入图片描述"></li>
+</ul>
+<p>最终将这8个地址汇总为192.8.24.0/21</p>
+<p><strong>d.最长前缀匹配</strong></p>
+<ul>
+<li>使用CIDR时，路由表中的每个项目有路由前缀和下一跳地址组成。在查询路由表时可能得到不止一个匹配结果</li>
+<li>应当从匹配结果中选择具有最长网络前缀的路由</li>
+<li>其他分组转发的过程同上</li>
+</ul>
+<h4 id="7ipv6">7.IPV6</h4>
+<p>IPV6就是对IPV4的扩展，即IP地址由32位变为128位。
+IPV6数据报的首部</p>
+<ul>
+<li>将首部长度变为固定的40字节，称为基本首部</li>
+<li>将不必要的功能取消，首部的字段数减少为8个</li>
+<li>取消了首部校验和</li>
+<li>在基本首部的后面允许有0个或多个扩展首部</li>
+<li>所有的扩展首部和数据合起来叫做数据报的有效荷载。
+<img src="https://img-blog.csdnimg.cn/20190120205457994.png" alt="在这里插入图片描述">
+从IPv4到IPv6的过渡</li>
+<li>方法1：双协议栈首部转换，是指在完全过渡到IPv6之前，是一部分主机装有两个协议栈，一个IPv4和一个IPv6</li>
+<li>方法2：隧道技术。IPv6数据报进入IPv4网络之前，将整个IPv6数据报作为数据部分，封装为IPv4数据报，离开IPv4网络时，在恢复。</li>
+</ul>
+<h3 id="三路由选择协议">三.路由选择协议</h3>
+<h4 id="1概述">1.概述</h4>
+<p>上面我们所说的各种分组转发时，所依据路由表其来源就是根据各种路由选择协议所形成的路由表。</p>
+<p>路由选择协议的分类</p>
+<ul>
+<li>动态路由选择&ndash;自适应的路由选择
+<ul>
+<li>域内路由协议&ndash;内部网关协议
+<ul>
+<li>RIP协议&ndash;分布式路由选择算法</li>
+<li>OSPF协议&ndash;全局路由选择算法</li>
+</ul>
+</li>
+<li>域间路由协议&ndash;外部网关协议
+<ul>
+<li>BGP协议</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>静态路由选择&ndash;非自适应的路由选择</li>
+</ul>
+<p>动态路由选择和静态路由选择</p>
+<blockquote>
+<p>静态路由选择，是一种非自适应的路由选择，需要管理员将路由信息输入路由配置中，只要网络拓扑发生改变，就需要管理员手工更新这些静态路由条目
+动态路由选择，是一种自适应的路由选择，管理员输入配置命令启动动态路由选择后，只要从互联网络中收到新的信息。路由选择进程就自动更新路由信息。</p>
+</blockquote>
+<p>域间路由协议和域内路由协议</p>
+<blockquote>
+<p>域内路由协议也称内部网关协议IGP，是自洽系统AS内使用的路由协议，如RIP，OSPF
+域间路由协议也称外部网关协议EGP，是自洽系统AS之间使用的路由协议，如BGP</p>
+</blockquote>
+<p>自洽系统</p>
+<blockquote>
+<p>自洽系统是指在单一实体管理之下的路由器和网络群组，它的典型管理实体是ISP，此外一些公司企业，大学，或政府机构也可能拥有自己的自洽系统。
+可以把AS看做一个路由器组
+每个自洽系统都拥有全局唯一的编号，即：自洽系统号
+一个AS对其他AS表现出是一个单一的和一致的路由选择策略
+<img src="https://img-blog.csdnimg.cn/20190119165655156.png?" alt="在这里插入图片描述"></p>
+</blockquote>
+<h4 id="2静态路由">2.静态路由</h4>
+<p>静态路由是指管理员手动将路由器配置中，同时只有网络拓扑发生改变，管理员必须手动更新这些静态路由条目</p>
+<p>手动配置静态路由使用的命令</p>
+<blockquote>
+<p>ip route &lt;目的网络&gt; &lt;掩码&gt; &lt;下一跳&gt;
+例：ip route 172.17.1.0 255.255.255 172.17.2.1</p>
+</blockquote>
+<p>静态路由选择的优点</p>
+<ul>
+<li>简单直接</li>
+<li>无需路由软件</li>
+<li>不需要传播路由信息，因此不需要消耗带宽。</li>
+</ul>
+<h4 id="3rip协议">3.RIP协议</h4>
+<p>RIP协议是属于域内路由协议的一种，是其中的分布式路由选择算法</p>
+<p>分布式路由选择算法</p>
+<blockquote>
+<p>路由器知道：物理相连的邻居，它到邻居的链路费用
+通过迭代计算及与相邻结点交换信息的过程，使得各结点能够计算出到达某个目的结点的最低费用
+代表算法：距离向量（Distance-Vector）算法</p>
+</blockquote>
+<p><strong>a.概述</strong></p>
+<ul>
+<li>RIP协议是内部网关协议IGP中最简单，最先得到广泛使用的费用</li>
+<li>RIP协议基于距离向量路由，RIP协议要求网络中的每一个路由器都要维护从它自己到其他每一个目的网络的距离标记，即一个路由表。</li>
+<li>RIP协议中的距离，也称为“跳数”，，一个路由器到直接相连的网络距离定义为1，每经过一个路由器，跳数就加1，RIP允许一条协议最多只能包含15个路由器。距离最大值为16时记为不可达。</li>
+</ul>
+<p><strong>b.RIP协议的三个要点</strong></p>
+<ul>
+<li>以自洽系统为范围，每个路由器分享自己到达目的网络的信息</li>
+<li>仅和相邻路由器分享</li>
+<li>按照固定的时间间隔分分享信息，例如，每隔30s</li>
+</ul>
+<p><strong>c.RIPV2协议的报文格式</strong>
+<img src="https://img-blog.csdnimg.cn/20190119183711986.png" alt="在这里插入图片描述"></p>
+<p><strong>d.RIP路由更新算法</strong>
+<img src="https://img-blog.csdnimg.cn/20190119184044469.png" alt="在这里插入图片描述">
+举例：
+<img src="https://img-blog.csdnimg.cn/20190119184606184.png" alt="在这里插入图片描述">
+<strong>e.RIP协议一般过程</strong>
+<img src="https://img-blog.csdnimg.cn/20190119184717328.png" alt="在这里插入图片描述">
+<img src="https://img-blog.csdnimg.cn/20190119184751265.png" alt="在这里插入图片描述">
+<img src="https://img-blog.csdnimg.cn/20190119184824562.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述">
+<strong>f.发现故障</strong>
+RIP协议存在一问题，就是当网络出现故障时，要经过比较长的时间才能将此“坏消息”传送到所有的路由器。</p>
+<p>解决方法：</p>
+<ul>
+<li>水平分割：当一个路由器R1把路由选择的更新信息发送给一个相邻路由器R2之后，R2不会将此条路由项原发布者R1发送。</li>
+<li>抑制时间：当一条路由的距离值变为无穷大时，该路由进入抑制状态，在被抑制状态，只有来着同一邻居，且度量值小于16的路由更新才会被路由器接收，取代不可达路由项。</li>
+</ul>
+<h4 id="4ospf协议">4.OSPF协议</h4>
+<p>OSPF协议和RIP协议一样，也是属于域内路由协议的一种，不过是属于全局选择算法。</p>
+<p>全局路由选择算法</p>
+<blockquote>
+<p>以所有节点之间的连通性以及所有链路的费用为输入，计算最优路径
+要求每一个路由器知晓完全的网络拓扑，链路费用信息。
+代表算法：链路状态（Link-State）算法</p>
+</blockquote>
+<p>OSPF协议是基于链路状态的选择协议，用于AS内部的路由选择。其计算到达目的地的最佳路径是通过，图论中的Dijkstra算法，来获取最终的路径。由于OSPF协议蛮复杂的，我们就简单来看看其中的核心。
+<img src="https://img-blog.csdnimg.cn/20190119192247330.png" alt="在这里插入图片描述">
+关于OSPF协议更详细的内容可以去网上搜搜其他相关的博客。
+<a href="https://blog.csdn.net/zyhyg_123/article/details/85017994">https://blog.csdn.net/zyhyg_123/article/details/85017994</a></p>
+<h4 id="5bgp协议">5.BGP协议</h4>
+<p>前面所说的RIP和OSPF，都是适用于AS自洽系统内，当到达AS自洽系统之间时，此时就不在适用了，因为域变得很大。先就RIP协议来说，它很可能造成路径超过其距离限制，所以不适用。其次OSPF协议，就需要非常大的资源来计算路由表，并且由于使用了洪泛，会产生比较大的通信量。</p>
+<p>所以AS间的路由选择需要第三种协议，被称为“路径向量路由选择”，Border Gatew Protocol，边界网关协议，是目前用来在AS之间的动态路由选择协议。</p>
+<p><strong>a.概述</strong>
+BGP关心可达性，而不是根据度量寻找最佳路由。因为每个AS使用的度量并不统一，并且AS之间必须考虑策略。</p>
+<p>使用BGP协议时，先有每个AS推出至少一个代表整个AS的BGP发言人。在一个AS中的BGP发言人创建一个路由表，并且把它通知给相邻AS中的BGP发言人。</p>
+<p>不过和RIP协议不同，它通知的内容不同，每个发言人不是定期告诉邻居们关于到达每个目的网络的距离向量，而是告诉它们到达每个目的网络的路由路径。
+<img src="https://img-blog.csdnimg.cn/20190119205700197.png" alt="在这里插入图片描述"><img src="https://img-blog.csdnimg.cn/20190119205712715.png" alt="在这里插入图片描述">
+<strong>b.BGP的路由更新基本过程</strong>
+<img src="https://img-blog.csdnimg.cn/20190119210353754.png" alt="在这里插入图片描述">
+<strong>c.BGP的路由通知过程</strong>
+<img src="https://img-blog.csdnimg.cn/20190119210919860.png" alt="在这里插入图片描述"><img src="https://img-blog.csdnimg.cn/20190119210943293.png" alt="在这里插入图片描述">
+<img src="https://img-blog.csdnimg.cn/20190119211006995.png" alt="在这里插入图片描述"></p>
+<h3 id="四路由器工作原理">四.路由器工作原理</h3>
+<h4 id="1概述-1">1.概述</h4>
+<p>路由器是工作在第三层的设备，是具有多个输入/输出端口的专用计算机，每一个输入输出端口都与一个网络相连，路由器在网络之间进行分组转发。</p>
+<p>路由器的主要就是两个</p>
+<ul>
+<li>路由选择:根据上面的算法得到的路由表。</li>
+<li>分组转发:根据路由表将IP数据报放在相应的网络。</li>
+</ul>
+<p>常见的路由器
+<img src="https://img-blog.csdnimg.cn/2019012019530037.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h4 id="2路由器的体系结构">2.路由器的体系结构</h4>
+<p><img src="https://img-blog.csdnimg.cn/20190120201330867.png" alt="在这里插入图片描述">
+输入接口卡：
+<img src="https://img-blog.csdnimg.cn/20190120201700778.png" alt="在这里插入图片描述">输出接口卡：
+<img src="https://img-blog.csdnimg.cn/20190120201836677.png" alt="在这里插入图片描述">控制器卡主要作用：</p>
+<ul>
+<li>执行路由选择协议，通过与网络中的其他路由器交换拓扑和路由选择信息，维护本地路由转发表</li>
+<li>根据分组中的目的IP地址，在路由转发表中查找匹配，确定分组的输出端口。</li>
+<li>执行路由器中的网络管理功能</li>
+</ul>
+<h4 id="3和其他网络设备的比较">3.和其他网络设备的比较</h4>
+<p><img src="https://img-blog.csdnimg.cn/20190120203839570.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="五网络层其他重要协议">五.网络层其他重要协议</h3>
+<h4 id="1arp">1.ARP</h4>
+<p>上面我们所说的分组转发，看起来似乎只和网络层相关，但其实不然，它还是借助了数据链路层提供的服务。</p>
+<p>网络层和数据链路层看分组转发：
+<img src="https://img-blog.csdnimg.cn/20190120211744607.png" alt="在这里插入图片描述">IP层抽象的互联网屏蔽了下层很复杂的细节，在抽象的网络层上讨论问题，就能够使用统一的，抽象的IP地址·研究主机和主机和路由器之间的通信。</p>
+<p>但不论网络层使用的什么协议，在实际网络的链路上传送数据帧时，最终还是必须使用的物理地址。为什么我们在网络层并没有感知到物理地址的存在，因为在这其中计算机软件自动调用地址转换协议来寻找某个路由器或主机的硬件地址，对于用户来说是看不见这种调用过程的。</p>
+<p><strong>a.地址转换协议</strong></p>
+<ul>
+<li>ARP:地址解析协议，IP地址&ndash;&gt;Mac地址</li>
+<li>RARP：逆向地址解析，MAC地址&ndash;&gt;IP地址</li>
+</ul>
+<p><strong>b.ARP的请求和响应报文</strong>
+<img src="https://img-blog.csdnimg.cn/20190121125557694.png" alt="在这里插入图片描述"><img src="https://img-blog.csdnimg.cn/2019012112562575.png" alt="在这里插入图片描述">ARP分组各字段解释：</p>
+<ul>
+<li>硬件类型：占2字节，指明硬件类型，取值为1时表示以太网</li>
+<li>协议类型：占2字节，指明了网络协议地址的类型，取值为0800时代表IP地址</li>
+<li>硬件地址长度：占1字节，指明了硬件地址的长度，以太网MAC地址长度为6</li>
+<li>IP地址长度：占1字节，指明了IP地址长度，取值应为4</li>
+<li>操作类型：占2字节，表示不同的操作，ARP请求对应取值1，ARP响应取值应为值2，RARP请求对应值应为3，RARP响应对应值4</li>
+<li>源MAC地址：占6字节，指明发送方的Mac地址</li>
+<li>源IP地址：占4字节，指明了发送方的IP地址</li>
+<li>目的MAC地址：占6字节，指明了接收方的MAC地址</li>
+<li>目的IP地址：占4字节，指明了接收方方IP地址</li>
+</ul>
+<p><strong>c.ARP高速缓存</strong>
+为了提升通信效率，每个主机都在本地设置了一个ARP高速缓存（ARP Cache），存放最近解析出来的IP/MAC映射关系。发送方在发送数据之前，首先在本地ARP高速缓存中查找，如果找到直接使用，否则才会广播arp请求报文，进行地址解析。</p>
+<p>例如：</p>
+<blockquote>
+<p>当主机A欲向本局域网上的某个主机E发送IP数据报时，就先在其ARP高速缓存中查看有无主机E的IP地址，如果有，就查出其对应的硬件地址，再将次硬件地址写入MAC帧，然后通过局域网将该MAC帧发往此硬件地址。如果没有，主机A就会广播ARP请求包，当主机E接收到之后，会向主机E返回一个ARP响应包。在这个过程中，主机E会记录主机A的MAC地址，主机A也会记录主机E的MAC地址。
+<img src="https://img-blog.csdnimg.cn/20190121132303656.png" alt="在这里插入图片描述"><img src="https://img-blog.csdnimg.cn/20190121132339552.png" alt="在这里插入图片描述"></p>
+</blockquote>
+<p>操作ARP高速缓存的命令
+<img src="https://img-blog.csdnimg.cn/2019012113254765.png" alt="在这里插入图片描述">
+<strong>d.使用ARP的四种典型情况</strong></p>
+<ul>
+<li>发送方是主机，要把IP数据报发送给本网络上的另一个主机（直接交付）,此时用ARP找到目的主机的硬件地址。</li>
+<li>发送方是主机，要把IP数据报发送到另一个网络上的一个主机（间接交付），此时用ARP找到本网络上默认网关路由器的硬件地址。剩下的工作由这个路由器来完成。</li>
+<li>发送方是路由器，要把IP数据报转发到本网络上的一个主机（直接交付），此时用ARP找到目的主机的硬件地址</li>
+<li>发送方是路由器，要把IP数据报转发到另一个网络上的一个主机（间接交付）。此时用ARP找到下一跳路由器的硬件地址。剩下的工作由这个路由器完成。</li>
+</ul>
+<h4 id="2icmp">2.ICMP</h4>
+<p><strong>a.ICMP概述</strong></p>
+<ul>
+<li>为了提高IP数据报成功交付的机会，在网络层使用了因特网控制报文协议ICMP</li>
+<li>ICMP允许主机或路由器报告差错情况和提供异常的报告</li>
+<li>ICMP不是高层协议，而是IP层的协议</li>
+<li>ICMP报文作为IP数据报的数据，加上IP首部，组成IP数据报发送出去。</li>
+</ul>
+<p><strong>b.ICMP报文格式</strong>
+<img src="https://img-blog.csdnimg.cn/20190121134843521.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>Type：定义了ICMP报文的类型
+<img src="https://img-blog.csdnimg.cn/20190121135644914.png" alt="在这里插入图片描述"></li>
+<li>Code：每种类型可在根据Code字段来定义各种不同用途</li>
+<li>Checksum：长度为2字节，记录ICMP报文的错误校验码</li>
+</ul>
+<p>终点学习两个类型的Type</p>
+<ul>
+<li>3 终点不可达</li>
+<li>8回送请求 /0会送应答</li>
+</ul>
+<p><strong>c.终点不可达</strong>
+当IP路由过程中，若出现下面的情况，路由器或者主机便发出“目的不可达”ICMP报文通知源端。</p>
+<ul>
+<li>路由器无法将IP数据报发送出去。</li>
+<li>目的主机无法处理收到的IP数据报
+<img src="https://img-blog.csdnimg.cn/20190121140323438.png" alt="在这里插入图片描述"></li>
+</ul>
+<p><strong>d.Ping命令</strong>
+Ping命令的原理就是根据Type = 8/0 (回送请求 /会送应答)
+<img src="https://img-blog.csdnimg.cn/20190121140716300.png" alt="在这里插入图片描述">ping命令的确认事项：</p>
+<ul>
+<li>B主机存在且运作正常</li>
+<li>A，B之间的网络连接状态正常</li>
+<li>A，B之间的IP路由正常</li>
+</ul>
+<p>ping 命令格式
+ping [参数1][参数2][&hellip;..][目的地址]
+利用Ping来诊断网络</p>
+<ul>
+<li>ping 127.0.0.1</li>
+<li>ping 本机ip地址</li>
+<li>ping网关路由器</li>
+<li>ping互联网上某主机的IP地址</li>
+<li>ping互联网上某主机的域名（网址）</li>
+</ul>
+<h4 id="3nat">3.NAT</h4>
+<p>为了缓解IPv4地址短缺的问题，IETF提出了NAT，将IP地址分为了公用地址和私有地址，NAT技术的主要作用是将私有地址转换为公用地址。</p>
+<blockquote>
+<p>公网：也称为全局网络或外网，公网使用的地址称为公用地址或者全局地址
+私网：也称为本地网络或内外，私网使用的地址称为私有地址或者内部网络</p>
+</blockquote>
+<p>私有地址</p>
+<blockquote>
+<p>私有地址只能用于一个机构的内部通信，而不能用于和Internet上的主机通信，即Internet中的公共路由器对目的地址树专有地址的分组一律不进行转发。
+用于私网地址的ip地址：
+<img src="https://img-blog.csdnimg.cn/20190121153227748.png" alt="在这里插入图片描述"></p>
+</blockquote>
+<p>私有地址的特点：</p>
+<ul>
+<li>任何组织都可以任意使用私有地址空间</li>
+<li>私有地址在internet上无法路由</li>
+<li>如果采用私有地址的网络访问Internet，必须在出口处部署NAT设备。</li>
+</ul>
+<p>NAT的示意图
+<img src="https://img-blog.csdnimg.cn/20190121161316594.png" alt="在这里插入图片描述"><img src="https://img-blog.csdnimg.cn/20190121161447744.png" alt="在这里插入图片描述"></p>
+<h3 id="六参考资料">六.参考资料</h3>
+<p>《计算机网络：原理和实践》</p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C3%E7%BD%91%E7%BB%9C%E5%B1%82/">http://blog.bingtan.online/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C3%E7%BD%91%E7%BB%9C%E5%B1%82/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C2%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/">计算机网络2————数据链路层</a></li>
+        
+        <li><a href="/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C1%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E5%92%8C%E5%8D%8F%E8%AE%AE%E5%88%86%E5%B1%82/">计算机网络1————基础概念和协议分层</a></li>
+        
+        <li><a href="/about/tools/">关于</a></li>
+        
+        <li><a href="/tools/">工具</a></li>
+        
+        <li><a href="/archives/">归档</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/%E7%BD%91%E7%BB%9C'>网络</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "your github repo"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一网络层概述">一.网络层概述</a>
+      <ul>
+        <li><a href="#1互联">1.互联</a></li>
+        <li><a href="#2交付">2.交付</a></li>
+        <li><a href="#3因特网的设计思路">3.因特网的设计思路</a></li>
+      </ul>
+    </li>
+    <li><a href="#二ip协议">二.IP协议</a>
+      <ul>
+        <li><a href="#1ip数据的格式">1.IP数据的格式</a></li>
+        <li><a href="#2ip报文分片">2.IP报文分片</a></li>
+        <li><a href="#3ip地址">3.IP地址</a></li>
+        <li><a href="#4分类编址">4.分类编址</a></li>
+        <li><a href="#5子网编址">5.子网编址</a></li>
+        <li><a href="#6cidr编址">6.CIDR编址</a></li>
+        <li><a href="#7ipv6">7.IPV6</a></li>
+      </ul>
+    </li>
+    <li><a href="#三路由选择协议">三.路由选择协议</a>
+      <ul>
+        <li><a href="#1概述">1.概述</a></li>
+        <li><a href="#2静态路由">2.静态路由</a></li>
+        <li><a href="#3rip协议">3.RIP协议</a></li>
+        <li><a href="#4ospf协议">4.OSPF协议</a></li>
+        <li><a href="#5bgp协议">5.BGP协议</a></li>
+      </ul>
+    </li>
+    <li><a href="#四路由器工作原理">四.路由器工作原理</a>
+      <ul>
+        <li><a href="#1概述-1">1.概述</a></li>
+        <li><a href="#2路由器的体系结构">2.路由器的体系结构</a></li>
+        <li><a href="#3和其他网络设备的比较">3.和其他网络设备的比较</a></li>
+      </ul>
+    </li>
+    <li><a href="#五网络层其他重要协议">五.网络层其他重要协议</a>
+      <ul>
+        <li><a href="#1arp">1.ARP</a></li>
+        <li><a href="#2icmp">2.ICMP</a></li>
+        <li><a href="#3nat">3.NAT</a></li>
+      </ul>
+    </li>
+    <li><a href="#六参考资料">六.参考资料</a></li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

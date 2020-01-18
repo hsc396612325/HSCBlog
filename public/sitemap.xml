@@ -4,25 +4,79 @@
   
   <url>
     <loc>http://blog.bingtan.online/posts/</loc>
-    <lastmod>2020-01-18T18:08:09+08:00</lastmod>
+    <lastmod>2020-01-18T22:35:54+08:00</lastmod>
   </url>
   
   <url>
     <loc>http://blog.bingtan.online/</loc>
-    <lastmod>2020-01-18T18:08:09+08:00</lastmod>
+    <lastmod>2020-01-18T22:35:54+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.bingtan.online/posts/my-first-post/</loc>
-    <lastmod>2020-01-18T18:08:09+08:00</lastmod>
+    <loc>http://blog.bingtan.online/posts/%E6%96%87%E7%AB%A0%E5%AF%BC%E8%88%AA/</loc>
+    <lastmod>2020-01-18T22:35:54+08:00</lastmod>
   </url>
   
   <url>
     <loc>http://blog.bingtan.online/categories/</loc>
+    <lastmod>2019-01-23T22:40:54+08:00</lastmod>
   </url>
   
   <url>
     <loc>http://blog.bingtan.online/tags/</loc>
+    <lastmod>2019-01-23T22:40:54+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.bingtan.online/tags/%E7%BD%91%E7%BB%9C/</loc>
+    <lastmod>2019-01-23T22:40:54+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.bingtan.online/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/</loc>
+    <lastmod>2019-01-23T22:40:54+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.bingtan.online/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E5%92%8CHttps/</loc>
+    <lastmod>2019-01-23T22:40:54+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.bingtan.online/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C5%E5%BA%94%E7%94%A8%E5%B1%82DNS-%E5%92%8C-HTTP/</loc>
+    <lastmod>2019-01-22T22:40:54+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.bingtan.online/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C4%E8%BF%90%E8%BE%93%E5%B1%82/</loc>
+    <lastmod>2019-01-21T22:40:54+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.bingtan.online/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C3%E7%BD%91%E7%BB%9C%E5%B1%82/</loc>
+    <lastmod>2019-01-20T22:40:54+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.bingtan.online/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C2%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/</loc>
+    <lastmod>2019-01-19T22:40:54+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.bingtan.online/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C1%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E5%92%8C%E5%8D%8F%E8%AE%AE%E5%88%86%E5%B1%82/</loc>
+    <lastmod>2019-01-18T22:40:54+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.bingtan.online/about/</loc>
+  </url>
+  
+  <url>
+    <loc>http://blog.bingtan.online/about/tools/</loc>
+  </url>
+  
+  <url>
+    <loc>http://blog.bingtan.online/tools/</loc>
   </url>
   
   <url>
