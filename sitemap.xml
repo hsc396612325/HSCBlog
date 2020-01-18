@@ -3,19 +3,30 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>http://blog.mengchen.club/categories/</loc>
+    <loc>http://blog.bingtan.online/posts/</loc>
+    <lastmod>2020-01-18T18:08:09+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.mengchen.club/tags/</loc>
+    <loc>http://blog.bingtan.online/</loc>
+    <lastmod>2020-01-18T18:08:09+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.mengchen.club/archives/</loc>
+    <loc>http://blog.bingtan.online/posts/my-first-post/</loc>
+    <lastmod>2020-01-18T18:08:09+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.mengchen.club/</loc>
+    <loc>http://blog.bingtan.online/categories/</loc>
+  </url>
+  
+  <url>
+    <loc>http://blog.bingtan.online/tags/</loc>
+  </url>
+  
+  <url>
+    <loc>http://blog.bingtan.online/archives/</loc>
   </url>
   
 </urlset>

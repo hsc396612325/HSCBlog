@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>博客导航 | 冰炭不投day的博客</title>
+    <meta property="og:title" content="博客导航 - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2020-01-18T18:08:09&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2020-01-18T18:08:09&#43;08:00'>
+        
+    <meta name="Keywords" content="golang,go语言,go语言笔记,飞雪无情,java,android,博客,项目管理,python,软件架构,公众号,小程序">
+    <meta name="description" content="博客导航">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/my-first-post/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">漫漫码农路</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#前言">前言</a></li>
+        <li><a href="#一android应用层">一.Android应用层</a></li>
+        <li><a href="#二android1框架层分析">二.Android1框架层分析</a></li>
+        <li><a href="#三数据结构与算法">三.数据结构与算法</a></li>
+        <li><a href="#四计算机基础">四.计算机基础</a></li>
+        <li><a href="#五随笔">五.随笔</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if(leftPos<220){
+                postToc.css({"width":leftPos-10,"margin-left":(0-leftPos)})
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">博客导航</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2020年1月18日
+        </date>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="post-content">
+            <h3 id="前言">前言</h3>
+<p>为了让自己的学习更加有体系化，也同时为了大家的阅读方便，我将自己的博客进行一个汇总分类，同时也会写出下一阶段的计划，让自己更有调理性的学习。</p>
+<h3 id="一android应用层">一.Android应用层</h3>
+<h4 id="1android之view篇完结">1.Android之View篇【完结】</h4>
+<ul>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/80436683">Android之View篇1————初识View</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/80528275">Android之View篇2————View的事件分发 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/80573602">Android之View篇3————View滑动冲突的解决 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/80643905">Android之View篇4————View的工作原理 </a></li>
+<li><a href="Android%E4%B9%8BView%E7%AF%875%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E8%87%AA%E5%AE%9A%E4%B9%89View">Android之View篇5————自定义View </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/category/7056124/2">Android之View篇6————仿陌陌卡片左右滑动选择布局 </a></li>
+</ul>
+<h4 id="2android之rxjava篇完结">2.Android之Rxjava篇【完结】</h4>
+<ul>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81611870">Android之Rxjava2.X 1————Rxjava概述</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81637932">Android之Rxjava2.X 2————Rxjava 创建操作符</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81668545">Android之Rxjava2.X 3————Rxjava 变换操作符</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81670980">Android之Rxjava2.X 4————Rxjava 组合操作符</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81675322">Android之Rxjava2.X 5————Rxjava 过滤操作符</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81700187">Android之Rxjava2.X 6————Rxjava 功能操作符</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81705745">Android之Rxjava2.X 7————Rxjava 条件操作符</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81747334">Android之Rxjava2.X 8————Rxjava 背压策略</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81775520">Android之Rxjava2.X 9————Rxjava源码阅读1</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81839955">Android之Rxjava2.X 10————Rxjava源码阅读2</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/82119900">Android之Rxjava2.X 11————Rxjava源码阅读3</a></li>
+</ul>
+<h4 id="3android之网络请求篇完结">3.Android之网络请求篇【完结】</h4>
+<ul>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/82153094">Android之网络请求1————HTTP协议</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/82290738">Android之网络请求2————OkHttp的基本使用</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/82355954">Android之网络请求3————OkHttp的拦截器和封装</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/82469295">Android之网络请求4————OkHttp源码1:框架</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/82561675">Android之网络请求5————OkHttp源码2:发送请求</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/82630630">Android之网络请求6————OkHttp源码3:拦截器链</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/82745671">Android之网络请求7————OkHttp源码4:网络操作</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/82778955">Android之网络请求8————OkHttp源码5:缓存相关</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/82807496">Android之网络请求9————Retrofit的简单使用</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/83010604">Android之网络请求10————Retrofit的进阶使用</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/83042782">Android之网络请求11————Retrofit的源码分析</a></li>
+</ul>
+<h4 id="4android之ipc篇完结">4.Android之IPC篇【完结】</h4>
+<ul>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/83588236">Android之IPC1————Service </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/83628496">Android之IPC2————AIDL </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/83692086">Android之IPC3————序列化 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/83833539">Android之IPC4————Bander1 概述与Bander驱动 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/83964499">Android之IPC5————Binder2 Native层分析 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/84036791"> Android之IPC6————Binder3 Framework层分析 </a></li>
+</ul>
+<h4 id="5零散的文章">5.零散的文章</h4>
+<ul>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/76165548">Android小项目———— 冰炭不投de小计算器</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/77823316"> Android小项目————聊天室（UI篇)</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/77826856">Android小项目————聊天室（网络编程篇） </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/80384421">Android学习笔记————Activity的生命周期和启动模式</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/80490418">Android源码阅读————GestureDetectory </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81360344"> Android之RemoteViews篇上————通知栏和桌面小控件</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81367098"> Android之RemoteViews篇下————RemoteViews的内部机制 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81610874">Android MVP应用 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/87862370">Android录音上————AudioRecord实现录音功能 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/87892448">Android录音下————AudioRecord源码分析 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/90523283">Android之辅助服务上篇————AccessibilityService使用 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/93770643"> Android之辅助服务下篇————AccessibilityServic源码分析 </a></li>
+</ul>
+<h3 id="二android1框架层分析">二.Android1框架层分析</h3>
+<h4 id="1框架层基础完结">1.框架层基础【完结】</h4>
+<ul>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/88180112">Andriod框架层基础1————Andriod系统框架概述 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/88804471">Android框架层基础2————JNI原理 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/88938088">Android框架层基础3————智能指针 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/89088566">Android框架层基础4————Android源码的编译(后续补上)</a></li>
+</ul>
+<h4 id="2android系统启动正在更新">2.Android系统启动【正在更新】</h4>
+<ul>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/88187602">Android系统启动1————概述和Liunx内核的启动</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/98074478">Android系统启动2————Android初始化语言概述和解析</a></li>
+</ul>
+<h3 id="三数据结构与算法">三.数据结构与算法</h3>
+<h4 id="1数据结构未完待续">1.数据结构【未完待续】</h4>
+<ul>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/71482181">数据结构1————链表的基本操作</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/72656848">数据结构2————链表的简单应用1 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/78058545"> 数据结构3————链表的应用2[一元多项式] </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/77992788">数据结构4————栈的概念和运算 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/78152641">数据结构5————队的概念和运算 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/78154675">数据结构6————队栈的应用1 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/78155218"> 数据结构7————递归解决迷宫问题和马踏棋盘 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/78176067"> 数据结构8————栈的应用2-非递归解决迷宫和马踏棋盘问题 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/78257836">数据结构9————栈的应用3-后缀表达式 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/78289568"> 数据结构10————串-从c语言String库源码来学习 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/78311159"> 数据结构11————串的BF匹配模式和KMP匹配模式 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/78500981">数据结构12————马鞍点问题&amp;三元组稀疏矩阵&amp;十字链表稀疏链表的加减法 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/78677787">数据结构13————树的基本概念和存储 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/78807205"> 数据结构14————二叉树的定义性质及储存 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/78828762">数据结构15————二叉树的遍历和建立 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/78837951">数据结构16————二叉树的线索化 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/78857873"> 数据结构17————树,森林转化为二叉树(孩子兄弟表示法) </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/78868306">数据结构18————哈夫曼树 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/78900452">数据结构19————图的定义和基本概念 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/79106184">数据结构20————图的五种存储结构 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/79113284"> 数据结构21————图的深度优先遍历(DFS)&amp;广度优先遍历(BFS) </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/79119907">数据结构22————图的最小生成树Prim&amp;Kruskal  </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/79122634">数据结构23————图的最短路径Dijkstra算法&amp;Floyd算法  </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/79149348"> 数据结构24————图的拓扑排序和关键排序  </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/79695136">数据结构25 ————顺序表查找  </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/79821540">数据结构26————有序表查找  </a></li>
+</ul>
+<h4 id="2算法持续更新">2.算法【持续更新】</h4>
+<ul>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/85067299"> 算法————大数加法，大数乘法，高次方 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/82904545">算法————大数减法，大数除法 </a></li>
+</ul>
+<h3 id="四计算机基础">四.计算机基础</h3>
+<h4 id="1计算机网络完结">1.计算机网络【完结】</h4>
+<ul>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/85567126"> 计算机网络1————基础概念和协议分层   </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/86033659">计算机网络2————数据链路层  </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/86508689"> 计算机网络3————网络层  </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/86582969">计算机网络4————运输层   </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/86658695"> 计算机网络5————应用层（DNS 和 HTTP）  </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/88261951">计算机网络6————加密算法和Https</a></li>
+</ul>
+<h4 id="2操作系统未完待续">2.操作系统【未完待续】</h4>
+<ul>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/79899421"> 操作系统1————操作系统概述   </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/79900968"> 操作系统2 ————进程的描述   </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/80057427">  操作系统3 ————PCB和进程控制   </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/80217518">操作系统4————进程同步   </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/80418632"> 操作系统5————进程同步的经典问题：司机售票员&amp;问题生产者消费者问题&amp;哲学家进餐问题&amp;读者写者问题 ）  </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/80425044">  操作系统6————进程间通信IPC   </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/80558588"> 操作系统7————线程  </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/80588248"> 操作系统8————处理机调度   </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/80896453">操作系统9————死锁   </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/80905168">  操作系统10————存储器管理之程序的装入和链接 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81043482"> 操作系统11————存储器管理之连续分配存储管理方式   </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81044790">操作系统12————存储器管理之对换  </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81052662"> 操作系统13————存储器管理之分页存储  </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81054286">操作系统14————存储器管理之分段存储&amp;段页存储   </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81067416">操作系统15————虚拟存储器之概述 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81079280"> 操作系统16————虚拟存储器之抖动，工作集和页面置换算法   </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81085689">操作系统17———IO系统之概述   </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81104481"> 操作系统18———IO系统之中断机构和设备驱动程序   </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81172220">操作系统19———IO系统之与设备无关的I/O软件&amp;用户层的I/O软件  </a></li>
+</ul>
+<h4 id="3c语言完结">3.c语言【完结】</h4>
+<ul>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/70761558">  C语言小游戏————贪吃蛇.c   </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/71307286"> C语言小游戏————反弹球（简单的图形化界面） </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/72831856"> c语言的应用————文件的操作  </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/72859112"> c语言 EasyX图形设计————2048   </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/73090947"> 课程设计————学生信息管理系统   </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/75088096">课程设计————学生信息管理系统（包含历代思路和代码）   </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/78253668">c语言基础知识————变量  </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/79822435">  西邮移动应用开发实验室2018年纳新试题  ）  </a></li>
+</ul>
+<h3 id="五随笔">五.随笔</h3>
+<ul>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/78941080"> 2017年度总结 </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/84843407"> Android客户端-寒假实习面经-实习初体验    </a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/85549600"> 2018年总结~2019年计划 ）  </a></li>
+</ul>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/my-first-post/">http://blog.bingtan.online/posts/my-first-post/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/archives/">归档</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            没有标签
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "your github repo"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://blog.bingtan.online/posts/my-first-post/" title="博客导航">博客导航</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://www.flysnow.org/" title="飞雪无情的博客">飞雪无情的博客</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="http://yuedu.baidu.com/ebook/14a722970740be1e640e9a3e" title="Android Gradle权威指南">Android Gradle权威指南</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>
