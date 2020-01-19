@@ -110,7 +110,7 @@ pre {
 code {
     display: inline-block;
 }
-blockquote {
+/* blockquote {
     display: block;
     margin-block-start: 1em;
     margin-block-end: 1em;
@@ -122,6 +122,20 @@ blockquote {
     padding: 0 0 0 50px;
     color: #555;
     border-left: none;
+} */
+blockquote {
+    font: 14px/22px normal helvetica, sans-serif;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    padding-left: 15px;
+    padding-top: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    border-left: 3px solid #ccc;
+    background-color:#f1f1f1
+    word-wrap:break-word;
+    white-space: pre-wrap;
 }
 blockquote::before{
     content: "\201C";
@@ -134,6 +148,7 @@ blockquote::before{
     line-height: 30px;
     margin-left: -50px;
     position: absolute; 
+
 }
   
 /**
