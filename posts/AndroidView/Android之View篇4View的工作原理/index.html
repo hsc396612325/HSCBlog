@@ -1,0 +1,1233 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title> | 冰炭不投day的博客</title>
+    <meta property="og:title" content=" - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%874View%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title"></h1>
+        </header>
+        <date class="post-meta meta-date">
+            1年1月1日
+        </date>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h1 id="android之view篇4view的工作原理">Android之View篇4————View的工作原理</h1>
+<h3 id="一-目录">一. 目录</h3>
+<p>@[toc]</p>
+<h3 id="二-初识decorview和viewroot">二. 初识DecorView和ViewRoot</h3>
+<h4 id="1-decorview">1. DecorView</h4>
+<p>DecorView是整个Window界面的最顶层View。DecorView只有一个子元素为LinearLayout。代表整个Window界面，包含通知栏，标题栏，内容显示栏三块区域。LinearLayout里有两个FrameLayout子元素。如图：
+<img src="https://img-blog.csdn.net/20160808132027415?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="这里写图片描述"></p>
+<p>所以在Activity中，设定View是设定给cintent的。获得content的方法 ViewGroup = （ViewGroup）findViewById（R.id.content）。如何得到设定的View，content.getChildAt(0)</p>
+<h4 id="2-viewroot">2. ViewRoot</h4>
+<p>ViewRoot对应的是ViewRootImpl类，它是连接WindowManager和DecorView的纽带，View的三大流程都是通过ViewRoot来完成。在ActivityThread中，当Activity对象被创建时，会将DecorView添加到Window，同时会创建ViewRootImpl对象，并将ViewRootImpl对象和DecorView对象。</p>
+<h4 id="3-view的工作流程概述">3. View的工作流程概述</h4>
+<p>view的绘制是从ViewRoot的performTraversals方法开始的，它经历过measure，layout和draw三个过程才最终将一个View绘制出来。其中measure用来测量View的宽和高，layout用来确定View在父容器的放置位置，而Draw则负责将View绘制在屏幕上。大致流程如下：
+<img src="https://img-blog.csdn.net/2018061015384765?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<h3 id="三-measurespec">三. MeasureSpec</h3>
+<h4 id="1--measurespec源码">1.  MeasureSpec源码</h4>
+<p>MeasureSpec代表一个32位int值。高2位表示SpecMode（测量模式），低30位表示specSize（当前测量模式下的规格大小）</p>
+<p>MeasureSpec源码:</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">//部分重点代码
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> MODE_SHIFT <span style="color:#000;font-weight:bold">=</span> 30<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> MODE_MASK  <span style="color:#000;font-weight:bold">=</span> 0x3 <span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000;font-weight:bold">&lt;</span> MODE_SHIFT<span style="color:#000;font-weight:bold">;</span> 
+        
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> UNSPECIFIED <span style="color:#000;font-weight:bold">=</span> 0 <span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000;font-weight:bold">&lt;</span> MODE_SHIFT<span style="color:#000;font-weight:bold">;</span>  <span style="color:#998;font-style:italic">//父容器不对View有任何限制，要多大给到大
+</span><span style="color:#998;font-style:italic"></span>                                                                <span style="color:#998;font-style:italic">//这种情况一般用于系统内部，表示一直测量出状态
+</span><span style="color:#998;font-style:italic"></span>        
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> EXACTLY     <span style="color:#000;font-weight:bold">=</span> 1 <span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000;font-weight:bold">&lt;</span> MODE_SHIFT<span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">//父容器已经检测出View的精确的大小，这时候View的最终大小就是SpecSize确定的值
+</span><span style="color:#998;font-style:italic"></span>                                                               <span style="color:#998;font-style:italic">//它对于LayoutParams中的match_parent和具体数值这两种模式
+</span><span style="color:#998;font-style:italic"></span>
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> AT_MOST     <span style="color:#000;font-weight:bold">=</span> 2 <span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000;font-weight:bold">&lt;</span> MODE_SHIFT<span style="color:#000;font-weight:bold">;</span><span style="color:#998;font-style:italic">//父容器指定一个可用大小，View的大小不能大于这个值。它对应LayoutParent中的wrap_content
+</span><span style="color:#998;font-style:italic"></span>
+
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">makeMeasureSpec</span><span style="color:#000;font-weight:bold">(</span><span style="color:#3c5d5d;font-weight:bold">@IntRange</span><span style="color:#000;font-weight:bold">(</span>from <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">,</span> to <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>1 <span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000;font-weight:bold">&lt;</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">MODE_SHIFT</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">-</span> 1<span style="color:#000;font-weight:bold">)</span> <span style="color:#458;font-weight:bold">int</span> size<span style="color:#000;font-weight:bold">,</span>  <span style="color:#998;font-style:italic">//将 size和mode打包成一个MeasureSpec
+</span><span style="color:#998;font-style:italic"></span>                                          <span style="color:#3c5d5d;font-weight:bold">@MeasureSpecMode</span> <span style="color:#458;font-weight:bold">int</span> mode<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>sUseBrokenMakeMeasureSpec<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">return</span> size <span style="color:#000;font-weight:bold">+</span> mode<span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">(</span>size <span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">~</span>MODE_MASK<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">|</span> <span style="color:#000;font-weight:bold">(</span>mode <span style="color:#000;font-weight:bold">&amp;</span> MODE_MASK<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">getMode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> measureSpec<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>     <span style="color:#998;font-style:italic">//MeasureSpec解包出mode
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#998;font-style:italic">//noinspection ResourceType
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">(</span>measureSpec <span style="color:#000;font-weight:bold">&amp;</span> MODE_MASK<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">getSize</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> measureSpec<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>  <span style="color:#998;font-style:italic">//MeasureSpec解包出size
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">(</span>measureSpec <span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">~</span>MODE_MASK<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>通过源码可知，MeasureSpec共有3种模式，同时可以将size和mode打包成一个MeasureSpec，也可以解包出size和mode。</p>
+<h4 id="2--measurespec和layoutparams对应关系">2.  MeasureSpec和LayoutParams对应关系</h4>
+<p>在View进行测量时，系统会将<strong>LayoutParams在父容器的约束</strong>下转换成相应的MeasureSpec，然后根据这个MeasureSpec来确定View测量后的宽/高。 对于DecorView的MeasureSpec确定略有不同，不是由父容器和LayoutParams确定，而是由窗户的尺寸和自身的LayoutParams共同确定的。 MeasureSpec一旦确定后monMeasure就可以确定View的测量宽/高。</p>
+<p><strong>a.DecorView的MeasureSpec确定</strong>
+在DecorView的measureHierarchy方法中，有MeasureSpec 的获取</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">childWidthMeasureSpec <span style="color:#000;font-weight:bold">=</span> getRootMeasureSpec<span style="color:#000;font-weight:bold">(</span>desiredWindowWidth<span style="color:#000;font-weight:bold">,</span> lp<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">width</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>  <span style="color:#998;font-style:italic">//desiredWindowWidth 是屏幕尺寸
+</span><span style="color:#998;font-style:italic"></span>childHeightMeasureSpec <span style="color:#000;font-weight:bold">=</span> getRootMeasureSpec<span style="color:#000;font-weight:bold">(</span>desiredWindowHeight<span style="color:#000;font-weight:bold">,</span> lp<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">height</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">//desiredWindowWidth 是屏幕尺寸
+</span><span style="color:#998;font-style:italic"></span>performMeasure<span style="color:#000;font-weight:bold">(</span>childWidthMeasureSpec<span style="color:#000;font-weight:bold">,</span> childHeightMeasureSpec<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>getRootMeasureSpec源码</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">getRootMeasureSpec</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> windowSize<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> rootDimension<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#458;font-weight:bold">int</span> measureSpec<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">switch</span> <span style="color:#000;font-weight:bold">(</span>rootDimension<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+
+        <span style="color:#000;font-weight:bold">case</span> ViewGroup<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">LayoutParams</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">MATCH_PARENT</span><span style="color:#000;font-weight:bold">:</span><span style="color:#998;font-style:italic">//精确模式，大小就是窗口的大小
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#998;font-style:italic">// Window can&#39;t resize. Force root view to be windowSize.
+</span><span style="color:#998;font-style:italic"></span>            measureSpec <span style="color:#000;font-weight:bold">=</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">makeMeasureSpec</span><span style="color:#000;font-weight:bold">(</span>windowSize<span style="color:#000;font-weight:bold">,</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">EXACTLY</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">case</span> ViewGroup<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">LayoutParams</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">WRAP_CONTENT</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#998;font-style:italic">//最大模式，大小不定，但不能超酷窗口大小
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#998;font-style:italic">// Window can resize. Set max size for root view.
+</span><span style="color:#998;font-style:italic"></span>            measureSpec <span style="color:#000;font-weight:bold">=</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">makeMeasureSpec</span><span style="color:#000;font-weight:bold">(</span>windowSize<span style="color:#000;font-weight:bold">,</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">AT_MOST</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">default</span><span style="color:#000;font-weight:bold">:</span>   <span style="color:#998;font-style:italic">//精确模式，大小为LayoutParams中指定的大小
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#998;font-style:italic">// Window wants to be an exact size. Force root view to be that size.
+</span><span style="color:#998;font-style:italic"></span>            measureSpec <span style="color:#000;font-weight:bold">=</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">makeMeasureSpec</span><span style="color:#000;font-weight:bold">(</span>rootDimension<span style="color:#000;font-weight:bold">,</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">EXACTLY</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">return</span> measureSpec<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>b.  View的MeasureSpec确定</strong>
+对于View来说，view的measure过程有ViewGroup传递而来，先看看ViewGeoup的measureChildWithMargins方法</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">measureChildWithMargins</span><span style="color:#000;font-weight:bold">(</span>View child<span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#458;font-weight:bold">int</span> parentWidthMeasureSpec<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> widthUsed<span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#458;font-weight:bold">int</span> parentHeightMeasureSpec<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> heightUsed<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">final</span> MarginLayoutParams lp <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>MarginLayoutParams<span style="color:#000;font-weight:bold">)</span> child<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getLayoutParams</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> childWidthMeasureSpec <span style="color:#000;font-weight:bold">=</span> getChildMeasureSpec<span style="color:#000;font-weight:bold">(</span>parentWidthMeasureSpec<span style="color:#000;font-weight:bold">,</span>
+                mPaddingLeft <span style="color:#000;font-weight:bold">+</span> mPaddingRight <span style="color:#000;font-weight:bold">+</span> lp<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">leftMargin</span> <span style="color:#000;font-weight:bold">+</span> lp<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">rightMargin</span>
+                        <span style="color:#000;font-weight:bold">+</span> widthUsed<span style="color:#000;font-weight:bold">,</span> lp<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">width</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>  <span style="color:#998;font-style:italic">//获得子元素的MeasureSpec，可以看出子元素MeasureSpec的确
+</span><span style="color:#998;font-style:italic"></span>		                        <span style="color:#998;font-style:italic">//定不止和父元素的MeasureSpec，自身的LayoutParams有关
+</span><span style="color:#998;font-style:italic"></span>		                        <span style="color:#998;font-style:italic">//还和View的margin和padding有关
+</span><span style="color:#998;font-style:italic"></span>                   
+        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> childHeightMeasureSpec <span style="color:#000;font-weight:bold">=</span> getChildMeasureSpec<span style="color:#000;font-weight:bold">(</span>parentHeightMeasureSpec<span style="color:#000;font-weight:bold">,</span>
+                mPaddingTop <span style="color:#000;font-weight:bold">+</span> mPaddingBottom <span style="color:#000;font-weight:bold">+</span> lp<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">topMargin</span> <span style="color:#000;font-weight:bold">+</span> lp<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">bottomMargin</span>
+                        <span style="color:#000;font-weight:bold">+</span> heightUsed<span style="color:#000;font-weight:bold">,</span> lp<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">height</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        child<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">measure</span><span style="color:#000;font-weight:bold">(</span>childWidthMeasureSpec<span style="color:#000;font-weight:bold">,</span> childHeightMeasureSpec<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>getChildMeasureSpec的源码</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">getChildMeasureSpec</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> spec<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> padding<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> childDimension<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#458;font-weight:bold">int</span> specMode <span style="color:#000;font-weight:bold">=</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getMode</span><span style="color:#000;font-weight:bold">(</span>spec<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#458;font-weight:bold">int</span> specSize <span style="color:#000;font-weight:bold">=</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getSize</span><span style="color:#000;font-weight:bold">(</span>spec<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#458;font-weight:bold">int</span> size <span style="color:#000;font-weight:bold">=</span> Math<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">max</span><span style="color:#000;font-weight:bold">(</span>0<span style="color:#000;font-weight:bold">,</span> specSize <span style="color:#000;font-weight:bold">-</span> padding<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#458;font-weight:bold">int</span> resultSize <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#458;font-weight:bold">int</span> resultMode <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#000;font-weight:bold">switch</span> <span style="color:#000;font-weight:bold">(</span>specMode<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#998;font-style:italic">// Parent has imposed an exact size on us
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">case</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">EXACTLY</span><span style="color:#000;font-weight:bold">:</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>childDimension <span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                resultSize <span style="color:#000;font-weight:bold">=</span> childDimension<span style="color:#000;font-weight:bold">;</span>
+                resultMode <span style="color:#000;font-weight:bold">=</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">EXACTLY</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>childDimension <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> LayoutParams<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">MATCH_PARENT</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#998;font-style:italic">// Child wants to be our size. So be it.
+</span><span style="color:#998;font-style:italic"></span>                resultSize <span style="color:#000;font-weight:bold">=</span> size<span style="color:#000;font-weight:bold">;</span>
+                resultMode <span style="color:#000;font-weight:bold">=</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">EXACTLY</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>childDimension <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> LayoutParams<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">WRAP_CONTENT</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#998;font-style:italic">// Child wants to determine its own size. It can&#39;t be
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">// bigger than us.
+</span><span style="color:#998;font-style:italic"></span>                resultSize <span style="color:#000;font-weight:bold">=</span> size<span style="color:#000;font-weight:bold">;</span>
+                resultMode <span style="color:#000;font-weight:bold">=</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">AT_MOST</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#998;font-style:italic">// Parent has imposed a maximum size on us
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">case</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">AT_MOST</span><span style="color:#000;font-weight:bold">:</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>childDimension <span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#998;font-style:italic">// Child wants a specific size... so be it
+</span><span style="color:#998;font-style:italic"></span>                resultSize <span style="color:#000;font-weight:bold">=</span> childDimension<span style="color:#000;font-weight:bold">;</span>
+                resultMode <span style="color:#000;font-weight:bold">=</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">EXACTLY</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>childDimension <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> LayoutParams<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">MATCH_PARENT</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#998;font-style:italic">// Child wants to be our size, but our size is not fixed.
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">// Constrain child to not be bigger than us.
+</span><span style="color:#998;font-style:italic"></span>                resultSize <span style="color:#000;font-weight:bold">=</span> size<span style="color:#000;font-weight:bold">;</span>
+                resultMode <span style="color:#000;font-weight:bold">=</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">AT_MOST</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>childDimension <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> LayoutParams<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">WRAP_CONTENT</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#998;font-style:italic">// Child wants to determine its own size. It can&#39;t be
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">// bigger than us.
+</span><span style="color:#998;font-style:italic"></span>                resultSize <span style="color:#000;font-weight:bold">=</span> size<span style="color:#000;font-weight:bold">;</span>
+                resultMode <span style="color:#000;font-weight:bold">=</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">AT_MOST</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#998;font-style:italic">// Parent asked to see how big we want to be
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">case</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">UNSPECIFIED</span><span style="color:#000;font-weight:bold">:</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>childDimension <span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#998;font-style:italic">// Child wants a specific size... let him have it
+</span><span style="color:#998;font-style:italic"></span>                resultSize <span style="color:#000;font-weight:bold">=</span> childDimension<span style="color:#000;font-weight:bold">;</span>
+                resultMode <span style="color:#000;font-weight:bold">=</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">EXACTLY</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>childDimension <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> LayoutParams<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">MATCH_PARENT</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#998;font-style:italic">// Child wants to be our size... find out how big it should
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">// be
+</span><span style="color:#998;font-style:italic"></span>                resultSize <span style="color:#000;font-weight:bold">=</span> View<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sUseZeroUnspecifiedMeasureSpec</span> <span style="color:#000;font-weight:bold">?</span> 0 <span style="color:#000;font-weight:bold">:</span> size<span style="color:#000;font-weight:bold">;</span>
+                resultMode <span style="color:#000;font-weight:bold">=</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">UNSPECIFIED</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>childDimension <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> LayoutParams<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">WRAP_CONTENT</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#998;font-style:italic">// Child wants to determine its own size.... find out how
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">// big it should be
+</span><span style="color:#998;font-style:italic"></span>                resultSize <span style="color:#000;font-weight:bold">=</span> View<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sUseZeroUnspecifiedMeasureSpec</span> <span style="color:#000;font-weight:bold">?</span> 0 <span style="color:#000;font-weight:bold">:</span> size<span style="color:#000;font-weight:bold">;</span>
+                resultMode <span style="color:#000;font-weight:bold">=</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">UNSPECIFIED</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#998;font-style:italic">//noinspection ResourceType
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">return</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">makeMeasureSpec</span><span style="color:#000;font-weight:bold">(</span>resultSize<span style="color:#000;font-weight:bold">,</span> resultMode<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>将上述代码转化为图表：
+<img src="https://img-blog.csdn.net/20180610171921234?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<h3 id="四-measure过程">四. Measure过程</h3>
+<p>measure确定Veiw的测量宽/高</p>
+<h4 id="1view的measure过程">1.view的measure过程</h4>
+<p>View的measure由其measure方法完成。而measure方法中会调用View的onMeasure方法。
+onMeasure方法：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onMeasure</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> widthMeasureSpec<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> heightMeasureSpec<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        setMeasuredDimension<span style="color:#000;font-weight:bold">(</span>getDefaultSize<span style="color:#000;font-weight:bold">(</span>getSuggestedMinimumWidth<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">,</span> widthMeasureSpec<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">,</span>
+                getDefaultSize<span style="color:#000;font-weight:bold">(</span>getSuggestedMinimumHeight<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">,</span> heightMeasureSpec<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>getDefaultSize方法</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">getDefaultSize</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> size<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> measureSpec<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#458;font-weight:bold">int</span> result <span style="color:#000;font-weight:bold">=</span> size<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#458;font-weight:bold">int</span> specMode <span style="color:#000;font-weight:bold">=</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getMode</span><span style="color:#000;font-weight:bold">(</span>measureSpec<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#458;font-weight:bold">int</span> specSize <span style="color:#000;font-weight:bold">=</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getSize</span><span style="color:#000;font-weight:bold">(</span>measureSpec<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#000;font-weight:bold">switch</span> <span style="color:#000;font-weight:bold">(</span>specMode<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">case</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">UNSPECIFIED</span><span style="color:#000;font-weight:bold">:</span>
+            result <span style="color:#000;font-weight:bold">=</span> size<span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">case</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">AT_MOST</span><span style="color:#000;font-weight:bold">:</span>
+        <span style="color:#000;font-weight:bold">case</span> MeasureSpec<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">EXACTLY</span><span style="color:#000;font-weight:bold">:</span><span style="color:#998;font-style:italic">//从这里可以看出，直接继承View的自定义控件，需要重写onMeasure方法并设置
+</span><span style="color:#998;font-style:italic"></span>                                <span style="color:#998;font-style:italic">//wrap_comtent时，自身大小。否则wrap_comtent 就相当与使用match_parent
+</span><span style="color:#998;font-style:italic"></span>            result <span style="color:#000;font-weight:bold">=</span> specSize<span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">return</span> result<span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">//返回测量后的大小，即MeasureSpec的getSize
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>getSuggestedMinimumWidth()和getSuggestedMinimumHeight()</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"> <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">getSuggestedMinimumWidth</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">(</span>mBackground <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">?</span> mMinWidth <span style="color:#000;font-weight:bold">:</span> max<span style="color:#000;font-weight:bold">(</span>mMinWidth<span style="color:#000;font-weight:bold">,</span> mBackground<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getMinimumWidth</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+ <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#998;font-style:italic">//如果View没有设置背景，那么View的长度为mMinWidth（即android：minWidth这个属性指定的值，如果不指定为0）
+</span><span style="color:#998;font-style:italic"></span><span style="color:#998;font-style:italic">//如果指向的背景，则为 max(mMinWidth, mBackground.getMinimumWidth())
+</span><span style="color:#998;font-style:italic"></span> <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">getSuggestedMinimumHeight</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">(</span>mBackground <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">?</span> mMinHeight <span style="color:#000;font-weight:bold">:</span> max<span style="color:#000;font-weight:bold">(</span>mMinHeight<span style="color:#000;font-weight:bold">,</span> mBackground<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getMinimumHeight</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+ <span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#998;font-style:italic">// mBackground.getMinimumWidth()
+</span><span style="color:#998;font-style:italic"></span> <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">getMinimumHeight</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> intrinsicHeight <span style="color:#000;font-weight:bold">=</span> getIntrinsicHeight<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">return</span> intrinsicHeight <span style="color:#000;font-weight:bold">&gt;</span> 0 <span style="color:#000;font-weight:bold">?</span> intrinsicHeight <span style="color:#000;font-weight:bold">:</span> 0<span style="color:#000;font-weight:bold">;</span><span style="color:#998;font-style:italic">//Drawable的原始高度
+</span><span style="color:#998;font-style:italic"></span> <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="2viewgroup的measure过程">2.ViewGroup的measure过程</h4>
+<p>对于ViewGroup来说，除了完成自己的measure过程外，还会遍历去调用所有子元素的measure方法。和ViewGroup是一个抽象类，因此没有重写View的onMeasure，但是提供了一个叫measureChildren的方法。
+ViewGroup.measureChildren</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">measureChildren</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> widthMeasureSpec<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> heightMeasureSpec<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> size <span style="color:#000;font-weight:bold">=</span> mChildrenCount<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">final</span> View<span style="color:#000;font-weight:bold">[</span><span style="color:#000;font-weight:bold">]</span> children <span style="color:#000;font-weight:bold">=</span> mChildren<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&lt;</span> size<span style="color:#000;font-weight:bold">;</span> <span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>i<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">final</span> View child <span style="color:#000;font-weight:bold">=</span> children<span style="color:#000;font-weight:bold">[</span>i<span style="color:#000;font-weight:bold">]</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span>child<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">mViewFlags</span> <span style="color:#000;font-weight:bold">&amp;</span> VISIBILITY_MASK<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> GONE<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                measureChild<span style="color:#000;font-weight:bold">(</span>child<span style="color:#000;font-weight:bold">,</span> widthMeasureSpec<span style="color:#000;font-weight:bold">,</span> heightMeasureSpec<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>  <span style="color:#998;font-style:italic">//调用子元素的measure
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>ViewGroup.measureChild</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">measureChild</span><span style="color:#000;font-weight:bold">(</span>View child<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> parentWidthMeasureSpec<span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#458;font-weight:bold">int</span> parentHeightMeasureSpec<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">final</span> LayoutParams lp <span style="color:#000;font-weight:bold">=</span> child<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getLayoutParams</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span><span style="color:#998;font-style:italic">//1.获取子元素的LayoutParams
+</span><span style="color:#998;font-style:italic"></span>
+	<span style="color:#998;font-style:italic">//2.根据getChildMeasureSpec创建子元素的MeasureSpec
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> childWidthMeasureSpec <span style="color:#000;font-weight:bold">=</span> getChildMeasureSpec<span style="color:#000;font-weight:bold">(</span>parentWidthMeasureSpec<span style="color:#000;font-weight:bold">,</span>
+                mPaddingLeft <span style="color:#000;font-weight:bold">+</span> mPaddingRight<span style="color:#000;font-weight:bold">,</span> lp<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">width</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> childHeightMeasureSpec <span style="color:#000;font-weight:bold">=</span> getChildMeasureSpec<span style="color:#000;font-weight:bold">(</span>parentHeightMeasureSpec<span style="color:#000;font-weight:bold">,</span>
+                mPaddingTop <span style="color:#000;font-weight:bold">+</span> mPaddingBottom<span style="color:#000;font-weight:bold">,</span> lp<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">height</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+	<span style="color:#998;font-style:italic">//3.调用子元素的measure
+</span><span style="color:#998;font-style:italic"></span>        child<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">measure</span><span style="color:#000;font-weight:bold">(</span>childWidthMeasureSpec<span style="color:#000;font-weight:bold">,</span> childHeightMeasureSpec<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>在ViewGroup并没有定义其测量的具体的过程，其测量过程的onMeasure方法有各个子类具体实现。以LinearLayout为例
+LinearLayout.onMeasure</p>
+<pre><code>    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (mOrientation == VERTICAL) {
+            measureVertical(widthMeasureSpec, heightMeasureSpec);//竖直布局
+        } else {
+            measureHorizontal(widthMeasureSpec, heightMeasureSpec);//水平布局
+        }
+    }
+</code></pre><p>以竖直布局的 measureVertical为例</p>
+<pre><code> //仅看核心代码
+ // See how tall everyone is. Also remember max width.
+        for (int i = 0; i &lt; count; ++i) {
+            final View child = getVirtualChildAt(i);
+            ···
+
+                // Determine how big this child would like to be. If this or
+                // previous children have given a weight, then we allow it to
+                // use all available space (and we will shrink things later
+                // if needed).
+                final int usedHeight = totalWeight == 0 ? mTotalLength : 0;
+                measureChildBeforeLayout(child, i, widthMeasureSpec, 0,
+                        heightMeasureSpec, usedHeight); //这个方法内部会调用子元素法measure方法，对子元素进行measure过程
+
+                final int childHeight = child.getMeasuredHeight();
+                if (useExcessSpace) {
+                    // Restore the original height and record how much space
+                    // we've allocated to excess-only children so that we can
+                    // match the behavior of EXACTLY measurement.
+                    lp.height = 0;
+                    consumedExcessSpace += childHeight;
+                }
+
+                final int totalLength = mTotalLength;
+                mTotalLength = Math.max(totalLength, totalLength + childHeight + lp.topMargin +
+                       lp.bottomMargin + getNextLocationOffset(child)); //mTotalLength存储LinearLayout初步高度。每测量一个子元素，mTotalLength就会增加。
+                   
+
+                if (useLargestChild) {
+                    largestChildHeight = Math.max(childHeight, largestChildHeight);
+                }
+            }
+            
+···
+//子元素测量完之后，linearLayout会测量自己的大小
+        mTotalLength += mPaddingTop + mPaddingBottom;
+
+        int heightSize = mTotalLength;
+
+        // Check against our minimum height
+        heightSize = Math.max(heightSize, getSuggestedMinimumHeight());
+
+        // Reconcile our calculated size with the heightMeasureSpec
+        int heightSizeAndState = resolveSizeAndState(heightSize, heightMeasureSpec, 0);
+···
+       setMeasuredDimension(resolveSizeAndState(maxWidth, widthMeasureSpec, childState),
+                heightSizeAndState);//如果布局采用的match_parent或者具体数值，那么测量过程和View一致
+			             //如果采用的是wrap_content,那么他的高度是所有子元素所占有的高度总和。详见下面的源码
+			            
+</code></pre><p>resolveSizeAndState</p>
+<pre><code>    public static int resolveSizeAndState(int size, int measureSpec, int childMeasuredState) {
+        final int specMode = MeasureSpec.getMode(measureSpec);
+        final int specSize = MeasureSpec.getSize(measureSpec);
+        final int result;
+        switch (specMode) {
+            case MeasureSpec.AT_MOST:
+                if (specSize &lt; size) {
+                    result = specSize | MEASURED_STATE_TOO_SMALL;
+                } else {
+                    result = size;
+                }
+                break;
+            case MeasureSpec.EXACTLY:
+                result = specSize;
+                break;
+            case MeasureSpec.UNSPECIFIED:
+            default:
+                result = size;
+        }
+        return result | (childMeasuredState &amp; MEASURED_STATE_MASK);
+    }
+</code></pre><h4 id="3获取view的高宽">3.获取View的高/宽</h4>
+<p><strong>a.Activity/View#onWindowFocusChanged</strong>
+此方法的含义是View已经初始化完毕，高宽已经准备好了。需要注意的是，当Activity的窗口获得焦点或者失去焦点是，进行onResume和onPause时，onWindowFocusChange均会被调用。</p>
+<p>代码</p>
+<pre><code> @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if(hasFocus){
+            int width = view.getMeasuredWidth();
+            int height = view.getMeasuredHeight()；
+        }
+    }
+</code></pre><p><strong>b.view.post(runnable)</strong>
+通过post可以将runnable投递到消息队列的尾部，然后等待Looper调用runnable的时候，View也初始化好了。典型代码如下。</p>
+<pre><code> @Override
+    protected void onStart() {
+        super.onStart();
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                int width = view.getMeasuredWidth();
+                int height = view.getMeasuredHeight();
+            }
+        });
+    }
+</code></pre><p><strong>c.ViewTreeObserer</strong>
+使用ViewTreeObserer的众多回调可以完成这个功能。比如使用onGlobalLayoutListener这个借口。当View树改变是，onGlobalLayout方法将会被调用，但注意，伴随View树的改变，onGlobalLayout方法将会被多次调用，</p>
+<p>代码</p>
+<pre><code> @Override
+    protected void onStart() {
+        super.onStart();
+        ViewTreeObserver observer = view.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                int width= view.getMeasuredWidth();
+                int height = view.getMeasuredHeight();
+            }
+        });
+    }
+</code></pre><p><strong>d.view.measure(int widthMeasureSpec,int heightMeasureSpec)</strong><br>
+通过手动对View进行measure来得到View的宽高，这种方法比较复杂，需要分情况进行讨论。根据View的LayoutParams来分</p>
+<p><strong>match_parent</strong>
+这种情况直接放弃，无法measure的具体宽高。</p>
+<p><strong>具体的数值</strong>
+比如都是100dp。如：</p>
+<pre><code>int widthMeasureSpec = MeasureSpec.makeMeasureSpec(100,MeasureSpec.EXACTLY);
+int heightMeasureSpec = MeasureSpec.makeMeasureSpec(100,MeasureSpec.EXACTLY);
+view.measure(widthMeasureSpec,heightMeasureSpec);
+</code></pre><p><strong>wrap_content</strong></p>
+<pre><code>int widthMeasureSpec = MeasureSpec.makeMeasureSpec((1&lt;&lt;30)-1,MeasureSpec.AT.MOST);
+int heightMeasureSpec = MeasureSpec.makeMeasureSpec((1&lt;&lt;30)-1,MeasureSpec.AT.MOST);
+view.measure(widthMeasureSpec,heightMeasureSpec);
+</code></pre><h3 id="五-layout过程">五. Layout过程</h3>
+<p>Layout的作用是ViewGroup来确定子元素的位置，当ViewGroup的位置被确定后，它会在onLayout中遍历所有的子元素并调用其layout发布方法</p>
+<h4 id="1view的layout过程">1.View的Layout过程</h4>
+<p>layout方法：</p>
+<pre><code>/**
+  * 源码分析：layout（）
+  * 作用：确定View本身的位置，即设置View本身的四个顶点位置
+  */ 
+    public void layout(int l, int t, int r, int b) {
+        if ((mPrivateFlags3 &amp; PFLAG3_MEASURE_NEEDED_BEFORE_LAYOUT) != 0) {
+            onMeasure(mOldWidthMeasureSpec, mOldHeightMeasureSpec);
+            mPrivateFlags3 &amp;= ~PFLAG3_MEASURE_NEEDED_BEFORE_LAYOUT;
+        }
+        
+	 // 当前视图的四个顶点
+        int oldL = mLeft;
+        int oldT = mTop;
+        int oldB = mBottom;
+        int oldR = mRight;
+
+        boolean changed = isLayoutModeOptical(mParent) ?
+                setOpticalFrame(l, t, r, b) : setFrame(l, t, r, b);//通过setFrame来设定View的四个顶点位置，即对mLeft，mTopm，Bottom，mRight
+
+        if (changed || (mPrivateFlags &amp; PFLAG_LAYOUT_REQUIRED) == PFLAG_LAYOUT_REQUIRED) {
+            onLayout(changed, l, t, r, b);//父容器确定子元素的位置，但View和ViewGroup中均没有真正实现。因为其具体实现和布局有关
+
+         ····
+    }
+
+</code></pre><p>setOpticalFrame(l, t, r, b) ：</p>
+<pre><code>/**
+  * setOpticalFrame（）
+  * 作用：根据传入的4个位置值，设置View本身的四个顶点位置
+  * 即：最终确定View本身的位置
+  */ 
+ private boolean setOpticalFrame(int left, int top, int right, int bottom) {
+        Insets parentInsets = mParent instanceof View ?
+                ((View) mParent).getOpticalInsets() : Insets.NONE;
+        Insets childInsets = getOpticalInsets();
+
+        // 内部实际上是调用setFrame（）
+        return setFrame( 
+             left + parentInsets.left - childInsets.left, 
+             top + parentInsets.top - childInsets.top, 
+             right + parentInsets.left + childInsets.right, 
+             bottom + parentInsets.top + childInsets.bottom);
+}
+
+</code></pre><p>setFrame（）</p>
+<pre><code>/**
+  *setFrame（）
+  * 作用：根据传入的4个位置值，设置View本身的四个顶点位置
+  * 即：最终确定View本身的位置
+  */ 
+  protected boolean setFrame(int left, int top, int right, int bottom) {
+        ...
+    // 通过以下赋值语句记录下了视图的位置信息，即确定View的四个顶点
+    // 从而确定了视图的位置
+     mLeft = left;
+    mTop = top;
+    mRight = right;
+    mBottom = bottom;
+
+    mRenderNode.setLeftTopRightBottom(mLeft, mTop, mRight, mBottom);
+
+    }
+</code></pre><p>onLayout（）</p>
+<pre><code>/**
+  * onLayout（）
+  * 注：对于单一View的laytou过程
+  *    a. 由于单一View是没有子View的，故onLayout（）是一个空实现
+  * b. 由于在layout（）中已经对自身View进行了位置计算，所以单一View的layout过程在layout（）后就已完成了
+  */ 
+   protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+
+   // 参数说明
+   // changed 当前View的大小和位置改变了 
+    // left 左部位置
+   // top 顶部位置
+   // right 右部位置
+   // bottom 底部位置
+
+}  
+</code></pre><h4 id="2-viewgroup的layout过程">2. ViewGroup的layout过程</h4>
+<p>ViewGroup的layout步骤：</p>
+<ul>
+<li>计算自身的ViewGroup的位置：layout()</li>
+<li>遍历子view&amp;确定子veiw在VeiwGroup的位置 （调用子View的layout）</li>
+</ul>
+<p>View和ViewGroup同样拥有layout()和onLayout(),但两者不同：</p>
+<ul>
+<li>一开始计算ViewGroup位置时，调用的是ViewGroup的layout()和onLayout()</li>
+<li>当遍历子View时，调用的是子View1的layout()和onLayout()</li>
+</ul>
+<p>源码：
+ViewGroup.layout()源码基本和View的相同。</p>
+<h4 id="3-linearlayout的layout过程">3. LinearLayout的layout过程</h4>
+<p>LinearLayout的Layout和View的源码也是一样的，就不继续看了。
+我们来看看 LinearLayout复写的onLayout（View和ViewGroup都没有实现onLayout）</p>
+<p>LinearLayout.onLayout()</p>
+<pre><code>@Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        if (mOrientation == VERTICAL) {
+            layoutVertical(l, t, r, b);
+        } else {
+            layoutHorizontal(l, t, r, b);
+        }
+    }
+
+</code></pre><p>layoutVertical(l, t, r, b);</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">layoutVertical</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> left<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> top<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> right<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> bottom<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#998;font-style:italic">// 子View的数量 
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> count <span style="color:#000;font-weight:bold">=</span> getVirtualChildCount<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#998;font-style:italic">// 1. 遍历子View 
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&lt;</span> count<span style="color:#000;font-weight:bold">;</span> i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">final</span> View child <span style="color:#000;font-weight:bold">=</span> getVirtualChildAt<span style="color:#000;font-weight:bold">(</span>i<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>child <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                childTop <span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">=</span> measureNullChild<span style="color:#000;font-weight:bold">(</span>i<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>child<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getVisibility</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> GONE<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#998;font-style:italic">// 2. 计算子View的测量宽 / 高值 
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> childWidth <span style="color:#000;font-weight:bold">=</span> child<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getMeasuredWidth</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> childHeight <span style="color:#000;font-weight:bold">=</span> child<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getMeasuredHeight</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+<span style="color:#a61717;background-color:#e3d2d2">·</span><span style="color:#a61717;background-color:#e3d2d2">·</span><span style="color:#a61717;background-color:#e3d2d2">·</span>
+                <span style="color:#998;font-style:italic">// 3. 确定自身子View的位置 
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">// 即：递归调用子View的setChildFrame()，实际上是调用了子View的layout() -&gt;&gt;源码见下：
+</span><span style="color:#998;font-style:italic"></span>                setChildFrame<span style="color:#000;font-weight:bold">(</span>child<span style="color:#000;font-weight:bold">,</span> childLeft<span style="color:#000;font-weight:bold">,</span> childTop <span style="color:#000;font-weight:bold">+</span> getLocationOffset<span style="color:#000;font-weight:bold">(</span>child<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">,</span> childWidth<span style="color:#000;font-weight:bold">,</span> childHeight<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#998;font-style:italic">// childTop逐渐增大，即后面的子元素会被放置在靠下的位置 
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">// 这符合垂直方向的LinearLayout的特性 
+</span><span style="color:#998;font-style:italic"></span>
+                childTop <span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">=</span> childHeight <span style="color:#000;font-weight:bold">+</span> lp<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">bottomMargin</span> <span style="color:#000;font-weight:bold">+</span> getNextLocationOffset<span style="color:#000;font-weight:bold">(</span>child<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                i <span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">=</span> getChildrenSkipCount<span style="color:#000;font-weight:bold">(</span>child<span style="color:#000;font-weight:bold">,</span> i<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>setChildFrame（）</p>
+<pre><code>   private void setChildFrame(View child, int left, int top, int width, int height) {
+        child.layout(left, top, left + width, top + height);  // setChildFrame（）仅仅只是调用了子View的layout（）而已
+    }
+
+// 在子View的layout（）又通过调用setFrame（）确定View的四个顶点
+// 即确定了子View的位置
+// 如此不断循环确定所有子View的位置，最终确定ViewGroup的位置
+</code></pre><h4 id="4细节问题getwidth--getheight与-getmeasuredwidth-getmeasuredheight获取的宽-高有什么区别">4.细节问题：getWidth() （ getHeight()）与 getMeasuredWidth() （getMeasuredHeight()）获取的宽 （高）有什么区别？</h4>
+<ul>
+<li>getWidth() / getHeight()：获得View最终的宽 / 高</li>
+<li>getMeasuredWidth() / getMeasuredHeight()：获得 View测量的宽 / 高</li>
+</ul>
+<pre><code>// 获得View测量的宽 / 高
+  public final int getMeasuredWidth() {  
+      return mMeasuredWidth &amp; MEASURED_SIZE_MASK;  
+      // measure过程中返回的mMeasuredWidth
+  }  
+
+  public final int getMeasuredHeight() {  
+      return mMeasuredHeight &amp; MEASURED_SIZE_MASK;  
+      // measure过程中返回的mMeasuredHeight
+  }  
+
+// 获得View最终的宽 / 高
+  public final int getWidth() {  
+      return mRight - mLeft;  
+      // View最终的宽 = 子View的右边界 - 子view的左边界。
+  } 
+
+  public final int getHeight() {  
+      return mBottom - mTop;  
+     // View最终的高 = 子View的下边界 - 子view的上边界。
+  }   
+</code></pre><p>两者区别
+<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtNmIyN2I5ODM1ZDkyN2UwNC5wbmc?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<p>当重写view的layout()强行设置是。两者结果可能不同</p>
+<pre><code>
+@Override
+public void layout( int l , int t, int r , int b){
+      // 改变传入的顶点位置参数
+      super.layout(l，t，r+100，b+100)；
+      // 如此一来，在任何情况下，getWidth() / getHeight()获得的宽/高 总比 getMeasuredWidth() /      getMeasuredHeight()获取的宽/高大100px
+     // 即：View的最终宽/高 总比 测量宽/高 大100px
+   }
+</code></pre><h3 id="六-draw过程">六. Draw过程</h3>
+<p>Draw的作用就是将View绘制到屏幕上，View的绘制有如下步骤:</p>
+<ul>
+<li>绘制背景brckground，draw(canvas)</li>
+<li>绘制自己(onDraw）</li>
+<li>绘制children（dispatchDraw）</li>
+<li>绘制装饰（onDrawScrollBars)</li>
+</ul>
+<h4 id="1draw的源码">1.Draw的源码</h4>
+<p>下面是Draw的源码(View和ViewGroup差不多)</p>
+<pre><code>public void draw(Canvas canvas) {
+        final int privateFlags = mPrivateFlags;
+        final boolean dirtyOpaque = (privateFlags &amp; PFLAG_DIRTY_MASK) == PFLAG_DIRTY_OPAQUE &amp;&amp;
+                (mAttachInfo == null || !mAttachInfo.mIgnoreDirtyState);
+        mPrivateFlags = (privateFlags &amp; ~PFLAG_DIRTY_MASK) | PFLAG_DRAWN;
+
+        /*
+         * Draw traversal performs several drawing steps which must be executed
+         * in the appropriate order:
+         *
+         *      1. Draw the background
+         *      2. If necessary, save the canvas' layers to prepare for fading
+         *      3. Draw view's content
+         *      4. Draw children
+         *      5. If necessary, draw the fading edges and restore layers
+         *      6. Draw decorations (scrollbars for instance)
+         */
+
+        // Step 1, draw the background, if needed
+        int saveCount;
+
+        if (!dirtyOpaque) {
+            drawBackground(canvas);
+        }
+
+        // skip step 2 &amp; 5 if possible (common case)
+        final int viewFlags = mViewFlags;
+        boolean horizontalEdges = (viewFlags &amp; FADING_EDGE_HORIZONTAL) != 0;
+        boolean verticalEdges = (viewFlags &amp; FADING_EDGE_VERTICAL) != 0;
+        if (!verticalEdges &amp;&amp; !horizontalEdges) {
+            // Step 3, draw the content
+            if (!dirtyOpaque) onDraw(canvas);
+
+            // Step 4, draw the children
+            dispatchDraw(canvas);
+
+            drawAutofilledHighlight(canvas);
+
+            // Overlay is part of the content and draws beneath Foreground
+            if (mOverlay != null &amp;&amp; !mOverlay.isEmpty()) {
+                mOverlay.getOverlayView().dispatchDraw(canvas);
+            }
+
+            // Step 6, draw decorations (foreground, scrollbars)
+            onDrawForeground(canvas);
+
+            // Step 7, draw the default focus highlight
+            drawDefaultFocusHighlight(canvas);
+
+            if (debugDraw()) {
+                debugDrawFocus(canvas);
+            }
+
+            // we're done...
+            return;
+        }
+</code></pre><h4 id="2-setwillnotdraw源码">2. setWillNotDraw源码</h4>
+<pre><code>/**
+  * 源码分析：setWillNotDraw()
+  * 定义：View 中的特殊方法
+  * 作用：设置 WILL_NOT_DRAW 标记位；
+  * 注：
+  *   a. 该标记位的作用是：当一个View不需要绘制内容时，系统进行相应优化
+  *   b. 默认情况下：View 不启用该标记位（设置为false）；ViewGroup 默认启用（设置为true）
+  */ 
+public void setWillNotDraw(boolean willNotDraw) {
+
+    setFlags(willNotDraw ? WILL_NOT_DRAW : 0, DRAW_MASK);
+
+}
+// 应用场景
+// a. setWillNotDraw参数设置为true：当自定义View继承自 ViewGroup 、且本身并不具备任何绘制时，设置为 true 后，系统会进行相应的优化。
+//b. setWillNotDraw参数设置为false：当自定义View继承自 ViewGroup 、且需要绘制内容时，那么设置为 false，来关闭 WILL_NOT_DRAW 这个标记位。
+
+</code></pre><h3 id="七参考资料">七.参考资料</h3>
+<p>《Android艺术开发探索》
+<a href="https://www.jianshu.com/p/146e5cec4863">自定义View基础 - 最易懂的自定义View原理系列（1）</a>
+<a href="https://www.jianshu.com/p/1dab927b2f36">自定义View Measure过程 - 最易懂的自定义View原理系列（2）</a>
+<a href="https://www.jianshu.com/p/158736a2549d">自定义View Layout过程 - 最易懂的自定义View原理系列3</a>
+<a href="https://www.jianshu.com/p/95afeb7c8335">自定义View Draw过程- 最易懂的自定义View原理系列4</a></p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%874View%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%874View%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/%E6%96%87%E7%AB%A0%E5%AF%BC%E8%88%AA/">文章导航</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%8211Retrofit%E7%9A%84%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">Android之网络请求11————Retrofit的源码分析</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%8210Retrofit%E7%9A%84%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8/">Android之网络请求10————Retrofit的进阶使用</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%829Retrofit%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/">Android之网络请求8————Retrofit的简单使用</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%828OkHttp%E6%BA%90%E7%A0%815_%E7%BC%93%E5%AD%98%E7%9B%B8%E5%85%B3/">Android之网络请求8————OkHttp源码5:缓存相关</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            没有标签
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "https://github.com/hsc396612325/HSCBlog/tree/gh-pages"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一-目录">一. 目录</a></li>
+    <li><a href="#二-初识decorview和viewroot">二. 初识DecorView和ViewRoot</a>
+      <ul>
+        <li><a href="#1-decorview">1. DecorView</a></li>
+        <li><a href="#2-viewroot">2. ViewRoot</a></li>
+        <li><a href="#3-view的工作流程概述">3. View的工作流程概述</a></li>
+      </ul>
+    </li>
+    <li><a href="#三-measurespec">三. MeasureSpec</a>
+      <ul>
+        <li><a href="#1--measurespec源码">1.  MeasureSpec源码</a></li>
+        <li><a href="#2--measurespec和layoutparams对应关系">2.  MeasureSpec和LayoutParams对应关系</a></li>
+      </ul>
+    </li>
+    <li><a href="#四-measure过程">四. Measure过程</a>
+      <ul>
+        <li><a href="#1view的measure过程">1.view的measure过程</a></li>
+        <li><a href="#2viewgroup的measure过程">2.ViewGroup的measure过程</a></li>
+        <li><a href="#3获取view的高宽">3.获取View的高/宽</a></li>
+      </ul>
+    </li>
+    <li><a href="#五-layout过程">五. Layout过程</a>
+      <ul>
+        <li><a href="#1view的layout过程">1.View的Layout过程</a></li>
+        <li><a href="#2-viewgroup的layout过程">2. ViewGroup的layout过程</a></li>
+        <li><a href="#3-linearlayout的layout过程">3. LinearLayout的layout过程</a></li>
+        <li><a href="#4细节问题getwidth--getheight与-getmeasuredwidth-getmeasuredheight获取的宽-高有什么区别">4.细节问题：getWidth() （ getHeight()）与 getMeasuredWidth() （getMeasuredHeight()）获取的宽 （高）有什么区别？</a></li>
+      </ul>
+    </li>
+    <li><a href="#六-draw过程">六. Draw过程</a>
+      <ul>
+        <li><a href="#1draw的源码">1.Draw的源码</a></li>
+        <li><a href="#2-setwillnotdraw源码">2. setWillNotDraw源码</a></li>
+      </ul>
+    </li>
+    <li><a href="#七参考资料">七.参考资料</a></li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

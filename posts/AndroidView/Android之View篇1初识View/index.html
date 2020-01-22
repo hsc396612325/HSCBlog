@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title> | 冰炭不投day的博客</title>
+    <meta property="og:title" content=" - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%871%E5%88%9D%E8%AF%86View/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title"></h1>
+        </header>
+        <date class="post-meta meta-date">
+            1年1月1日
+        </date>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h1 id="android之view篇1初识view">Android之View篇1————初识View</h1>
+<h3 id="一-目录">一. 目录</h3>
+<p>@[toc]</p>
+<h3 id="二-view的基础知识">二. View的基础知识</h3>
+<h4 id="1什么是view">1.什么是View</h4>
+<p>View是所有Android中所有控件的基类，是界面层次上的一种抽象
+<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWFnZXMyMDE1LmNuYmxvZ3MuY29tL2Jsb2cvNjM0ODMyLzIwMTYwOC82MzQ4MzItMjAxNjA4MDExNjQ4MTQyMDAtMTAxNzkyOTA2My5wbmc?x-oss-process=image/format,png" alt="image"></p>
+<h4 id="2view的位置参数">2.View的位置参数</h4>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWFnZXMyMDE1LmNuYmxvZ3MuY29tL2Jsb2cvNjM0ODMyLzIwMTYwOC82MzQ4MzItMjAxNjA4MDExNjQ4Mjk0OTctMTE0MzQ4MzQ2My5wbmc?x-oss-process=image/format,png" alt="image">
+<img src="https://img-blog.csdn.net/20180524152057118?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<h4 id="3motionevent">3.MotionEvent</h4>
+<p>MotionEvent是指触屏事件(Touch事件)的相关细节（触摸发生的时间，位置）包装而成，典型的事件有以下几类:</p>
+<table>
+<thead>
+<tr>
+<th>事件类型</th>
+<th align="right">具体动作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ACTION</td>
+<td align="right">按下View</td>
+</tr>
+<tr>
+<td>ACTION_MOVE</td>
+<td align="right">手指在屏幕上移动</td>
+</tr>
+<tr>
+<td>ACTION_UP</td>
+<td align="right">手指从屏幕上松开的一瞬间</td>
+</tr>
+<tr>
+<td>ACTION_CANCEL</td>
+<td align="right">结束事件(非人为原因)</td>
+</tr>
+<tr>
+<td>通过MotionEvent对象我们可以得到点击事件的x和y坐标。</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>getX/getY 相对于View左上角</li>
+<li>getRawX/getRawY 相对于手机屏幕左上角</li>
+</ul>
+<p>获得MotionEvent的方式:</p>
+<ul>
+<li>在View或Activity中拦截touch events，重写onTouchEvent方法</li>
+<li>对于View来说也可以通过setOnTouchListener()方法来监听touch events</li>
+</ul>
+<p>特别说明:事件列</p>
+<ul>
+<li>从手指接触屏幕 至 手指离开屏幕，这个过程产生的一系列事件一般情况下，事件列都是以DOWN事件开始、UP事件结束，中间有无数的MOVE事件，如下图：</li>
+<li><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtNzliMWU4Njc5MzUxNGU5OS5wbmc?x-oss-process=image/format,png" alt="这里写图片描述"></li>
+</ul>
+<h4 id="4touchslop">4.TouchSlop</h4>
+<p>TouchSlop是系统所能识别的被认为是滑动的最小距离。这是个常量，和设备有关，在不同设备上这个值可能是不同的。</p>
+<p>在Java代码中获取TouchSlop：ViewConfiguration.get(getContext).getScaledTouchSlop();</p>
+<h4 id="5velocitytracker">5.VelocityTracker</h4>
+<p>VelocityTracker是指速度追踪，用于最终手势在滑动过程的速度。包括水平和竖直方向的速度。</p>
+<p>使用:</p>
+<pre><code>//在View的onTouchEvent的方法中追踪当前事件的速度
+VelocityTracker velocityTracker = VelocityTracker.obtain();
+velocityTracker.addMovement(event);
+
+
+//1000这个参数表示时间间隔，最终得到的速度代表着1000毫秒内划过的像素大小。
+velocityTracker.computeCurrentVelocity(1000);
+int xVelocity = (int) velocityTracker.getXVelocity();
+int yVelocity = (int) velocityTracker.getYVelocity();
+
+//不需要是，调用clear方法回收并重置内存
+velocityTracker.clear();
+velocityTracker.recycle();
+</code></pre><p>注意:和Android坐标轴相同方向结果为正，相反方向为负</p>
+<h4 id="6gesturedetector">6.GestureDetector</h4>
+<p>GestureDetector即手势检测，用于辅助检测用户的单击，滑动，长按，双击等行为.</p>
+<p>GestureDetector内部的Listener接口：</p>
+<ul>
+<li>OnGestureListener，这个Listener监听一些手势，如单击、滑动、长按等操作：</li>
+<li>OnDoubleTapListener，这个Listener监听双击和单击事件。</li>
+<li>OnContextClickListener，鼠标右键(加入外设)</li>
+<li>SimpleOnGestureListener，实现了上面三个接口的类，拥有上面三个的所有回调方法。</li>
+</ul>
+<p>使用：</p>
+<ul>
+<li>实例化GestureDetectorCompat类</li>
+<li>实现OnGestureListener/OnGestureListener/SimpleOnGestureListener接口</li>
+<li>接管目标View的OnTouchEvent方法</li>
+</ul>
+<pre><code>public class MainActivity extends AppCompatActivity {
+    private static final String TAG = &quot;MainActivity&quot;;
+    GestureDetector mGestureDetector;
+
+    GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            Log.d(TAG, &quot;onSingleTapUp: 手指(轻触)送开&quot;);
+            return false;
+        }  //手指(轻触)送开
+
+        @Override
+        public void onLongPress(MotionEvent e) {  //长按
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2,
+                                float distanceX, float distanceY) { //按下并拖动
+            return false;
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+                               float velocityY) { //按下触碰长按并松开
+            return false;
+        }
+
+        @Override
+        public void onShowPress(MotionEvent e) { //手指轻触屏幕的一瞬间，尚未松开
+        }
+
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return false;
+        }  //手指轻触屏幕的一瞬间
+
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            Log.d(TAG, &quot;onDoubleTap: 双击&quot;);
+            return false;
+        } //双击
+
+        @Override
+        public boolean onDoubleTapEvent(MotionEvent e) {
+            return false;
+        }  //发生了双击，并送开
+
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            return false;
+        } //严格的单击
+
+        @Override
+        public boolean onContextClick(MotionEvent e) { //当鼠标/触摸板，右键点击时候的回调。
+            return false;
+        }
+    };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        mGestureDetector = new GestureDetector(this, mSimpleOnGestureListener);  //实例
+
+        View view= findViewById(R.id.view);
+        view.setOnTouchListener(new View.OnTouchListener() { //接管View的onTouch
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return mGestureDetector.onTouchEvent(event);
+            }
+        });
+        view.setLongClickable(true);
+    }
+}
+</code></pre><h3 id="三-view的滑动">三. View的滑动</h3>
+<p>View的滑动的实现有3种方法:</p>
+<ul>
+<li>使用scrollTo/scrollBy</li>
+<li>使用动画</li>
+<li>改变布局参数</li>
+</ul>
+<h4 id="1使用scrolltoscrollby">1.使用scrollTo/scrollBy</h4>
+<p>使用：<br>
+调用控件所在父容器的scrollTo/scrollBy方法
+<img src="https://img-blog.csdn.net/20180524152718190?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p>scrollTo/scrollBy的区别:</p>
+<ul>
+<li>scrollTo是基于参数的绝对滑动。</li>
+<li>scrollBy是基于参数的相对滑动。</li>
+<li>注意，两者都是移动View的内容，而不是VIew本身</li>
+</ul>
+<p>源码中scrollTo/scrollBy的实现:</p>
+<pre><code>/**
+     * Set the scrolled position of your view. This will cause a call to
+     * {@link #onScrollChanged(int, int, int, int)} and the view will be
+     * invalidated.
+     * @param x the x position to scroll to
+     * @param y the y position to scroll to
+     */
+    public void scrollTo(int x, int y) {
+        if (mScrollX != x || mScrollY != y) {
+            int oldX = mScrollX;
+            int oldY = mScrollY;
+            mScrollX = x;
+            mScrollY = y;
+            invalidateParentCaches();
+            onScrollChanged(mScrollX, mScrollY, oldX, oldY);
+            if (!awakenScrollBars()) {
+                postInvalidateOnAnimation();
+            }
+        }
+    }
+
+    /**
+     * Move the scrolled position of your view. This will cause a call to
+     * {@link #onScrollChanged(int, int, int, int)} and the view will be
+     * invalidated.
+     * @param x the amount of pixels to scroll by horizontally
+     * @param y the amount of pixels to scroll by vertically
+     */
+    public void scrollBy(int x, int y) { //可以看出scrollBy也是调用scrollBy实现的
+        scrollTo(mScrollX + x, mScrollY + y);
+    }
+</code></pre><h4 id="2使用动画">2.使用动画</h4>
+<p>通过使用动画，我们也可以实现一个View的平移，主要也是操作View的translationX和translationY，既可以补见动画，也可以采取属性动画。</p>
+<p>补间动画</p>
+<pre><code>//layout下anim包中新建translate.xml
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;set xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:fillAfter=&quot;true&quot;
+    &gt;
+   &lt;translate
+       android:fromXDelta=&quot;0&quot;
+        android:fromYDelta=&quot;0&quot;
+        android:toXDelta=&quot;300&quot;
+        android:toYDelta=&quot;800&quot;
+        android:duration=&quot;1000&quot;
+       android:interpolator=&quot;@android:anim/linear_interpolator&quot;
+       /&gt;
+&lt;/set&gt;
+
+ Animation animation = AnimationUtils.loadAnimation(this, R.anim.translate);
+        layout.setAnimation(animation);
+        animation.start();
+</code></pre><p><img src="https://img-blog.csdn.net/20180524161009621?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p>属性动画</p>
+<pre><code>ObjectAnimator.ofFloat(layout,&quot;translationX&quot;,0,100).setDuration(1000).start();
+</code></pre><p><img src="https://img-blog.csdn.net/20180524161355418?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p>根据gif图很容易可以看出了:
+View动画是对View的影像进行操作的。也就是说View动画并不能真正的改变View的位置。
+属性动画是真正改变View的位置，但它是从Android3.0开始推出的。</p>
+<h4 id="3改变布局参数">3.改变布局参数</h4>
+<p>改变布局参数LayoutParams：</p>
+<pre><code> ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) layout.getLayoutParams();
+                params.width+=300;
+                params.leftMargin+=300;
+                layout.requestLayout();
+</code></pre><h4 id="4各种滑动方式的对比">4.各种滑动方式的对比</h4>
+<p><img src="https://img-blog.csdn.net/20180524161917982?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<h3 id="四-弹性滑动">四. 弹性滑动</h3>
+<p>实现View的弹性滑动，即渐进式滑动。实现的方法很多，但都有一个共同的思想，将一次大的滑动分成若干次小的滑动，并在一个时间段中完成，下面就是常见的实现滑动的方法。</p>
+<h4 id="1使用scroller">1.使用Scroller</h4>
+<p>使用:</p>
+<ul>
+<li>创建Scroller实例</li>
+<li>调用startScroll()方法来初始化滚动数据并刷新界面</li>
+<li>重写computeScroll()方法，并在其内部完成平滑滚动的逻辑</li>
+</ul>
+<pre><code>//第一步
+ private Scroller mScroller;
+ mScroller = new Scroller(context);
+
+// 第二步，调用startScroll()方法来初始化滚动数据并刷新界面
+mScroller.startScroll(getScrollX(), 0, dx, 0);
+
+@Override
+public void computeScroll() {
+	// 第三步，重写computeScroll()方法，并在其内部完成平滑滚动的逻辑
+	if (mScroller.computeScrollOffset()) {
+		scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
+	invalidate();
+	}
+}
+</code></pre><h4 id="2通过动画">2.通过动画</h4>
+<p>动画本身就是一种渐进的过程，因此通过它来实现太天然就具备弹性效果。比如，下面的代码就可以让一个VIew在100ms向右移动200像素</p>
+<pre><code>ObjectAnimator.ofFloat(layout,&quot;translationX&quot;,0,200).setDuration(100).start();
+</code></pre><h4 id="3使用延时策略">3.使用延时策略</h4>
+<p>延时策略的核心思想就是通过发送一系列延时消息，从而达到一种渐进式的效果，可以使用Handler，View的PostDelayed方法，或者线程的sleep方法。</p>
+<p>以Handled为例，下面的代码将VIew的内容向左移动100像素。</p>
+<pre><code>    private static final int MESSAGE_SCROLL_TO = 1;
+    private static final int FRAME_COUNT = 30;
+    private static final int DELAYED_TIME = 33;
+
+    private int mCount;
+
+    private Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MESSAGE_SCROLL_TO: {
+                    mCount++;
+                    if (mCount &lt;= FRAME_COUNT) {
+                        float fraction = mCount / (float) FRAME_COUNT;
+                        int scrollX = (int) (fraction * 100);
+                        Button mButton;
+                        mButton.scrollTo(scrollX,0);
+                        mHandler.sendEmptyMessageDelayed(MESSAGE_SCROLL_TO,DELAYED_TIME);
+                    }
+                    break;
+                }
+                default:
+                    break;
+            }
+
+        }
+    };
+</code></pre><h3 id="五参考资料">五.参考资料</h3>
+<p>《Android艺术开发探索》<br>
+<a href="https://www.cnblogs.com/JohnTsai/p/5726385.html">Android开发艺术探索笔记 ——View（一）</a><br>
+<a href="https://blog.csdn.net/totond/article/details/77881180">Android手势检测——GestureDetector全面分析</a>
+<a href="https://blog.csdn.net/guolin_blog/article/details/48719871">Android Scroller完全解析，关于Scroller你所需知道的一切</a></p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%871%E5%88%9D%E8%AF%86View/">http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%871%E5%88%9D%E8%AF%86View/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/%E6%96%87%E7%AB%A0%E5%AF%BC%E8%88%AA/">文章导航</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%8211Retrofit%E7%9A%84%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">Android之网络请求11————Retrofit的源码分析</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%8210Retrofit%E7%9A%84%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8/">Android之网络请求10————Retrofit的进阶使用</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%829Retrofit%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/">Android之网络请求8————Retrofit的简单使用</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%828OkHttp%E6%BA%90%E7%A0%815_%E7%BC%93%E5%AD%98%E7%9B%B8%E5%85%B3/">Android之网络请求8————OkHttp源码5:缓存相关</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            没有标签
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "https://github.com/hsc396612325/HSCBlog/tree/gh-pages"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一-目录">一. 目录</a></li>
+    <li><a href="#二-view的基础知识">二. View的基础知识</a>
+      <ul>
+        <li><a href="#1什么是view">1.什么是View</a></li>
+        <li><a href="#2view的位置参数">2.View的位置参数</a></li>
+        <li><a href="#3motionevent">3.MotionEvent</a></li>
+        <li><a href="#4touchslop">4.TouchSlop</a></li>
+        <li><a href="#5velocitytracker">5.VelocityTracker</a></li>
+        <li><a href="#6gesturedetector">6.GestureDetector</a></li>
+      </ul>
+    </li>
+    <li><a href="#三-view的滑动">三. View的滑动</a>
+      <ul>
+        <li><a href="#1使用scrolltoscrollby">1.使用scrollTo/scrollBy</a></li>
+        <li><a href="#2使用动画">2.使用动画</a></li>
+        <li><a href="#3改变布局参数">3.改变布局参数</a></li>
+        <li><a href="#4各种滑动方式的对比">4.各种滑动方式的对比</a></li>
+      </ul>
+    </li>
+    <li><a href="#四-弹性滑动">四. 弹性滑动</a>
+      <ul>
+        <li><a href="#1使用scroller">1.使用Scroller</a></li>
+        <li><a href="#2通过动画">2.通过动画</a></li>
+        <li><a href="#3使用延时策略">3.使用延时策略</a></li>
+      </ul>
+    </li>
+    <li><a href="#五参考资料">五.参考资料</a></li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

@@ -1,0 +1,1227 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title> | 冰炭不投day的博客</title>
+    <meta property="og:title" content=" - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-5Rxjava-%E8%BF%87%E6%BB%A4%E6%93%8D%E4%BD%9C%E7%AC%A6/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title"></h1>
+        </header>
+        <date class="post-meta meta-date">
+            1年1月1日
+        </date>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h1 id="android之rxjava2x-5rxjava-过滤操作符">Android之Rxjava2.X 5————Rxjava 过滤操作符</h1>
+<h3 id="一-目录">一. 目录</h3>
+<p>@[toc]</p>
+<h3 id="二-概述">二. 概述</h3>
+<h4 id="1作用">1.作用</h4>
+<p>过滤 / 筛选 被观察者（Observable）发送的事件 &amp; 观察者 （Observer）接收的事件</p>
+<h4 id="2类型">2.类型</h4>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtODNmYjhlNzAzOGRmZDUxYS5wbmc?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<h3 id="三-根据指定事件条件过滤事件">三. 根据指定事件条件过滤事件</h3>
+<h4 id="1-filter">1. filter()</h4>
+<ul>
+<li>作用：通过一定逻辑来过滤被观察者发送的事件，如果返回true则发送事件，否则不会发送</li>
+<li>应用场景：筛选符合要求的事件
+原理图：
+<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL2ZpbHRlci5wbmc?x-oss-process=image/format,png" alt="这里写图片描述"></li>
+</ul>
+<p>具体使用：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"> Observable<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">just</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span>2<span style="color:#000;font-weight:bold">,</span>3<span style="color:#000;font-weight:bold">,</span>4<span style="color:#000;font-weight:bold">,</span>5<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">filter</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Predicate<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+            <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">test</span><span style="color:#000;font-weight:bold">(</span>Integer integer<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> Exception <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">return</span> integer <span style="color:#000;font-weight:bold">%</span> 3 <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> 1<span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">subscribe</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Observer<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+            <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onSubscribe</span><span style="color:#000;font-weight:bold">(</span>Disposable d<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onSubscribe: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+            <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+            <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onNext</span><span style="color:#000;font-weight:bold">(</span>Integer integer<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onNext: &#34;</span><span style="color:#000;font-weight:bold">+</span>integer<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+            <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+            <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onError</span><span style="color:#000;font-weight:bold">(</span>Throwable e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onError: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+            <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+            <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onComplete</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onComplete: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="https://img-blog.csdn.net/20180814195720365" alt="这里写图片描述"></p>
+<h4 id="2oftype">2.ofType()</h4>
+<ul>
+<li>作用：ofType是filter操作符的一个特殊形式。它过滤一个Observable只返回指定类型的数据。
+原理图：
+<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL29mQ2xhc3MucG5n?x-oss-process=image/format,png" alt="这里写图片描述"></li>
+</ul>
+<p>具体使用:</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"> Observable<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">just</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span> 2<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;hello&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;world&#34;</span><span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ofType</span><span style="color:#000;font-weight:bold">(</span>Integer<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">subscribe</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Observer<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onSubscribe</span><span style="color:#000;font-weight:bold">(</span>Disposable d<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onSubscribe: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onNext</span><span style="color:#000;font-weight:bold">(</span>Integer integer<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onNext: &#34;</span> <span style="color:#000;font-weight:bold">+</span> integer<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onError</span><span style="color:#000;font-weight:bold">(</span>Throwable e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onError: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onComplete</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onComplete: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="https://img-blog.csdn.net/20180814201906593" alt="这里写图片描述"></p>
+<h4 id="3skip--skiplast">3.skip() &amp; skipLast()</h4>
+<ul>
+<li>skip()作用：忽略Observable'发射的前N项数据，只保留之后的数据。</li>
+<li>skipLast()作用:从结尾往前数跳过制定数量的事件
+原理图：
+<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL3NraXAuYy5wbmc?x-oss-process=image/format,png" alt="这里写图片描述">
+[外链图片转存中&hellip;(img-zz5bYse0-1579435983422)]</li>
+</ul>
+<p>具体使用：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  Observable<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">just</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span> 2<span style="color:#000;font-weight:bold">,</span> 3<span style="color:#000;font-weight:bold">,</span>4<span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">skip</span><span style="color:#000;font-weight:bold">(</span>2<span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">subscribe</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Observer<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onSubscribe</span><span style="color:#000;font-weight:bold">(</span>Disposable d<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onSubscribe: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onNext</span><span style="color:#000;font-weight:bold">(</span>Integer integer<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onNext: &#34;</span> <span style="color:#000;font-weight:bold">+</span> integer<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onError</span><span style="color:#000;font-weight:bold">(</span>Throwable e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onError: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onComplete</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onComplete: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="https://img-blog.csdn.net/20180814202606203" alt="这里写图片描述"></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Observable<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">just</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span> 2<span style="color:#000;font-weight:bold">,</span> 3<span style="color:#000;font-weight:bold">,</span>4<span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">skipLast</span><span style="color:#000;font-weight:bold">(</span>2<span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">subscribe</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Observer<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onSubscribe</span><span style="color:#000;font-weight:bold">(</span>Disposable d<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onSubscribe: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onNext</span><span style="color:#000;font-weight:bold">(</span>Integer integer<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onNext: &#34;</span> <span style="color:#000;font-weight:bold">+</span> integer<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onError</span><span style="color:#000;font-weight:bold">(</span>Throwable e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onError: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onComplete</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onComplete: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="https://img-blog.csdn.net/20180814202658100" alt="这里写图片描述"></p>
+<h4 id="4distinct--distinctuntilchanged">4.distinct（） / distinctUntilChanged（）</h4>
+<ul>
+<li>作用：过滤事件序列中重复的事件 / 连续重复的事件</li>
+</ul>
+<p>原理图：
+<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL2Rpc3RpbmN0LnBuZw?x-oss-process=image/format,png" alt="这里写图片描述">
+<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL2Rpc3RpbmN0VW50aWxDaGFuZ2VkLnBuZw?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<p>具体使用;</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#998;font-style:italic">// 使用1：过滤事件序列中重复的事件
+</span><span style="color:#998;font-style:italic"></span>        Observable<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">just</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span> 2<span style="color:#000;font-weight:bold">,</span> 3<span style="color:#000;font-weight:bold">,</span>4<span style="color:#000;font-weight:bold">,</span>1<span style="color:#000;font-weight:bold">,</span>2<span style="color:#000;font-weight:bold">,</span>1<span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">distinct</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">subscribe</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Observer<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onSubscribe</span><span style="color:#000;font-weight:bold">(</span>Disposable d<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onSubscribe: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onNext</span><span style="color:#000;font-weight:bold">(</span>Integer integer<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onNext: &#34;</span> <span style="color:#000;font-weight:bold">+</span> integer<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onError</span><span style="color:#000;font-weight:bold">(</span>Throwable e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onError: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onComplete</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onComplete: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#998;font-style:italic">//使用2：过滤事件序列中 连续重复的事件
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">// 下面序列中，连续重复的事件 = 3、4
+</span><span style="color:#998;font-style:italic"></span>        Observable<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">just</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span>2<span style="color:#000;font-weight:bold">,</span>3<span style="color:#000;font-weight:bold">,</span>1<span style="color:#000;font-weight:bold">,</span>2<span style="color:#000;font-weight:bold">,</span>3<span style="color:#000;font-weight:bold">,</span>3<span style="color:#000;font-weight:bold">,</span>4<span style="color:#000;font-weight:bold">,</span>4 <span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">distinctUntilChanged</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">subscribe</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Observer<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onSubscribe</span><span style="color:#000;font-weight:bold">(</span>Disposable d<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onSubscribe: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onNext</span><span style="color:#000;font-weight:bold">(</span>Integer integer<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onNext: &#34;</span> <span style="color:#000;font-weight:bold">+</span> integer<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onError</span><span style="color:#000;font-weight:bold">(</span>Throwable e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onError: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onComplete</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onComplete: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="https://img-blog.csdn.net/20180814205651557" alt="这里写图片描述"></p>
+<h3 id="四-根据指定事件数量过滤事件">四. 根据指定事件数量过滤事件</h3>
+<p>需求场景：通过设置指定的事件数量，仅发送特定数量的事件</p>
+<h4 id="1take">1.take（）</h4>
+<ul>
+<li>作用： 只发射前面的N项数据、
+原理图：
+[外链图片转存中&hellip;(img-ywZMpnIi-1579435983423)]</li>
+</ul>
+<p>具体使用：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"> <span style="color:#998;font-style:italic">// 使用1：过滤事件序列中重复的事件
+</span><span style="color:#998;font-style:italic"></span>        Observable<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">just</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span> 2<span style="color:#000;font-weight:bold">,</span> 3<span style="color:#000;font-weight:bold">,</span>4<span style="color:#000;font-weight:bold">,</span>1<span style="color:#000;font-weight:bold">,</span>2<span style="color:#000;font-weight:bold">,</span>1<span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">take</span><span style="color:#000;font-weight:bold">(</span>4<span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">subscribe</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Observer<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onSubscribe</span><span style="color:#000;font-weight:bold">(</span>Disposable d<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onSubscribe: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onNext</span><span style="color:#000;font-weight:bold">(</span>Integer integer<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onNext: &#34;</span> <span style="color:#000;font-weight:bold">+</span> integer<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onError</span><span style="color:#000;font-weight:bold">(</span>Throwable e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onError: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onComplete</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onComplete: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="https://img-blog.csdn.net/20180814210332658?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<h4 id="2takelast">2.takeLast（）</h4>
+<ul>
+<li>作用:发射Observable发射的最后N项数据</li>
+</ul>
+<p>原理图：
+<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL3Rha2VMYXN0Lm4ucG5n?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<p>具体使用：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"> <span style="color:#998;font-style:italic">// 使用1：过滤事件序列中重复的事件
+</span><span style="color:#998;font-style:italic"></span>        Observable<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">just</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span> 2<span style="color:#000;font-weight:bold">,</span> 3<span style="color:#000;font-weight:bold">,</span>4<span style="color:#000;font-weight:bold">,</span>1<span style="color:#000;font-weight:bold">,</span>2<span style="color:#000;font-weight:bold">,</span>1<span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">takeLast</span><span style="color:#000;font-weight:bold">(</span>2<span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">subscribe</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Observer<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onSubscribe</span><span style="color:#000;font-weight:bold">(</span>Disposable d<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onSubscribe: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onNext</span><span style="color:#000;font-weight:bold">(</span>Integer integer<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onNext: &#34;</span> <span style="color:#000;font-weight:bold">+</span> integer<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onError</span><span style="color:#000;font-weight:bold">(</span>Throwable e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onError: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onComplete</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onComplete: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="https://img-blog.csdn.net/2018081421082066" alt="这里写图片描述"></p>
+<h3 id="五-根据指定时间过滤事件">五. 根据指定时间过滤事件</h3>
+<h4 id="1throttlefirst-throttlelast">1.throttleFirst（）/ throttleLast（）</h4>
+<ul>
+<li>作用：在某段时间内，只发送该段时间内第1次事件 / 最后1次事件（1段时间内连续点击按钮，但只执行第1次的点击操作）</li>
+</ul>
+<p>原理图：
+[外链图片转存中&hellip;(img-Yl6QCapz-1579435983423)]</p>
+<p>具体使用：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">   Observable<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">create</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> ObservableOnSubscribe<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+            <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">subscribe</span><span style="color:#000;font-weight:bold">(</span>ObservableEmitter<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span> e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> Exception <span style="color:#000;font-weight:bold">{</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>500<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>2<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>400<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>3<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>300<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>4<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>300<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>5<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>300<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>6<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>400<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>7<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>300<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>8<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>300<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>9<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>300<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onComplete</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">throttleFirst</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span> TimeUnit<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">SECONDS</span><span style="color:#000;font-weight:bold">)</span><span style="color:#998;font-style:italic">//每1秒中采用数据
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">subscribe</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Observer<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onSubscribe</span><span style="color:#000;font-weight:bold">(</span>Disposable d<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onSubscribe: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onNext</span><span style="color:#000;font-weight:bold">(</span>Integer integer<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onNext: &#34;</span> <span style="color:#000;font-weight:bold">+</span> integer<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onError</span><span style="color:#000;font-weight:bold">(</span>Throwable e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onError: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onComplete</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onComplete: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="https://img-blog.csdn.net/20180814212618457" alt="这里写图片描述"></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  Observable<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">create</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> ObservableOnSubscribe<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+            <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">subscribe</span><span style="color:#000;font-weight:bold">(</span>ObservableEmitter<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span> e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> Exception <span style="color:#000;font-weight:bold">{</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>500<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>2<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>400<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>3<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>300<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>4<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>300<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>5<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>300<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>6<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>400<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>7<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>300<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>8<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>300<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>9<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>300<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onComplete</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">throttleLast</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span> TimeUnit<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">SECONDS</span><span style="color:#000;font-weight:bold">)</span><span style="color:#998;font-style:italic">//每1秒中采用数据
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">subscribe</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Observer<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onSubscribe</span><span style="color:#000;font-weight:bold">(</span>Disposable d<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onSubscribe: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onNext</span><span style="color:#000;font-weight:bold">(</span>Integer integer<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onNext: &#34;</span> <span style="color:#000;font-weight:bold">+</span> integer<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onError</span><span style="color:#000;font-weight:bold">(</span>Throwable e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onError: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onComplete</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onComplete: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="https://img-blog.csdn.net/2018081421273630" alt="这里写图片描述"></p>
+<h4 id="2sample">2.Sample（）</h4>
+<ul>
+<li>作用:在某段时间内，只发送该段时间内最新（最后）1次事件</li>
+<li>和throttleLast（） 操作符类似，仅需要把上文的 throttleLast（） 改成Sample（）操作符即可</li>
+</ul>
+<h4 id="3throttlewithtimeout---debounce">3.throttleWithTimeout （） / debounce（）</h4>
+<ul>
+<li>作用：发送数据事件时，若2次发送事件的间隔＜指定时间，就会丢弃前一次的数据，直到指定时间内都没有新数据发射时才会发送后一次的数据</li>
+</ul>
+<p>原理图
+[外链图片转存中&hellip;(img-DF1wvmGQ-1579435983424)]</p>
+<p>具体使用：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"> Observable<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">create</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> ObservableOnSubscribe<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+            <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">subscribe</span><span style="color:#000;font-weight:bold">(</span>ObservableEmitter<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span> e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> Exception <span style="color:#000;font-weight:bold">{</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>500<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>2<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>1011<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>3<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>300<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>4<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>600<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>5<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>1200<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>6<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>400<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>7<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>300<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>8<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>300<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onNext</span><span style="color:#000;font-weight:bold">(</span>9<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>300<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onComplete</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">throttleWithTimeout</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span> TimeUnit<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">SECONDS</span><span style="color:#000;font-weight:bold">)</span><span style="color:#998;font-style:italic">//每1秒中采用数据
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">subscribe</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Observer<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onSubscribe</span><span style="color:#000;font-weight:bold">(</span>Disposable d<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onSubscribe: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onNext</span><span style="color:#000;font-weight:bold">(</span>Integer integer<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onNext: &#34;</span> <span style="color:#000;font-weight:bold">+</span> integer<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onError</span><span style="color:#000;font-weight:bold">(</span>Throwable e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onError: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onComplete</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onComplete: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="https://img-blog.csdn.net/20180814213741635" alt="这里写图片描述"></p>
+<h3 id="六-根据指定事件位置过滤事件">六. 根据指定事件位置过滤事件</h3>
+<h4 id="1firstelement--lastelement">1.firstElement（） / lastElement（）</h4>
+<ul>
+<li>作用：仅选取第1个元素 / 最后一个元素
+具体使用：</li>
+</ul>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"> Observable<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">just</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span> 2<span style="color:#000;font-weight:bold">,</span> 3<span style="color:#000;font-weight:bold">,</span> 4<span style="color:#000;font-weight:bold">,</span> 5<span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">firstElement</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">subscribe</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Consumer<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">accept</span><span style="color:#000;font-weight:bold">(</span>Integer integer<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> Exception <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;获取到的第一个事件是： &#34;</span> <span style="color:#000;font-weight:bold">+</span> integer<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        Observable<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">just</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span> 2<span style="color:#000;font-weight:bold">,</span> 3<span style="color:#000;font-weight:bold">,</span> 4<span style="color:#000;font-weight:bold">,</span> 5<span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">lastElement</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">subscribe</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Consumer<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">accept</span><span style="color:#000;font-weight:bold">(</span>Integer integer<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> Exception <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;获取到的第一个事件是： &#34;</span> <span style="color:#000;font-weight:bold">+</span> integer<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="https://img-blog.csdn.net/20180814214302945" alt="这里写图片描述"></p>
+<h4 id="2elementat">2.elementAt（）</h4>
+<ul>
+<li>作用：指定接收某个元素（通过 索引值 确定）</li>
+<li>允许越界，即获取的位置索引 ＞ 发送事件序列长度
+具体使用：</li>
+</ul>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"> Observable<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">just</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span> 2<span style="color:#000;font-weight:bold">,</span> 3<span style="color:#000;font-weight:bold">,</span> 4<span style="color:#000;font-weight:bold">,</span> 5<span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">elementAt</span><span style="color:#000;font-weight:bold">(</span>2<span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">subscribe</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Consumer<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">accept</span><span style="color:#000;font-weight:bold">(</span>Integer integer<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> Exception <span style="color:#000;font-weight:bold">{</span>
+                        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;获取到的第一个事件是： &#34;</span> <span style="color:#000;font-weight:bold">+</span> integer<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="https://img-blog.csdn.net/20180814214701354" alt="这里写图片描述"></p>
+<h4 id="3elementatorerror">3.elementAtOrError（）</h4>
+<ul>
+<li>作用:在elementAt（）的基础上，当出现越界情况（即获取的位置索引 ＞ 发送事件序列长度）时，即抛出异常</li>
+</ul>
+<p>具体使用:</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Observable<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">just</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span> 2<span style="color:#000;font-weight:bold">,</span> 3<span style="color:#000;font-weight:bold">,</span> 4<span style="color:#000;font-weight:bold">,</span> 5<span style="color:#000;font-weight:bold">)</span>
+               <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">elementAtOrError</span><span style="color:#000;font-weight:bold">(</span>7<span style="color:#000;font-weight:bold">)</span>
+               <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">subscribe</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Consumer<span style="color:#000;font-weight:bold">&lt;</span>Integer<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                   <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                   <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">accept</span><span style="color:#000;font-weight:bold">(</span>Integer integer<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> Exception <span style="color:#000;font-weight:bold">{</span>
+                       Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;获取到的第一个事件是： &#34;</span> <span style="color:#000;font-weight:bold">+</span> integer<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                   <span style="color:#000;font-weight:bold">}</span>
+               <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="https://img-blog.csdn.net/20180814215539132?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<h3 id="七参考资料">七.参考资料</h3>
+<p><a href="https://www.jianshu.com/p/c3a930a03855">Android RxJava：过滤操作符 全面讲解</a>
+<a href="https://mcxiaoke.gitbooks.io/rxdocs/content/operators/First.html">RxJava文档中文版</a>
+<a href="https://blog.csdn.net/mixin716/article/details/80607295#firstelement-lastelement">Android RxJava2(四)过滤操作符</a></p>
+<h3 id="八文章索引">八.文章索引</h3>
+<ul>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81611870">Android之Rxjava2.X 1————Rxjava概述</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81637932">Android之Rxjava2.X 2————Rxjava 创建操作符</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81668545">Android之Rxjava2.X 3————Rxjava 变换操作符</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81670980">Android之Rxjava2.X 4————Rxjava 组合操作符</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81675322">Android之Rxjava2.X 5————Rxjava 过滤操作符</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81700187">Android之Rxjava2.X 6————Rxjava 功能操作符</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81705745">Android之Rxjava2.X 7————Rxjava 条件操作符</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81747334">Android之Rxjava2.X 8————Rxjava 背压策略</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81775520">Android之Rxjava2.X 9————Rxjava源码阅读1</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/81839955">Android之Rxjava2.X 10————Rxjava源码阅读2</a></li>
+<li><a href="https://blog.csdn.net/qq_38499859/article/details/82119900">Android之Rxjava2.X 11————Rxjava源码阅读3</a></li>
+</ul>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-5Rxjava-%E8%BF%87%E6%BB%A4%E6%93%8D%E4%BD%9C%E7%AC%A6/">http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-5Rxjava-%E8%BF%87%E6%BB%A4%E6%93%8D%E4%BD%9C%E7%AC%A6/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/%E6%96%87%E7%AB%A0%E5%AF%BC%E8%88%AA/">文章导航</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%8211Retrofit%E7%9A%84%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">Android之网络请求11————Retrofit的源码分析</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%8210Retrofit%E7%9A%84%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8/">Android之网络请求10————Retrofit的进阶使用</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%829Retrofit%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/">Android之网络请求8————Retrofit的简单使用</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%828OkHttp%E6%BA%90%E7%A0%815_%E7%BC%93%E5%AD%98%E7%9B%B8%E5%85%B3/">Android之网络请求8————OkHttp源码5:缓存相关</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            没有标签
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "https://github.com/hsc396612325/HSCBlog/tree/gh-pages"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一-目录">一. 目录</a></li>
+    <li><a href="#二-概述">二. 概述</a>
+      <ul>
+        <li><a href="#1作用">1.作用</a></li>
+        <li><a href="#2类型">2.类型</a></li>
+      </ul>
+    </li>
+    <li><a href="#三-根据指定事件条件过滤事件">三. 根据指定事件条件过滤事件</a>
+      <ul>
+        <li><a href="#1-filter">1. filter()</a></li>
+        <li><a href="#2oftype">2.ofType()</a></li>
+        <li><a href="#3skip--skiplast">3.skip() & skipLast()</a></li>
+        <li><a href="#4distinct--distinctuntilchanged">4.distinct（） / distinctUntilChanged（）</a></li>
+      </ul>
+    </li>
+    <li><a href="#四-根据指定事件数量过滤事件">四. 根据指定事件数量过滤事件</a>
+      <ul>
+        <li><a href="#1take">1.take（）</a></li>
+        <li><a href="#2takelast">2.takeLast（）</a></li>
+      </ul>
+    </li>
+    <li><a href="#五-根据指定时间过滤事件">五. 根据指定时间过滤事件</a>
+      <ul>
+        <li><a href="#1throttlefirst-throttlelast">1.throttleFirst（）/ throttleLast（）</a></li>
+        <li><a href="#2sample">2.Sample（）</a></li>
+        <li><a href="#3throttlewithtimeout---debounce">3.throttleWithTimeout （） / debounce（）</a></li>
+      </ul>
+    </li>
+    <li><a href="#六-根据指定事件位置过滤事件">六. 根据指定事件位置过滤事件</a>
+      <ul>
+        <li><a href="#1firstelement--lastelement">1.firstElement（） / lastElement（）</a></li>
+        <li><a href="#2elementat">2.elementAt（）</a></li>
+        <li><a href="#3elementatorerror">3.elementAtOrError（）</a></li>
+      </ul>
+    </li>
+    <li><a href="#七参考资料">七.参考资料</a></li>
+    <li><a href="#八文章索引">八.文章索引</a></li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

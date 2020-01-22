@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Android之网络请求4————OkHttp源码1:框架 | 冰炭不投day的博客</title>
+    <meta property="og:title" content="Android之网络请求4————OkHttp源码1:框架 - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2019-02-04T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2019-02-04T22:40:54&#43;08:00'>
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="Android之网络请求4————OkHttp源码1:框架">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%824OkHttp%E6%BA%90%E7%A0%811_%E6%A1%86%E6%9E%B6/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">Android之网络请求4————OkHttp源码1:框架</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2019年2月4日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android'>Android</a></span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82'>Android之网络请求</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h3 id="一目的">一.目的</h3>
+<p>本次阅读源码的目的有以下目的：</p>
+<ol>
+<li>发生请求的过程</li>
+<li>接收响应的过程</li>
+<li>网络操作的实现</li>
+<li>缓存的实现</li>
+<li>多路复用的实现</li>
+</ol>
+<p>在接下来的几篇文章中，结合源码和多篇优先的文章一同分析这些问题。</p>
+<p>关于OKHttp的使用可以看前面的文章</p>
+<h3 id="二总体框架">二.总体框架</h3>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2F0YTItaW1nLmNuLWhhbmd6aG91LmltZy1wdWIuYWxpeXVuLWluYy5jb20vZjZlMmFjMzA0ZWUyMjg5MWVjYTRhZDEyMTg2MDIwNDQucG5n?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<p>上图是OkHttp的总体架构，大致可以分为以下几层：</p>
+<ol>
+<li>Interface——接口层：接受网络访问请求</li>
+<li>Protocol——协议层：处理协议逻辑</li>
+<li>Connection——连接层：管理网络连接，发送新的请求，接收服务器访问</li>
+<li>Cache——缓存层：管理本地缓存</li>
+<li>I/O——I/O层：实际数据读写实现</li>
+<li>Inteceptor——拦截器层：拦截网络访问，插入拦截逻辑</li>
+</ol>
+<h3 id="三每层的含义">三.每层的含义</h3>
+<h4 id="1-interface接口层">1. Interface——接口层:</h4>
+<p>接口层接收用户的网络访问请求(同步/异步)，发起实际的网络访问。OKHttpClient是OkHttp框架的客户端，更确切的说是一个用户面板。用户使用OkHttp进行各种设置，发起各种网络请求都是通过OkHttpClient完成的。每个OkHttpClient内部都维护了属于自己的任务队列，连接池，Cache，拦截器等，所以在使用OkHttp作为网络框架时应该全局共享一个OkHttpClient实例。</p>
+<p>Call描述了一个实际的访问请求，用户的每一个网络请求都是一个Call实例，Call本身是一个接口，定义了Call的接口方法，在实际执行过程中，OkHttp会为每一个请求创建一个RealCall，即Call的实现类。</p>
+<p>Dispatcher是OkHttp的任务队列，其内部维护了一个线程池，当有接收到一个Call时，Dispatcher负责在线程池中找到空闲的线程并执行其execute方法。</p>
+<p>上面这三个类会在下一篇博客中详细介绍</p>
+<h4 id="2protocol协议层处理协议逻辑">2.Protocol——协议层:处理协议逻辑</h4>
+<p>Protocol层负责处理协议逻辑，OkHttp支持Http1/Http2/WebSocket协议，并在3.7版本中放弃了对Spdy协议，鼓励开发者使用Http/2。</p>
+<h4 id="3connection连接层管理网络连接发送新的请求接收服务器访问">3.Connection——连接层：管理网络连接，发送新的请求，接收服务器访问</h4>
+<p>连接层顾名思义就是负责网络连接，在连接层中有一个连接池，统一管理所有的Scoke连接，当用户发起一个新的网络请求是，OKHttp会在连接池找是否有符合要求的连接，如果有则直接通过该连接发送网络请求；否则新创建一个网络连接。</p>
+<p>RealConnection描述一个物理Socket连接，连接池中维护多个RealConnection实例，由于Http/2支持多路复用，一个RealConnection，所以OKHttp又引入了StreamAllocation来描述一个实际的网络请求开销（从逻辑上一个Stream对应一个Call，但在实际网络请求过程中一个Call常常涉及到多次请求。如重定向，Authenticate等场景。所以准确地说，一个Stream对应一次请求，而一个Call对应一组有逻辑关联的Stream），一个RealConnection对应一个或多个StreamAllocation，所以StreamAllocation，是以StreamAllocation可以看做是RealConenction的计数器，当RealConnection的引用计数变为0，且长时间没有被其他请求重新占用就将被释放。</p>
+<p>这一部分也详见之后的文章</p>
+<h4 id="4cache缓存层管理本地缓存">4.Cache——缓存层：管理本地缓存</h4>
+<p>Cache层负责维护请求缓存，当用户的网络请求在本地已有符合要求的缓存时，OKHttp会直接从缓存中返回结果，从而节省 网络开销。</p>
+<p>这一部分也详见之后的文章</p>
+<h4 id="5inteceptor拦截器层拦截网络访问插入拦截逻辑">5.Inteceptor——拦截器层：拦截网络访问，插入拦截逻辑</h4>
+<p>拦截器层提供了一个类AOP接口，方便用户可以切入到各个层面对网络访问进行拦截并执行相关逻辑。在下一篇博客中，这个也在之后会想讲。</p>
+<h3 id="四-参考资料">四. 参考资料</h3>
+<p><a href="https://yq.aliyun.com/articles/78105?spm=a2c4e.11153940.blogcont78101.12.7c213cbf85V2v2#9">OkHttp 3.7源码分析（一）——整体架构</a></p>
+<h3 id="五文章索引">五.文章索引</h3>
+<p><a href="https://blog.csdn.net/qq_38499859/article/details/82153094">Android之网络请求1————HTTP协议</a>
+<a href="https://blog.csdn.net/qq_38499859/article/details/82290738">Android之网络请求2————OkHttp的基本使用</a>
+<a href="https://blog.csdn.net/qq_38499859/article/details/82355954">Android之网络请求3————OkHttp的拦截器和封装</a>
+<a href="https://blog.csdn.net/qq_38499859/article/details/82469295">Android之网络请求4————OkHttp源码1:框架</a>
+<a href="https://blog.csdn.net/qq_38499859/article/details/82561675">Android之网络请求5————OkHttp源码2:发送请求</a>
+<a href="https://blog.csdn.net/qq_38499859/article/details/82630630">Android之网络请求6————OkHttp源码3:拦截器链</a>
+<a href="https://blog.csdn.net/qq_38499859/article/details/82745671">Android之网络请求7————OkHttp源码4:网络操作</a>
+<a href="https://blog.csdn.net/qq_38499859/article/details/82778955">Android之网络请求8————OkHttp源码5:缓存相关</a>
+<a href="https://blog.csdn.net/qq_38499859/article/details/82807496">Android之网络请求9————Retrofit的简单使用</a>
+<a href="https://blog.csdn.net/qq_38499859/article/details/83010604">Android之网络请求10————Retrofit的进阶使用</a>
+<a href="https://blog.csdn.net/qq_38499859/article/details/83042782">Android之网络请求11————Retrofit的源码分析</a></p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%824OkHttp%E6%BA%90%E7%A0%811_%E6%A1%86%E6%9E%B6/">http://blog.bingtan.online/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%824OkHttp%E6%BA%90%E7%A0%811_%E6%A1%86%E6%9E%B6/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%823OkHttp%E7%9A%84%E6%8B%A6%E6%88%AA%E5%99%A8%E5%92%8C%E5%B0%81%E8%A3%85/">Android之网络请求3————OkHttp的拦截器和封装</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%822OkHttp%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/">Android之网络请求2————OkHttp的使用</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%821HTTP%E5%8D%8F%E8%AE%AE/">Android之网络请求1————HTTP协议</a></li>
+        
+        <li><a href="/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E5%92%8CHttps/">计算机网络6————加密算法和Https</a></li>
+        
+        <li><a href="/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C5%E5%BA%94%E7%94%A8%E5%B1%82DNS-%E5%92%8C-HTTP/">计算机网络5————应用层（DNS 和 HTTP）</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/Android'>Android</a></li>
+                
+                <li><a href='http://blog.bingtan.online/tags/%E7%BD%91%E7%BB%9C'>网络</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "https://github.com/hsc396612325/HSCBlog/tree/gh-pages"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一目的">一.目的</a></li>
+    <li><a href="#二总体框架">二.总体框架</a></li>
+    <li><a href="#三每层的含义">三.每层的含义</a>
+      <ul>
+        <li><a href="#1-interface接口层">1. Interface——接口层:</a></li>
+        <li><a href="#2protocol协议层处理协议逻辑">2.Protocol——协议层:处理协议逻辑</a></li>
+        <li><a href="#3connection连接层管理网络连接发送新的请求接收服务器访问">3.Connection——连接层：管理网络连接，发送新的请求，接收服务器访问</a></li>
+        <li><a href="#4cache缓存层管理本地缓存">4.Cache——缓存层：管理本地缓存</a></li>
+        <li><a href="#5inteceptor拦截器层拦截网络访问插入拦截逻辑">5.Inteceptor——拦截器层：拦截网络访问，插入拦截逻辑</a></li>
+      </ul>
+    </li>
+    <li><a href="#四-参考资料">四. 参考资料</a></li>
+    <li><a href="#五文章索引">五.文章索引</a></li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

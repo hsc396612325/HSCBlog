@@ -1,0 +1,1689 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title> | 冰炭不投day的博客</title>
+    <meta property="og:title" content=" - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC1Service/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title"></h1>
+        </header>
+        <date class="post-meta meta-date">
+            1年1月1日
+        </date>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h1 id="android之ipc1service">Android之IPC1————Service</h1>
+<p>@[toc]</p>
+<h3 id="一service的概述">一.Service的概述</h3>
+<p>最近打算看看AndroidIPC相关的内容，并进行总结。所以就先从IPC中很常用的Service开始。</p>
+<p>Service作为Android四大组件之一，但并不想Activity一样，有很多的接触，对于我来言，大概只有在使用通知时用过它。接下来简单看一下Service的相关概念。</p>
+<p><a href="https://developer.android.com/reference/android/app/Service?hl=zh-cn">官方文档</a></p>
+<h4 id="1service的使用时机">1.Service的使用时机</h4>
+<p>Service是四大组件，在应用程序希望不与用户交互的情况下，执行较长运行时间的操作，或者为其他应用程序提供要使用的功能。service也同Activit一样，需要声明AndroidManifest。</p>
+<h4 id="2service是什么">2.Service是什么</h4>
+<p>如官网所言：它有两不是，两特点即</p>
+<p>两不是：</p>
+<ul>
+<li>Service不是一个单独的进程，Service对象本身并不意味着它运行在自己的进程；除非另有特别的指定，它将和应用程序运行的同一个进程中。</li>
+<li>Service不是一个线程。它并不是一种在主线程之外工作的方法。</li>
+</ul>
+<p>两状态：</p>
+<ul>
+<li>启动状态：当应用组件通过调用StartService()启动服务时，服务即处于&quot;启动&quot;状态，一旦启动，服务即可在后台无期限的运行下去，即使启动服务的组件已被销毁也不受影响。除非手动调用才能停止服务，已启动的服务通常是执行单一操作，而且不会将结果返回给调用方。</li>
+<li>绑定状态: 当应用组件通过调用bindService() 绑定到服务时，服务即处于“绑定状态”，绑定服务提供了一个客户端-服务器接口，运行组件与服务进行交互，发送请求，获取结果，甚至利用ipc进行跨进程执行这些操作。仅当与另一个组件绑定时，绑定服务才会运行，多组件可以同时绑定到该服务，但全部取消绑定后，该服务会立即被销毁。</li>
+</ul>
+<h3 id="二service在androidmanifext的声明">二.Service在AndroidManifext的声明</h3>
+<p>首先来看在AndroidManifest里Service的声明：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;service</span>
+    <span style="color:#008080">android:name=</span><span style="color:#d14">&#34;.MyService&#34;</span><span style="color:#000080">&gt;</span>
+<span style="color:#000080">&lt;/service&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>其他常见属性的说明</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>说明</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>android:name</td>
+<td>service的类名</td>
+<td></td>
+</tr>
+<tr>
+<td>android:label</td>
+<td>Service的名字</td>
+<td>若不设置，默认Service的类名</td>
+</tr>
+<tr>
+<td>android:icon</td>
+<td>Service的图标</td>
+<td></td>
+</tr>
+<tr>
+<td>android:permission</td>
+<td>申明此Service的权限</td>
+<td>有提供了该权限的应用才能控制或连接此服务</td>
+</tr>
+<tr>
+<td>android;process</td>
+<td>表示该服务是否在另一个进程中运行</td>
+<td>不设置默认为本地服务；remote：则设置为远程服务</td>
+</tr>
+<tr>
+<td>android:enabled</td>
+<td>系统默认启动</td>
+<td>true：Service将会默认被系统启动，不设置则默认为false</td>
+</tr>
+<tr>
+<td>android:exported</td>
+<td>该服务是否能够被其他应用程序所控制或连接</td>
+<td>不设置默认为false</td>
+</tr>
+</tbody>
+</table>
+<h3 id="三service的创建与启动">三.Service的创建与启动</h3>
+<h4 id="1service代码">1.Service代码</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">MyService</span> <span style="color:#000;font-weight:bold">extends</span> Service <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> String TAG <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;MyService&#34;</span><span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">MyService</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 绑定服务时才会调用
+</span><span style="color:#998;font-style:italic">     * 必须要实现的方法
+</span><span style="color:#998;font-style:italic">     * @param intent
+</span><span style="color:#998;font-style:italic">     * @return
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> IBinder <span style="color:#900;font-weight:bold">onBind</span><span style="color:#000;font-weight:bold">(</span>Intent intent<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#998;font-style:italic">// TODO: Return the communication channel to the service.
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">throw</span> <span style="color:#000;font-weight:bold">new</span> UnsupportedOperationException<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;Not yet implemented&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 首次创建服务时，系统将调用此方法来指向一次性设置程序，（在调用 onStartCommand() 或 onBind() 之前）。
+</span><span style="color:#998;font-style:italic">     * 如果服务已经在运行，则不会调用此方法，该方法之被调用了一次
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onCreate</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onCreate</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onCreate: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 每次通过startService()方法启动Service时都会被回调。
+</span><span style="color:#998;font-style:italic">     *
+</span><span style="color:#998;font-style:italic">     * @param intent 启动时，启动组件传递过来的Intent
+</span><span style="color:#998;font-style:italic">     * @param flags 表示启动请求时是否有额外数据
+</span><span style="color:#998;font-style:italic">     * @param startId指明当前服务的唯一ID，与stopSelfResult (int startId)配合使用，stopSelfResult 可以更安全地根据ID停止服务。
+</span><span style="color:#998;font-style:italic">     * @return
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">onStartCommand</span><span style="color:#000;font-weight:bold">(</span>Intent intent<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> flags<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> startId<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onStartCommand: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onStartCommand</span><span style="color:#000;font-weight:bold">(</span>intent<span style="color:#000;font-weight:bold">,</span> flags<span style="color:#000;font-weight:bold">,</span> startId<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 服务销毁时的回调，即stopService()时
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onDestroy</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onDestroy</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onDestroy:&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="2activity代码">2.Activity代码</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">MainActivity</span> <span style="color:#000;font-weight:bold">extends</span> AppCompatActivity <span style="color:#000;font-weight:bold">implements</span> View<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">OnClickListener</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">private</span> Button startBt<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">private</span> Button stopBt<span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onCreate</span><span style="color:#000;font-weight:bold">(</span>Bundle savedInstanceState<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onCreate</span><span style="color:#000;font-weight:bold">(</span>savedInstanceState<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        setContentView<span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">layout</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">activity_main</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        startBt <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>Button<span style="color:#000;font-weight:bold">)</span> findViewById<span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">startService</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        stopBt <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>Button<span style="color:#000;font-weight:bold">)</span> findViewById<span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">stopService</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        startBt<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setOnClickListener</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        stopBt<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setOnClickListener</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onClick</span><span style="color:#000;font-weight:bold">(</span>View v<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        Intent it <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Intent<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">,</span> MyService<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">switch</span> <span style="color:#000;font-weight:bold">(</span>v<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getId</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">case</span> R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">startService</span><span style="color:#000;font-weight:bold">:</span>
+                startService<span style="color:#000;font-weight:bold">(</span>it<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">case</span> R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">stopService</span><span style="color:#000;font-weight:bold">:</span>
+                stopService<span style="color:#000;font-weight:bold">(</span>it<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#000;font-weight:bold">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="3运行结果">3.运行结果</h4>
+<p><img src="https://img-blog.csdnimg.cn/20181031175141840.png" alt="在这里插入图片描述"></p>
+<h3 id="四service绑定服务概述">四.Service绑定服务概述</h3>
+<p><a href="https://developer.android.com/guide/components/bound-services?hl=zh-cn">绑定Service官方文档</a></p>
+<p>上面启动的Service只是启动状态，Activity只能启动或者停止Service，除此之外，并没有其他的关联。也就是说，两者之间无法通信。如果需要两者之间进行通信，则需要使Service进入绑定状态。当绑定后，我们就可以在Activity向Service（也就是服务端）发送请求，或者调用Service（服务端）的方法，甚至可以通过绑定服务进行执行ipc。</p>
+<p>在进行Service的绑定上，我们必须提供一个iBinder的接口实现类，该类用以提供客户端用来与服务进行交互的编程接口，该类可以通过三种方法定义接口：</p>
+<h4 id="1-扩展的binder类">1. 扩展的binder类</h4>
+<p>如果服务时提供仅供本地应用使用，不需要跨进程工作则应通过扩展 Binder 类并从 onBind() 返回它的一个实例来创建接口。客户端收到Binder后，可以利用它直接访问Binder实现中以及Service中公用的公共方法。如果我们的Service不牵扯跨进程，那么优先采用这种方法</p>
+<h4 id="2-使用messenger">2. 使用Messenger</h4>
+<p>messenger即信使，通过它可以在不同的Message对象(Handler中的Messager，因此 Handler 是 Messenger 的基础)，在Message中存放我们需要传递的数据，然后在进程间传递，如果需要让接口跨不同的进程工作，则可以使用Messenger为服务创建接口，客户端就可以利用Message对象向服务发送命令，同时客户端也可以自定义自有的Messenger，以便服务回传消息。这是IPC最简单的方法。因为Messenger回在单一线程中创建包含所有请求的队列，也就是说Messenger是以串行的方式处理客户端发来的消息。这样我们就不必对服务进行线程安全设计。</p>
+<h4 id="3-使用aidl">3. 使用AIDL</h4>
+<p>由于Messenger是以串行的方式处理客户端发来的消息。如果当前有大量消息同时发送到Service(服务端)，Service仍然只能一个个处理，这也就是Messenger跨进程通信的缺点了，因此如果有大量并发请求，Messenger就会显得力不从心了，这时AIDL（Android 接口定义语言）就派上用场了， 但实际上Messenger 的跨进程方式其底层实现 就是AIDL，只不过android系统帮我们封装成透明的Messenger罢了 。所以，当Service需要具备多个同时处理多个请求时，则可以直接使用AIDL。</p>
+<blockquote>
+<p>AIDL:Android接口定义语言，它可以定义客户端与服务使用IPC进行相互通信是都认可的编程接口，在android中，一个进程通常无法访问另一个进程的内存。尽管如此，进程需要将其对象分解成操作系统可以识别的原语，并将对象编组成跨越边界的对象。</p>
+</blockquote>
+<p>上面的三种实现方式，在下面由更详细的介绍。</p>
+<h4 id="4绑定服务的注意点">4.绑定服务的注意点</h4>
+<ul>
+<li>多个客户端可以同时连接到一个服务。不过只有第一个客户端绑定时，系统才会调用服务的onBind()方法俩检索IBinder。系统随后无需再次调用onBind(),便可将同以IBinde传递至任何其他绑定的客户端,当最后一个客户端取消与服务的绑定时，系统会将服务销毁（除非 startService() 也启动了该服务）。</li>
+<li>通常情况下我们应该在客户端生命周期的引入和退出时刻设置绑定和取消绑定操作，来控制绑定状态下的Service。</li>
+<li>通常情况下。，切勿在 Activity 的 onResume() 和 onPause() 期间绑定和取消绑定，因为每一次生命周期转换都会发生这些回调，这样反复绑定与解绑是不合理的。此外，如果应用内的多个 Activity 绑定到同一服务，并且其中两个 Activity 之间发生了转换，则如果当前 Activity 在下一次绑定（恢复期间）之前取消绑定（暂停期间），系统可能会销毁服务并重建服务，因此服务的绑定不应该发生在 Activity 的 onResume() 和 onPause()中。</li>
+<li>我们应该始终 DeadObjectException DeadObjectException 异常，该异常是在连接中断时引发的，表示调用的对象已死亡，也就是Service对象已销毁，这是远程方法引发的唯一异常，DeadObjectException继承自RemoteException，因此我们也可以捕获RemoteException异常。</li>
+<li>客户端可以通过调用 bindService() 绑定到服务,Android 系统随后调用服务的 onBind() 方法，该方法返回用于与服务交互的 IBinder，而该绑定是异步执行的。</li>
+</ul>
+<h4 id="5-启动服务和绑定服务间的转换问题">5. 启动服务和绑定服务间的转换问题</h4>
+<p>前面说了，服务虽然只有两种状态，但其实者两种状态是可以共存的，根据状态的先后顺序可以分为下面者两种状态</p>
+<ul>
+<li>先绑定服务后启动服务:如果当前Service先以绑定状态运行，再以启动台运行。那么绑定服务将会转为启动服务运行，这时如果之前绑定的宿主（Activity）被销毁了，也不会影响服务的运行，服务还是会一直运行下去，指定收到调用停止服务或者内存不足时才会销毁该服务。</li>
+<li>先启动服务后绑定服务：如果当前Service实例先以启动状态运行，然后再以绑定状态运行，当前启动服务并不会转为绑定服务，但是还是会与宿主绑定，只是即使宿主解除绑定后，服务依然按启动服务的生命周期在后台运行，直到有Context调用了stopService()或是服务本身调用了stopSelf()方法抑或内存不足时才会销毁服务。</li>
+</ul>
+<p>上面两种情况显示出启动服务的优先级确实比绑定服务要高，无论Service处于上面那种状态，我们都可以使用Intent 来使用服务(即使此服务来自另一应用)。</p>
+<p>同时服务也是再主线程中运行的，它既不创建自己的线程，也不再单独的进程中执行(除非另行指定)</p>
+<h3 id="五扩展binder类">五.扩展Binder类</h3>
+<h4 id="1使用场景">1.使用场景</h4>
+<p>如果您的服务仅供本地应用使用，不需要跨进程工作，则可以实现自有 Binder 类，让您的客户端通过该类直接访问服务中的公共方法。</p>
+<h4 id="2使用步骤">2.使用步骤</h4>
+<ul>
+<li>创建一个Binder实例</li>
+<li>从onBind()回调方法返回Binder实例</li>
+<li>从客户端(Activity)中,从onServiceConnected() 回调方法接收 Binder，并使用提供的方法调用绑定服务。</li>
+</ul>
+<h4 id="3代码实现">3.代码实现</h4>
+<p>Service</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">77
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">LocalService</span> <span style="color:#000;font-weight:bold">extends</span> Service <span style="color:#000;font-weight:bold">{</span>
+
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> String TAG <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;LocalService&#34;</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#998;font-style:italic">// 需要在onBind里面返回给客户端(Activity)的内容
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> IBinder mBinder <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> LocalBinder<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">int</span> count<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">boolean</span> quit<span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#998;font-style:italic">//类用于客户端绑定器。因为我们知道这个服务总是在与它的客户端相同的进程中运行，所以我们不需要处理IPC。
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">LocalBinder</span> <span style="color:#000;font-weight:bold">extends</span> Binder <span style="color:#000;font-weight:bold">{</span>
+        LocalService <span style="color:#900;font-weight:bold">getService</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#998;font-style:italic">// Return this instance of LocalService so clients can call public methods
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">return</span> LocalService<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">this</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 把IBinder返回给客户端Activity)
+</span><span style="color:#998;font-style:italic">     *
+</span><span style="color:#998;font-style:italic">     * @param intent
+</span><span style="color:#998;font-style:italic">     * @return
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> IBinder <span style="color:#900;font-weight:bold">onBind</span><span style="color:#000;font-weight:bold">(</span>Intent intent<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">return</span> mBinder<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onCreate</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onCreate</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">w</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;Service is onCreate: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#000;font-weight:bold">new</span> Thread<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Runnable<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+            <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">run</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#998;font-style:italic">// 每间隔一秒count加1 ，直到quit为true。
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">while</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">!</span>quit<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+                        Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>1000<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>InterruptedException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                    count<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 公共方法
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">getCount</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">return</span> count<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 解除绑定时调用
+</span><span style="color:#998;font-style:italic">     *
+</span><span style="color:#998;font-style:italic">     * @return
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">onUnbind</span><span style="color:#000;font-weight:bold">(</span>Intent intent<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">w</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;Service is  onUnbind&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onUnbind</span><span style="color:#000;font-weight:bold">(</span>intent<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onDestroy</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">w</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;Service is invoke Destroyed&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">quit</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onDestroy</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#000;font-weight:bold">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>上面的代码简单而言，就是定义一个Binder对象，并在onBind中将其返回。在Binder对象中，将当前Service返回。</p>
+<p>Activty</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">74
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">MainActivity</span> <span style="color:#000;font-weight:bold">extends</span> AppCompatActivity <span style="color:#000;font-weight:bold">implements</span> View<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">OnClickListener</span> <span style="color:#000;font-weight:bold">{</span>
+
+    <span style="color:#000;font-weight:bold">private</span> Button bindBt<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">private</span> Button unbindBt<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">private</span> Button getDatasBt<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> String TAG <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;MainActivity&#34;</span><span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * ServiceConnection代表与服务的连接，它只有两个方法，
+</span><span style="color:#998;font-style:italic">     * onServiceConnected和onServiceDisconnected，
+</span><span style="color:#998;font-style:italic">     * 前者是在操作者在连接一个服务成功时被调用，而后者是在服务崩溃或被杀死导致的连接中断时被调用
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">private</span> ServiceConnection conn<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">private</span> LocalService mService<span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onCreate</span><span style="color:#000;font-weight:bold">(</span>Bundle savedInstanceState<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onCreate</span><span style="color:#000;font-weight:bold">(</span>savedInstanceState<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        setContentView<span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">layout</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">activity_main</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        bindBt <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>Button<span style="color:#000;font-weight:bold">)</span> findViewById<span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">bindBt</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        unbindBt <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>Button<span style="color:#000;font-weight:bold">)</span> findViewById<span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">unbindBt</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        getDatasBt <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>Button<span style="color:#000;font-weight:bold">)</span> findViewById<span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getDatasBt</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        bindBt<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setOnClickListener</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        unbindBt<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setOnClickListener</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        getDatasBt<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setOnClickListener</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        conn <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">new</span> ServiceConnection<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">             * 与服务器端交互的接口方法 绑定服务的时候被回调，在这个方法获取绑定Service传递过来的IBinder对象，
+</span><span style="color:#998;font-style:italic">             * 通过这个IBinder对象，实现宿主和Service的交互。
+</span><span style="color:#998;font-style:italic">             */</span>
+            <span style="color:#3c5d5d;font-weight:bold">@Override</span> <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onServiceConnected</span> <span style="color:#000;font-weight:bold">(</span>ComponentName name<span style="color:#000;font-weight:bold">,</span> IBinder service<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">{</span>
+                Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">w</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;绑定成功调用：onServiceConnected&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#998;font-style:italic">// 获取Binder
+</span><span style="color:#998;font-style:italic"></span>                LocalService<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">LocalBinder</span> binder <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>LocalService<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">LocalBinder</span><span style="color:#000;font-weight:bold">)</span> service<span style="color:#000;font-weight:bold">;</span>
+                mService <span style="color:#000;font-weight:bold">=</span> binder<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getService</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">             *当取消绑定的时候被回调。但正常情况下是不被调用的，它的调用时机是当Service服务被意外销毁时，
+</span><span style="color:#998;font-style:italic">             *例如内存的资源不足时这个方法才被自动调用。
+</span><span style="color:#998;font-style:italic">             */</span>
+            <span style="color:#3c5d5d;font-weight:bold">@Override</span> <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onServiceDisconnected</span> <span style="color:#000;font-weight:bold">(</span>ComponentName name<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">{</span>
+                mService <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onClick</span><span style="color:#000;font-weight:bold">(</span>View v<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        Intent it <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Intent<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">,</span> LocalService<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">switch</span> <span style="color:#000;font-weight:bold">(</span>v<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getId</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">case</span> R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">bindBt</span><span style="color:#000;font-weight:bold">:</span>
+                Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">w</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;绑定调用：bindService&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#998;font-style:italic">//调用绑定方法
+</span><span style="color:#998;font-style:italic"></span>                bindService<span style="color:#000;font-weight:bold">(</span>it<span style="color:#000;font-weight:bold">,</span> conn<span style="color:#000;font-weight:bold">,</span> Service<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">BIND_AUTO_CREATE</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">case</span> R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">unbindBt</span><span style="color:#000;font-weight:bold">:</span>
+                Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">w</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;解除绑定调用：unbindService&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 解除绑定
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mService <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    mService <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+                    unbindService<span style="color:#000;font-weight:bold">(</span>conn<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">case</span> R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getDatasBt</span><span style="color:#000;font-weight:bold">:</span>
+                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mService <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">// 通过绑定服务传递的Binder对象，获取Service暴露出来的数据
+</span><span style="color:#998;font-style:italic"></span>                    Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">w</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;从服务端获取数据：&#34;</span> <span style="color:#000;font-weight:bold">+</span> mService<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getCount</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+                    Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">w</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;还没绑定呢，先绑定,无法从服务端获取数据&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>上面的代码中，通过 bindService和unbindService对Service进行绑定和解绑。通过ServiceConnection获得对应的Service对象，从而调用对应的公用方法。</p>
+<h4 id="4运行结果">4.运行结果</h4>
+<p>![在这里插入图片描述](<a href="https://img-blog.csdnimg.cn/20181031175219683.png">https://img-blog.csdnimg.cn/20181031175219683.png</a></p>
+<p>通过Log可在，第一次点击绑定服务时，LocalService服务端的onCreate()、onBind方法会依次被调用，此时客户端的ServiceConnection#onServiceConnected()被调用并返回LocalBinder对象，接着调用LocalBinder#getService方法返回LocalService实例对象，此时客户端便持有了LocalService的实例对象，也就可以任意调用LocalService类中的声明公共方法了。解除绑定时，LocalService的onUnBind、onDestroy方法依次被回调。
+<img src="https://img-blog.csdnimg.cn/20181031175325396.png" alt="在这里插入图片描述"></p>
+<h3 id="六使用messenger">六.使用Messenger</h3>
+<h4 id="1使用场景-1">1.使用场景</h4>
+<p>当Service需要进行跨进程通信（IPC）时，但是不需要执行多线程处理，此时就可以使用Messenger进行跨进程通信。</p>
+<h4 id="2使用步骤-1">2.使用步骤</h4>
+<ul>
+<li>Service实现一个handler,由其接收来自客户端的每个调用的回调</li>
+<li>Handrer用于创建Messanger对象(对Handler的引用)</li>
+<li>Messanger创建一个IBinder对象，Service通过onBind()使其返回客户端</li>
+<li>客户端使用IBingdr将Messenger(引用服务的Handler)实例化,然后使用后者将Message对象发送给Service。</li>
+<li>Service在其 Handler 中（具体地讲，是在 handleMessage() 方法中）接收每个 Message。</li>
+</ul>
+<h4 id="3代码">3.代码</h4>
+<p>Service:</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">MessengerService</span> <span style="color:#000;font-weight:bold">extends</span> Service <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#998;font-style:italic">//命令服务显示一条消息
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> MSG_SAY_HELLO <span style="color:#000;font-weight:bold">=</span> 1<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> String TAG <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;MessengerService&#34;</span><span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 用于接收从客户端传递过来的数据
+</span><span style="color:#998;font-style:italic">     * 并向就向客户端回复消息
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">IncomingHandler</span> <span style="color:#000;font-weight:bold">extends</span> Handler <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">handleMessage</span><span style="color:#000;font-weight:bold">(</span>Message msg<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">switch</span> <span style="color:#000;font-weight:bold">(</span>msg<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">what</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">case</span> MSG_SAY_HELLO<span style="color:#000;font-weight:bold">:</span>
+                    Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">w</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;Service收到 客户端的消息:&#34;</span> <span style="color:#000;font-weight:bold">+</span> msg<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getData</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;msg&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+                    <span style="color:#998;font-style:italic">//回复客户端信息,该对象由客户端传递过来
+</span><span style="color:#998;font-style:italic"></span>                    Messenger client <span style="color:#000;font-weight:bold">=</span> msg<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">replyTo</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#998;font-style:italic">//获取回复信息的消息实体
+</span><span style="color:#998;font-style:italic"></span>                    Message replyMsg <span style="color:#000;font-weight:bold">=</span> Message<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">obtain</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">,</span> MessengerService<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">MSG_SAY_HELLO</span><span style="color:#000;font-weight:bold">,</span>0<span style="color:#000;font-weight:bold">,</span>0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    Bundle bundle <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Bundle<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    bundle<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">putString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;reply&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;收到，你好客户端&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    replyMsg<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setData</span><span style="color:#000;font-weight:bold">(</span>bundle<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+                    Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">w</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;Service回复 客户端的消息:收到，你好客户端&#34;</span> <span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#998;font-style:italic">//向客户端发送消息
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+
+                        client<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">send</span><span style="color:#000;font-weight:bold">(</span>replyMsg<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+                    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>RemoteException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+
+                        e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+
+                    <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">default</span><span style="color:#000;font-weight:bold">:</span>
+                    <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">handleMessage</span><span style="color:#000;font-weight:bold">(</span>msg<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 创建Messenger并传入Handler实例对象
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">final</span> Messenger mMessenger <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Messenger<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> IncomingHandler<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> IBinder <span style="color:#900;font-weight:bold">onBind</span><span style="color:#000;font-weight:bold">(</span>Intent intent<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">w</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;Service 绑定成功&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">return</span> mMessenger<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getBinder</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>在Service代码中，在Messenger中的获得从客户端发送的消息，并将回复发送客户端。</p>
+<p>Activity</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 77
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 78
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 79
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 80
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 81
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 82
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 83
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 84
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 85
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 86
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 87
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 88
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 89
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 90
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 91
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 92
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 93
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 94
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 95
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 96
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 97
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 98
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 99
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">100
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">101
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">102
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">103
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">104
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">105
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">106
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">107
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">ActivityMessenger</span> <span style="color:#000;font-weight:bold">extends</span> Activity <span style="color:#000;font-weight:bold">implements</span> View<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">OnClickListener</span> <span style="color:#000;font-weight:bold">{</span>
+
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> String TAG <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;ActivityMessenger&#34;</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 与服务端交互的Messenger
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">private</span> Messenger mService <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * Flag indicating whether we have called bind on the service.
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">boolean</span> mBound<span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 实现与服务端链接的对象
+</span><span style="color:#998;font-style:italic">     */</span>
+
+
+    <span style="color:#000;font-weight:bold">private</span> Button bindBt<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">private</span> Button unbindBt<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">private</span> Button sendMsg<span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#000;font-weight:bold">private</span> ServiceConnection conn<span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#998;font-style:italic">//用来接收服务器返回的消息
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">private</span> Messenger mRecevierReplyMsg <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Messenger<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> ReceiverReplyMsgHandler<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">ReceiverReplyMsgHandler</span> <span style="color:#000;font-weight:bold">extends</span> Handler <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">handleMessage</span><span style="color:#000;font-weight:bold">(</span>Message msg<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">switch</span> <span style="color:#000;font-weight:bold">(</span>msg<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">what</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#998;font-style:italic">//接收服务端回复
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">case</span>  MessengerService<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">MSG_SAY_HELLO</span><span style="color:#000;font-weight:bold">:</span>
+                    Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">w</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;客户端收到Service回复&#34;</span> <span style="color:#000;font-weight:bold">+</span> msg<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getData</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;reply&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">default</span><span style="color:#000;font-weight:bold">:</span>
+                    <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">handleMessage</span><span style="color:#000;font-weight:bold">(</span>msg<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">sayHello</span><span style="color:#000;font-weight:bold">(</span>View v<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">!</span>mBound<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">return</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#998;font-style:italic">// 创建与服务交互的消息实体Message
+</span><span style="color:#998;font-style:italic"></span>        Message msg <span style="color:#000;font-weight:bold">=</span> Message<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">obtain</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">,</span> MessengerService<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">MSG_SAY_HELLO</span><span style="color:#000;font-weight:bold">,</span> 0<span style="color:#000;font-weight:bold">,</span> 0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        Bundle data <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Bundle<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        data<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">putString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;msg&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;你好，Service&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        msg<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setData</span><span style="color:#000;font-weight:bold">(</span>data<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        msg<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">replyTo</span> <span style="color:#000;font-weight:bold">=</span> mRecevierReplyMsg<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+            Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">w</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;客户端给Service发送消息:你好，Service&#34;</span> <span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#998;font-style:italic">//发送消息
+</span><span style="color:#998;font-style:italic"></span>            mService<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">send</span><span style="color:#000;font-weight:bold">(</span>msg<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>RemoteException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onCreate</span><span style="color:#000;font-weight:bold">(</span>Bundle savedInstanceState<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onCreate</span><span style="color:#000;font-weight:bold">(</span>savedInstanceState<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        setContentView<span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">layout</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">activity_messenger</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        bindBt <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>Button<span style="color:#000;font-weight:bold">)</span> findViewById<span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">bindBt</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        unbindBt <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>Button<span style="color:#000;font-weight:bold">)</span> findViewById<span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">unbindBt</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        sendMsg <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>Button<span style="color:#000;font-weight:bold">)</span> findViewById<span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sendMsg</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        bindBt<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setOnClickListener</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        unbindBt<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setOnClickListener</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        sendMsg<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setOnClickListener</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        conn <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> ServiceConnection<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+            <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onServiceConnected</span><span style="color:#000;font-weight:bold">(</span>ComponentName name<span style="color:#000;font-weight:bold">,</span> IBinder service<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#998;font-style:italic">//通过服务端传递的IBingder对象，创建相应的Messenger
+</span><span style="color:#998;font-style:italic"></span>                mService <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Messenger<span style="color:#000;font-weight:bold">(</span>service<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                mBound <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+            <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+            <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onServiceDisconnected</span><span style="color:#000;font-weight:bold">(</span>ComponentName name<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                mService <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+                mBound <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onClick</span><span style="color:#000;font-weight:bold">(</span>View v<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        Intent it <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Intent<span style="color:#000;font-weight:bold">(</span>ActivityMessenger<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">this</span><span style="color:#000;font-weight:bold">,</span> MessengerService<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">switch</span> <span style="color:#000;font-weight:bold">(</span>v<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getId</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">case</span> R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">bindBt</span><span style="color:#000;font-weight:bold">:</span>
+                Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">w</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;绑定调用：bindService&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">//调用绑定方法
+</span><span style="color:#998;font-style:italic"></span>                bindService<span style="color:#000;font-weight:bold">(</span>it<span style="color:#000;font-weight:bold">,</span> conn<span style="color:#000;font-weight:bold">,</span> Context<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">BIND_AUTO_CREATE</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">case</span> R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">unbindBt</span><span style="color:#000;font-weight:bold">:</span>
+                Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">w</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;解除绑定调用：unbindService&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 解除绑定
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mService <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    mService <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+                    unbindService<span style="color:#000;font-weight:bold">(</span>conn<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    mBound <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">case</span> R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sendMsg</span><span style="color:#000;font-weight:bold">:</span>
+                sayHello<span style="color:#000;font-weight:bold">(</span>v<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>在Activity通过bindService和unbindService对Service进行绑定个解绑，并通过 ServiceConnection()获得Service，进而向Service消息。同时定义一个ReceiverReplyMsgHandler，接收Service发送的消息。</p>
+<p>指定Service在另一个进程中运行</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">    <span style="color:#000080">&lt;service</span> <span style="color:#008080">android:name=</span><span style="color:#d14">&#34;.MessengerService&#34;</span>
+            <span style="color:#008080">android:process=</span><span style="color:#d14">&#34;:remote&#34;</span>
+         <span style="color:#000080">/&gt;</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="4运行结果-1">4.运行结果</h4>
+<p>客户端Log
+<img src="https://img-blog.csdnimg.cn/20181031175437314.png" alt="在这里插入图片描述"></p>
+<p>ServiceLog
+<img src="https://img-blog.csdnimg.cn/20181031175522500.png" alt="在这里插入图片描述"></p>
+<p>下图就是其通信过程
+<img src="https://img-blog.csdn.net/20161004221152656" alt="image"></p>
+<h3 id="七使用aidl">七.使用AIDL</h3>
+<h4 id="1使用场景-2">1.使用场景</h4>
+<p>上面我们使用Messenger来进行进程间通信的方法，可以发现，Messenger是以串行的方法处理客户端发来的消息，如果大量的消息同时发送的服务端，服务端仍然只能一个个处理，同时我们有时要跨进程调用Service的方法，再这些情况下，Messenger不能胜任，此时就应该使用AIDL</p>
+<h4 id="2使用步骤-2">2.使用步骤</h4>
+<ul>
+<li>创建.aidl文件：此文件带有方法签名的编程接口</li>
+<li>实现接口：Android SDK工具根据,aidl文件，使用Java编程语言生成一个接口。此接口具有一个Sutb的内部抽象类，并用于扩展Binder类并实现AIDL接口中的方法。</li>
+<li>向客户端公开该接口，实现Service并重写onBind() 以返回 Stub 类的实现。</li>
+</ul>
+<p>关于AIDL的内容非常的多，所以我单独将其汇总成一篇博客。</p>
+<h3 id="八前台service">八.前台Service</h3>
+<p>前台Service被认为是用户主动意识到一种服务，因此再内存不足时，系统也不考虑将其终止。前台Service必须为状态栏提供通知。这意味着，除非服务停止或者从前台移出，否则不能清除通知。</p>
+<p>要请求让服务运行与前台，可以调用startForeground()。此方法采用两个参数：唯一标识通知的整型数和状态栏的 Notification。要从前台移除服务，请调用 stopForeground()。此方法采用一个布尔值，指示是否也移除状态栏通知。 此方法不会停止服务。 但是，如果您在服务正在前台运行时将其停止，则通知也会被移除。</p>
+<p><a href="https://blog.csdn.net/guolin_blog/article/details/79854070">关于Android8.0 通知栏的适配</a></p>
+<h4 id="1代码">1.代码</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">77
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">78
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">79
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">ForegroundService</span> <span style="color:#000;font-weight:bold">extends</span> Service <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> NOTIFICATION_DOWNLOAD_PROGRESS_ID <span style="color:#000;font-weight:bold">=</span> 0x0001<span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">boolean</span> isRemove <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span><span style="color:#998;font-style:italic">//是否需要移除
+</span><span style="color:#998;font-style:italic"></span>
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 创建通知栏
+</span><span style="color:#998;font-style:italic">     * 并进行8.0适配
+</span><span style="color:#998;font-style:italic">     * @return
+</span><span style="color:#998;font-style:italic">     */</span>
+
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">createNotification</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>Build<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">VERSION</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">SDK_INT</span> <span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">=</span> Build<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">VERSION_CODES</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">O</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            String channelId <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;chat&#34;</span><span style="color:#000;font-weight:bold">;</span>
+            String channelName <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;聊天消息&#34;</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#458;font-weight:bold">int</span> importance <span style="color:#000;font-weight:bold">=</span> NotificationManager<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">IMPORTANCE_HIGH</span><span style="color:#000;font-weight:bold">;</span>
+            createNotificationChannel<span style="color:#000;font-weight:bold">(</span>channelId<span style="color:#000;font-weight:bold">,</span> channelName<span style="color:#000;font-weight:bold">,</span> importance<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+            sendChatMag<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">onStartCommand</span><span style="color:#000;font-weight:bold">(</span>Intent intent<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> flags<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> startId<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> intent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getExtras</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getInt</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;cmd&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>i <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;11111&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onStartCommand: &#34;</span><span style="color:#000;font-weight:bold">+</span>isRemove<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">!</span>isRemove<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                createNotification<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+            isRemove <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#998;font-style:italic">//移除前台服务
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>isRemove<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                stopForeground<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+            isRemove <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onStartCommand</span><span style="color:#000;font-weight:bold">(</span>intent<span style="color:#000;font-weight:bold">,</span> flags<span style="color:#000;font-weight:bold">,</span> startId<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onDestroy</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#998;font-style:italic">//移出前台服务
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>isRemove<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            stopForeground<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        isRemove <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onDestroy</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> IBinder <span style="color:#900;font-weight:bold">onBind</span><span style="color:#000;font-weight:bold">(</span>Intent intent<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@TargetApi</span><span style="color:#000;font-weight:bold">(</span>Build<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">VERSION_CODES</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">O</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">createNotificationChannel</span><span style="color:#000;font-weight:bold">(</span>String channelId<span style="color:#000;font-weight:bold">,</span> String channelName<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> importance<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        NotificationChannel channel <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> NotificationChannel<span style="color:#000;font-weight:bold">(</span>channelId<span style="color:#000;font-weight:bold">,</span> channelName<span style="color:#000;font-weight:bold">,</span> importance<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        NotificationManager notificationManager <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>NotificationManager<span style="color:#000;font-weight:bold">)</span> getSystemService<span style="color:#000;font-weight:bold">(</span>NOTIFICATION_SERVICE<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        notificationManager<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">createNotificationChannel</span><span style="color:#000;font-weight:bold">(</span>channel<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">sendChatMag</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        NotificationManager manager <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>NotificationManager<span style="color:#000;font-weight:bold">)</span> getSystemService<span style="color:#000;font-weight:bold">(</span>NOTIFICATION_SERVICE<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        Notification notification <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> NotificationCompat<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Builder</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;chat&#34;</span><span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setContentTitle</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;收到一条聊天消息&#34;</span><span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setContentText</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;今天中午吃什么？&#34;</span><span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setWhen</span><span style="color:#000;font-weight:bold">(</span>System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">currentTimeMillis</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setSmallIcon</span><span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">drawable</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">icon</span><span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setLargeIcon</span><span style="color:#000;font-weight:bold">(</span>BitmapFactory<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">decodeResource</span><span style="color:#000;font-weight:bold">(</span>getResources<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">,</span> R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">drawable</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">icon</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setAutoCancel</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">build</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        manager<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">notify</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span>notification<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>activity</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">ForegroundActivity</span> <span style="color:#000;font-weight:bold">extends</span> AppCompatActivity <span style="color:#000;font-weight:bold">implements</span> View<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">OnClickListener</span> <span style="color:#000;font-weight:bold">{</span>
+
+
+    <span style="color:#000;font-weight:bold">private</span> Button bindBt<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">private</span> Button unbindBt<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> String TAG <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;MainActivity&#34;</span><span style="color:#000;font-weight:bold">;</span>
+     Intent intent<span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onCreate</span><span style="color:#000;font-weight:bold">(</span>Bundle savedInstanceState<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onCreate</span><span style="color:#000;font-weight:bold">(</span>savedInstanceState<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        setContentView<span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">layout</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">activity_foreground</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        bindBt <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>Button<span style="color:#000;font-weight:bold">)</span> findViewById<span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">bindBt</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        unbindBt <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>Button<span style="color:#000;font-weight:bold">)</span> findViewById<span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">unbindBt</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        intent <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Intent<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">,</span>ForegroundService<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        bindBt<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setOnClickListener</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        unbindBt<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setOnClickListener</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onClick</span><span style="color:#000;font-weight:bold">(</span>View v<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+
+        <span style="color:#000;font-weight:bold">switch</span> <span style="color:#000;font-weight:bold">(</span>v<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getId</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">case</span> R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">bindBt</span><span style="color:#000;font-weight:bold">:</span>
+                Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onClick: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                intent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">putExtra</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;cmd&#34;</span><span style="color:#000;font-weight:bold">,</span>0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span><span style="color:#998;font-style:italic">//0,开启前台服务,1,关闭前台服务
+</span><span style="color:#998;font-style:italic"></span>                startService<span style="color:#000;font-weight:bold">(</span>intent<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">case</span> R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">unbindBt</span><span style="color:#000;font-weight:bold">:</span>
+                Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onClick: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                intent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">putExtra</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;cmd&#34;</span><span style="color:#000;font-weight:bold">,</span>1<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span><span style="color:#998;font-style:italic">//0,开启前台服务,1,关闭前台服务
+</span><span style="color:#998;font-style:italic"></span>                startService<span style="color:#000;font-weight:bold">(</span>intent<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="2运行结果">2.运行结果</h4>
+<p><img src="https://img-blog.csdnimg.cn/2018103117581373.jpg" alt="在这里插入图片描述">
+<img src="https://img-blog.csdnimg.cn/20181031175846776.jpg" alt="在这里插入图片描述"></p>
+<h3 id="九servicr的生命周期">九.Servicr的生命周期</h3>
+<h4 id="1生命周期的回调">1.生命周期的回调</h4>
+<p>与Activity类似,服务也有生命周期回调的方法。下面就是他每种生命周期方法</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">ExampleService</span> <span style="color:#000;font-weight:bold">extends</span> Service <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#458;font-weight:bold">int</span> mStartMode<span style="color:#000;font-weight:bold">;</span>       <span style="color:#998;font-style:italic">// indicates how to behave if the service is killed
+</span><span style="color:#998;font-style:italic"></span>    IBinder mBinder<span style="color:#000;font-weight:bold">;</span>      <span style="color:#998;font-style:italic">// interface for clients that bind
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#458;font-weight:bold">boolean</span> mAllowRebind<span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// indicates whether onRebind should be used
+</span><span style="color:#998;font-style:italic"></span>
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onCreate</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#998;font-style:italic">// The service is being created
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">//正在创建服务
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">onStartCommand</span><span style="color:#000;font-weight:bold">(</span>Intent intent<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> flags<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> startId<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#998;font-style:italic">// The service is starting, due to a call to startService()
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">//由于调用startService()，服务正在启动
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">return</span> mStartMode<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> IBinder <span style="color:#900;font-weight:bold">onBind</span><span style="color:#000;font-weight:bold">(</span>Intent intent<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#998;font-style:italic">// A client is binding to the service with bindService()
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">//客户端使用bindService()绑定到服务
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">return</span> mBinder<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">onUnbind</span><span style="color:#000;font-weight:bold">(</span>Intent intent<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#998;font-style:italic">// All clients have unbound with unbindService()
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">//所有客户端都使用unbindService()解除绑定
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">return</span> mAllowRebind<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onRebind</span><span style="color:#000;font-weight:bold">(</span>Intent intent<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#998;font-style:italic">// A client is binding to the service with bindService(),
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">// after onUnbind() has already been called
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">//在调用onUnbind()之后，客户机使用bindService()绑定到服务
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onDestroy</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#998;font-style:italic">// The service is no longer used and is being destroyed
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">//服务不再使用，并且正在被销毁
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>注:与 Activity 生命周期回调方法不同，您不需要调用这些回调方法的超类实现。
+左图显示了使用 startService() 所创建的服务的生命周期，右图显示了使用 bindService() 所创建的服务的生命周期。</p>
+<p>[外链图片转存中&hellip;(img-JM9AAPBu-1579438005937)]</p>
+<ul>
+<li>从图中可以看出无论服务是通过 startService() 还是 bindService() 创建，都会为所有服务调用 onCreate() 和 onDestroy() 方法。</li>
+<li>服务的有效生命周期从调用 onStartCommand() 或 onBind() 方法开始。每种方法均有 Intent 对象，该对象分别传递到 startService() 或 bindService()。</li>
+<li>说明了服务的典型回调方法。尽管该图分开介绍通过 startService() 创建的服务和通过 bindService() 创建的服务，但是，不管启动方式如何，任何服务均有可能允许客户端与其绑定。</li>
+</ul>
+<h4 id="2管理绑定服务的生命周期">2.管理绑定服务的生命周期</h4>
+<p>当服务与所有客户端之间的绑定全部取消时，Android 系统便会销毁服务（除非还使用 onStartCommand() 启动了该服务）。因此，如果您的服务是纯粹的绑定服务，则无需对其生命周期进行管理 — Android 系统会根据它是否绑定到任何客户端代您管理。</p>
+<p>不过，如果您选择实现 onStartCommand() 回调方法，则您必须显式停止服务，因为系统现在已将服务视为已启动。在此情况下，服务将一直运行到其通过 stopSelf() 自行停止，或其他组件调用 stopService() 为止，无论其是否绑定到任何客户端。</p>
+<p>此外，如果您的服务已启动并接受绑定，则当系统调用您的 onUnbind() 方法时，如果您想在客户端下一次绑定到服务时接收 onRebind() 调用，则可选择返回 true。onRebind() 返回空值，但客户端仍在其 onServiceConnected() 回调中接收 IBinder。下文图 说明了这种生命周期的逻辑。</p>
+<h3 id="十参考资料">十.参考资料</h3>
+<p><a href="https://developer.android.com/guide/components/services?hl=zh-cn">服务官方文档</a><br>
+<a href="https://developer.android.com/guide/components/bound-services?hl=zh-cn">绑定服务官方文档</a><br>
+<a href="https://blog.csdn.net/javazejian/article/details/52709857">关于Android Service真正的完全详解，你需要知道的一切</a></p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC1Service/">http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC1Service/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/%E6%96%87%E7%AB%A0%E5%AF%BC%E8%88%AA/">文章导航</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%8211Retrofit%E7%9A%84%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">Android之网络请求11————Retrofit的源码分析</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%8210Retrofit%E7%9A%84%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8/">Android之网络请求10————Retrofit的进阶使用</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%829Retrofit%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/">Android之网络请求8————Retrofit的简单使用</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%828OkHttp%E6%BA%90%E7%A0%815_%E7%BC%93%E5%AD%98%E7%9B%B8%E5%85%B3/">Android之网络请求8————OkHttp源码5:缓存相关</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            没有标签
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "https://github.com/hsc396612325/HSCBlog/tree/gh-pages"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一service的概述">一.Service的概述</a>
+      <ul>
+        <li><a href="#1service的使用时机">1.Service的使用时机</a></li>
+        <li><a href="#2service是什么">2.Service是什么</a></li>
+      </ul>
+    </li>
+    <li><a href="#二service在androidmanifext的声明">二.Service在AndroidManifext的声明</a></li>
+    <li><a href="#三service的创建与启动">三.Service的创建与启动</a>
+      <ul>
+        <li><a href="#1service代码">1.Service代码</a></li>
+        <li><a href="#2activity代码">2.Activity代码</a></li>
+        <li><a href="#3运行结果">3.运行结果</a></li>
+      </ul>
+    </li>
+    <li><a href="#四service绑定服务概述">四.Service绑定服务概述</a>
+      <ul>
+        <li><a href="#1-扩展的binder类">1. 扩展的binder类</a></li>
+        <li><a href="#2-使用messenger">2. 使用Messenger</a></li>
+        <li><a href="#3-使用aidl">3. 使用AIDL</a></li>
+        <li><a href="#4绑定服务的注意点">4.绑定服务的注意点</a></li>
+        <li><a href="#5-启动服务和绑定服务间的转换问题">5. 启动服务和绑定服务间的转换问题</a></li>
+      </ul>
+    </li>
+    <li><a href="#五扩展binder类">五.扩展Binder类</a>
+      <ul>
+        <li><a href="#1使用场景">1.使用场景</a></li>
+        <li><a href="#2使用步骤">2.使用步骤</a></li>
+        <li><a href="#3代码实现">3.代码实现</a></li>
+        <li><a href="#4运行结果">4.运行结果</a></li>
+      </ul>
+    </li>
+    <li><a href="#六使用messenger">六.使用Messenger</a>
+      <ul>
+        <li><a href="#1使用场景-1">1.使用场景</a></li>
+        <li><a href="#2使用步骤-1">2.使用步骤</a></li>
+        <li><a href="#3代码">3.代码</a></li>
+        <li><a href="#4运行结果-1">4.运行结果</a></li>
+      </ul>
+    </li>
+    <li><a href="#七使用aidl">七.使用AIDL</a>
+      <ul>
+        <li><a href="#1使用场景-2">1.使用场景</a></li>
+        <li><a href="#2使用步骤-2">2.使用步骤</a></li>
+      </ul>
+    </li>
+    <li><a href="#八前台service">八.前台Service</a>
+      <ul>
+        <li><a href="#1代码">1.代码</a></li>
+        <li><a href="#2运行结果">2.运行结果</a></li>
+      </ul>
+    </li>
+    <li><a href="#九servicr的生命周期">九.Servicr的生命周期</a>
+      <ul>
+        <li><a href="#1生命周期的回调">1.生命周期的回调</a></li>
+        <li><a href="#2管理绑定服务的生命周期">2.管理绑定服务的生命周期</a></li>
+      </ul>
+    </li>
+    <li><a href="#十参考资料">十.参考资料</a></li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>
