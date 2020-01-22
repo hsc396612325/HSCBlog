@@ -1,4 +1,11 @@
-﻿# Android之View篇5————自定义View
+﻿---
+title: "Android之View篇5————自定义View"
+date: 2019-03-02T22:40:54+08:00
+draft: false
+categories: ["Android","Android之网络请求"]
+tags: ["Android","网络"]
+---
+
 ### 一.目录
 @[toc]
 ### 二.自定义View的分类

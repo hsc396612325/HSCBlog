@@ -1,4 +1,10 @@
-﻿# Android之View篇1————View的事件分发
+﻿---
+title: "Android之View篇2————View的事件分发"
+date: 2019-03-02T22:40:54+08:00
+draft: false
+categories: ["Android","Android之网络请求"]
+tags: ["Android","网络"]
+---
 
 ### 一.目录
 @[toc]

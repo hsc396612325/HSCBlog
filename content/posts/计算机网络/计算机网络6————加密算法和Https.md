@@ -17,7 +17,7 @@ tags: ["网络"]
 
 #### 1.对称加密
 对称加密：对于对称加密来说。它的加密和解码的密钥是相同的。也就是说：明文加密成密文，和密文解密成明文使用的是同样的秘钥。
-![在这里插入图片描述](https://img-blog.csdn.net/20180820145416682?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0FtaW55MTIz/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![在这里插入图片描述](/image/jsjwl/4_0.png)
 对称加密的优点：
 * 使用起来快捷简单
 * 秘钥较短，且破译困难
@@ -33,7 +33,7 @@ tags: ["网络"]
 #### 2.非对称加密
 非对称加密技术需要两个密钥，公钥和私钥成对出现。
 公钥和私钥的作用：公钥加密的内容，私钥可以解密，反之私钥加密的内容，公钥可以解开。
-![在这里插入图片描述](https://img-blog.csdn.net/20180820145603864?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0FtaW55MTIz/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)非对称加密的基本过程：
+![在这里插入图片描述](/image/jsjwl/4_1.png)非对称加密的基本过程：
 * 乙生成一对秘钥，公钥可以发送给所有人，私钥自己保存。
 * 甲通过公钥将明文加密成密文。（此时其他人获取该信息，如果没有私钥则无法破解）、
 * 乙获取的到甲发送的密文，根据自己持有的私钥来进行解密
@@ -234,7 +234,7 @@ A为发送者，B为接收者
 
 
 下面是一个数字签名和证书的示例
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy80OTQzOTExLWNjMjg0YzQ1NjZlZmNkN2UucG5n?x-oss-process=image/format,png)
+![在这里插入图片描述](/image/jsjwl/4_3.png)
 
 
 ### 七.HTTPS
@@ -244,9 +244,9 @@ A为发送者，B为接收者
 在之前的文章里，我们详细介绍过HTTP，HTTP发出的内容是明文，任何人都可以通过抓包获取获取到，非常的不安全。
 
 所以为了保护发送报文的安全性，所以提出了HTTPS，HTTPS是密文传输。一般难以获取报文。
-![在这里插入图片描述](https://img-blog.csdn.net/20180719135629906?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9taW5nMTAwMDAx/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![在这里插入图片描述]/image/jsjwl/4_4.png)
 简单的说，HTTPS = HTTP +SSL/TSL
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jYXR0YWlsLm1lL2Fzc2V0cy9ob3ctaHR0cHMtd29ya3MvdGNwLWlwLW1vZGVsLnBuZw?x-oss-process=image/format,png)HTTPS的加密是将对称加密和非对称加密结合起来，非对称加密用于HTTPS的连接，身份的校验，传输对称加密的秘钥。对称加密连接建立后传输包。
+![在这里插入图片描述](/image/jsjwl/4_5.png)HTTPS的加密是将对称加密和非对称加密结合起来，非对称加密用于HTTPS的连接，身份的校验，传输对称加密的秘钥。对称加密连接建立后传输包。
 
 HTTPS同HTTP相比提供了：
 * 数据的完整性：内容经过完整性校验（哈希算法）
@@ -289,7 +289,7 @@ HTTPS同HTTP相比提供了：
 * 之后就可以根据client_key对信息对称加密和对称解密。
 
 图示：
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20190308104617688.jpg)
+![在这里插入图片描述](/image/jsjwl/4_1.png)
 
 **HTTP的双向认证**
 上面说的是单向证书认证。

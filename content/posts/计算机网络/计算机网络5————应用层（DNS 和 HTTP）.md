@@ -8,7 +8,7 @@ tags: ["网络"]
 
 ### 一.应用层概述
 应用层位于网络体系的最高层
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20190201113554929.png)
+![在这里插入图片描述](/image/jsjwl/1_0.png)
 应用层字协议：
 >定义了运行在不同端系统上的应用程序进程之间如何传递报文，为某一类应用进程提供了通信服务的规则。
 ### 二.DNS
@@ -36,13 +36,13 @@ DNS产生原因:
 * 完整的域名最长255个字符
 * 每部分最长63个字符
 * 不区分大小写
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20190201145243836.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](/image/jsjwl/1_1.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70)
 顶级域名分为三类：国际顶级域名，通用顶级域名,基础结构域名。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20190201150312329.png)
+![在这里插入图片描述](/image/jsjwl/1_2.png)
 国家顶级域名：
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20190201145338233.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](/image/jsjwl/1_3.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70)
 通用顶级域名:
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20190201145431472.png)
+![在这里插入图片描述](/image/jsjwl/1_4.png)
 基础结构域名：这种域名只有一个，即arpa，用于反域名解析，因此又称为反向域名。
  
 #### 3.域名服务器
@@ -57,13 +57,13 @@ DNS产生原因:
 * 每一个因特网服务提供者ISP，或者一个大学，甚至一个大学的一个系，都可以拥有一个本地域名服务器
 * 当本地域名无法对因特网上的域名五福解析，就首先求助于跟域名服务器。
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20190201153633699.png)
+![在这里插入图片描述](/image/jsjwl/1_5.png)
 
 **b.根域名服务器**
 * 当本地域名服务器无法解析域名时，就会首先求助于根域名服务器。
 * 在因特网上共有13个不同IP地址的根域名服务器，他们的名字是用一个英文字母命名，从a一直到m，这样做的目的是为了方便用户，使世界大部分DNS域名服务器都能就近找到一个跟域名服务器
 * 每个域名服务器都知道所有的顶级域名服务器的域名和IP地址。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2019020115481020.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](/image/jsjwl/1_6.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70)
 
 **c.顶级域名服务器**
 * 顶级域名服务器负责管理在其下注册的所有二级域名
@@ -78,9 +78,9 @@ DNS产生原因:
 域名解析分为两种查询：迭代查询和递归查询
 迭代查询：
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20190201161051973.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](/image/jsjwl/1_7.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70)
 递归查询
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20190201161121417.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](/image/jsjwl/1_8.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70)
 * 主机向本地域名服务器的查询一般都是采用递归查询。如果主机所询问的本地域名服务器不知道被查询域名的IP地址，那么本地域名服务器就以DNS客户的身份，向其他跟域名服务器继续发出查询请求报文。
 * 本地域名服务器向跟域名服务器的查询通常是采用的迭代查询。当跟域名服务器收到本地域名服务器的迭代查询请求报文时，要么给出所要查询的IP地址，要么告诉本地域名服务器：你的下一步应当向哪一个域名服务器进行查询。然后让本地域名服务器进行后续的查询。
 ### 三.HTTT概述
@@ -96,7 +96,7 @@ URL是浏览器寻找信息时所需要的资源位置，通过URL，人类和�
 * 第二部分（www.joes-hardware.com）指的是服务的位置。这部分告知web客户端资源位于何处
 * 第三部分（/seasonal/index-fall.html）是资源路径。路径说明了请求的是服务器上哪个特定的本地资源
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20190201174149166.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70)**a.URL的语法**
+![在这里插入图片描述](/image/jsjwl/1_9.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70)**a.URL的语法**
 大多数URL的语法建立在这个由9部分构成的通用格式上：
 < scheme >://< user >:< password >@< host >:< port >/ < path > ; < patrams > ? | < query >#< frag > ]
 
@@ -237,22 +237,22 @@ Etag 由服务器端生成，客户端通过 If-Range 条件判断请求来验�
 
 #### 2.TCP连接
 下图就是TCP的三次握手的过程
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20190125125601457.png)更详细的内容可以看我上一篇的博客 [计算机网络4————运输层](https://blog.csdn.net/qq_38499859/article/details/86582969#2TCP_286)
+![在这里插入图片描述](/image/jsjwl/1_10.png)更详细的内容可以看我上一篇的博客 [计算机网络4————运输层](https://blog.csdn.net/qq_38499859/article/details/86582969#2TCP_286)
 #### 3.HTTP传输数据
 当连接建立好之后，就可以进行数据的传输。一般而言会以GET或者POST的方式进行传输通信，以GET请求为例
 
 下面是一个GET请求报文格式
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20190202163458592.png)
+![在这里插入图片描述](/image/jsjwl/1_11.png)
 客户端将这个报文经过因特网发送给服务器
 
 服务器收到这个报文之后，处理之后，给客户端返回一个响应
 即HTTP响应，响应报文格式如下:
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20190202163751517.png)
+![在这里插入图片描述](/image/jsjwl/1_12.png)
 
 #### 4.如何通过因特网传输数据
 上面只是简单的说，通过因特网进行传输，那么他究竟如何通过因特网传输的？
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20190202164349748.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70)就是如上面所示，根据TCP/IP的协议。
+![在这里插入图片描述](/image/jsjwl/1_13.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70)就是如上面所示，根据TCP/IP的协议。
 
 * 先添加TCP头部，这一块负责流量控制，拥塞控制，以及负责连接的建立和断开。详细内容见[计算机网络4————运输层](https://blog.csdn.net/qq_38499859/article/details/86582969#2TCP_286)
 * 在添加IP头部，这一块是负责寻址，用IP地址，经过路由器中路由表的分组转发，最终到达服务器。而路由表的生成，有静态路由和动态路由之分。动态路由有RIP（距离向量），OSPF（链路选择），BGP协议来生成对应的路由表，详细内容见[计算机网络3————网络层](https://blog.csdn.net/qq_38499859/article/details/86508689#3RIP_203)
