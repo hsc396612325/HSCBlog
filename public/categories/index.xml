@@ -6,10 +6,28 @@
     <description>Recent content in Categories on 冰炭不投day的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 23 Jan 2019 22:40:54 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 11 Feb 2019 22:40:54 +0800</lastBuildDate>
     
 	<atom:link href="http://blog.bingtan.online/categories/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Android</title>
+      <link>http://blog.bingtan.online/categories/Android/</link>
+      <pubDate>Mon, 11 Feb 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/categories/Android/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Android之网络请求</title>
+      <link>http://blog.bingtan.online/categories/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/</link>
+      <pubDate>Mon, 11 Feb 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/categories/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>计算机网络</title>

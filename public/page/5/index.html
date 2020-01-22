@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta name="generator" content="Hugo 0.62.2" />
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>冰炭不投day的博客 | 若向往 我敢往</title>
+    <meta property="og:title" content="冰炭不投day的博客 | 若向往 我敢往">
+    <meta property="og:type" content="website">
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="专注于Android">
+    <meta property="og:url" content="http://blog.bingtan.online/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <link rel="alternate" type="application/rss+xml+xml" href="http://blog.bingtan.online/index.xml" title="冰炭不投day的博客" />
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <h1>
+                        <a id="logo" href="http://blog.bingtan.online">
+                            冰炭不投day的博客
+                        </a>
+                    </h1>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%876%E4%BB%BF%E9%99%8C%E9%99%8C%E5%8D%A1%E7%89%87%E5%B7%A6%E5%8F%B3%E6%BB%91%E5%8A%A8%E9%80%89%E6%8B%A9%E5%B8%83%E5%B1%80/" title=""></a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            1年1月1日
+        </date>
+        
+        <div class="post-content">
+            Android之View篇6————仿陌陌卡片左右滑动选择控件 一.目录 @[toc]
+二.效果图 三.业务需求梳理  卡片随着手指的移动进行移动 卡片在移动过程中，随着距离的加大，卡片绕z轴旋转 判断手指的移动方向，显示选择/删除图标，同时图标随距离的增大，透明度增加 手指离开卡片后，根据移动的距离，判断卡片是否移出屏幕，从左边移动还是右边移动 显示的卡片移出完后，增加新的卡片。 显示的4张卡片，需要展示出卡片的层次感  四.思路分析 根据上面的业务逻辑梳理，明显可以知道，实现该功能需要自定义两个View，一个是卡片View（TinderCardView），一个是卡片的容器（TinderStackLayout）。
+需求1,2,3都是手指移动过程中发生，即MotionEvent的ACTION_MOVE事件中。
+ MotionEvent 这一块不知道的可以看我前面写的博客Android之View篇2————View的事件分发
+ 需求4是在手指离开屏幕后中发生的，即MotionEvent的MotionEvent.ACTION_UP事件中
+需求5是卡片动画结束后，判断剩余卡片数量，选择是否要加载新的卡片
+需求6是加载新卡片时，要求实现的。
+1. 新建TinderCardView类，并继承FrameLayout a.TinderCardView即展示信息的卡片类，重写其onTouch方法
+ @Override public boolean onTouch(final View view, MotionEvent motionEvent) { TinderStackLayout tinderStackLayout = ((TinderStackLayout) view.getParent()); TinderCardView topCard = (TinderCardView) tinderStackLayout.getChildAt(tinderStackLayout.getChildCount() - 1); if (topCard.equals(view)) { switch (motionEvent.getAction()) { case MotionEvent.ACTION_DOWN: downX = motionEvent.getX(); downY = motionEvent.getY(); view.clearAnimation(); return true; case MotionEvent.ACTION_MOVE: newX = motionEvent.getX(); newY = motionEvent.getY(); dX = newX - downX; //手指移动距离 dY = newY - downY; float posX = view.getX() + dX; view.setX(view.getX() + dX); //view的新距离 需求1，卡片随手指的移动而移动 view.setY(view.getY() + dY); float rotation = (CARD_ROTATION_DEGREES * (posX)) / screenWidth; int halfCardHeight = (view.getHeight() / 2); if (downY &lt; halfCardHeight - (2 * padding)) { view.setRotation(rotation); //设置View在Z轴上的旋转角度 需求2，卡片移动过程中，随距离的增大而，选择角度增大 } else { view.setRotation(-rotation); } float alpha = (posX - padding) / (screenWidth * 0.3f); if (alpha &gt; 0) { //需求3, 判断手指的移动方向，显示选择/删除图标，同时图标随距离的增大，透明度增加 iv_tips.……
+        </div>
+        <p class="readmore"><a href="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%876%E4%BB%BF%E9%99%8C%E9%99%8C%E5%8D%A1%E7%89%87%E5%B7%A6%E5%8F%B3%E6%BB%91%E5%8A%A8%E9%80%89%E6%8B%A9%E5%B8%83%E5%B1%80/">阅读全文</a></p>
+    </article>
+    
+    
+
+
+
+<ol class="page-navigator">
+    
+    <li class="prev">
+        <a href="http://blog.bingtan.online/page/4/">上一页</a>
+    </li>
+    
+
+    
+    <li >
+        <a href="http://blog.bingtan.online/">1</a>
+    </li>
+    
+    <li >
+        <a href="http://blog.bingtan.online/page/2/">2</a>
+    </li>
+    
+    <li >
+        <a href="http://blog.bingtan.online/page/3/">3</a>
+    </li>
+    
+    <li >
+        <a href="http://blog.bingtan.online/page/4/">4</a>
+    </li>
+    
+    <li  class="current">
+        <a href="http://blog.bingtan.online/page/5/">5</a>
+    </li>
+    
+
+    
+</ol>
+
+
+
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://blog.bingtan.online/posts/%E6%96%87%E7%AB%A0%E5%AF%BC%E8%88%AA/" title="文章导航">文章导航</a>
+    </li>
+    
+    <li>
+        <a href="http://blog.bingtan.online/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%8211Retrofit%E7%9A%84%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" title="Android之网络请求11————Retrofit的源码分析">Android之网络请求11————Retrofit的源码分析</a>
+    </li>
+    
+    <li>
+        <a href="http://blog.bingtan.online/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%8210Retrofit%E7%9A%84%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8/" title="Android之网络请求10————Retrofit的进阶使用">Android之网络请求10————Retrofit的进阶使用</a>
+    </li>
+    
+    <li>
+        <a href="http://blog.bingtan.online/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%829Retrofit%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/" title="Android之网络请求8————Retrofit的简单使用">Android之网络请求8————Retrofit的简单使用</a>
+    </li>
+    
+    <li>
+        <a href="http://blog.bingtan.online/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%828OkHttp%E6%BA%90%E7%A0%815_%E7%BC%93%E5%AD%98%E7%9B%B8%E5%85%B3/" title="Android之网络请求8————OkHttp源码5:缓存相关">Android之网络请求8————OkHttp源码5:缓存相关</a>
+    </li>
+    
+    <li>
+        <a href="http://blog.bingtan.online/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%827OkHttp%E6%BA%90%E7%A0%814_%E7%BD%91%E7%BB%9C%E6%93%8D%E4%BD%9C/" title="Android之网络请求7————OkHttp源码4:网络操作">Android之网络请求7————OkHttp源码4:网络操作</a>
+    </li>
+    
+    <li>
+        <a href="http://blog.bingtan.online/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%826OkHttp%E6%BA%90%E7%A0%813_%E6%8B%A6%E6%88%AA%E5%99%A8%E9%93%BE/" title="Android之网络请求6————OkHttp源码3:拦截器">Android之网络请求6————OkHttp源码3:拦截器</a>
+    </li>
+    
+    <li>
+        <a href="http://blog.bingtan.online/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%825OkHttp%E6%BA%90%E7%A0%812_%E5%8F%91%E9%80%81%E8%AF%B7%E6%B1%82/" title="Android之网络请求5————OkHttp源码2:发送请求">Android之网络请求5————OkHttp源码2:发送请求</a>
+    </li>
+    
+    <li>
+        <a href="http://blog.bingtan.online/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%824OkHttp%E6%BA%90%E7%A0%811_%E6%A1%86%E6%9E%B6/" title="Android之网络请求4————OkHttp源码1:框架">Android之网络请求4————OkHttp源码1:框架</a>
+    </li>
+    
+    <li>
+        <a href="http://blog.bingtan.online/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%823OkHttp%E7%9A%84%E6%8B%A6%E6%88%AA%E5%99%A8%E5%92%8C%E5%B0%81%E8%A3%85/" title="Android之网络请求3————OkHttp的拦截器和封装">Android之网络请求3————OkHttp的拦截器和封装</a>
+    </li>
+    
+</ul>
+    </section>
+    
+
+    
+    
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li><a href="http://blog.bingtan.online/categories/Android/">Android (11)</a></li>
+    
+    <li><a href="http://blog.bingtan.online/categories/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/">Android之网络请求 (11)</a></li>
+    
+    <li><a href="http://blog.bingtan.online/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络 (6)</a></li>
+    
+</ul>
+    </section>
+    
+   
+    
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="http://blog.bingtan.online/tags/Android/">Android</a>
+    
+    <a href="http://blog.bingtan.online/tags/%E7%BD%91%E7%BB%9C/">网络</a>
+    
+</div>
+    </section>
+    
+
+    
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://blog.csdn.net/qq_38499859" title="csdn博客链接">冰炭不投的博客</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="http://yuedu.baidu.com/ebook/14a722970740be1e640e9a3e" title="Android Gradle权威指南">Android Gradle权威指南</a>
+        </li>
+        
+    </ul>
+</section>
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

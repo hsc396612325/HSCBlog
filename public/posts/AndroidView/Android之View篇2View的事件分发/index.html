@@ -1,0 +1,1414 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title> | 冰炭不投day的博客</title>
+    <meta property="og:title" content=" - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%872View%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%88%86%E5%8F%91/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title"></h1>
+        </header>
+        <date class="post-meta meta-date">
+            1年1月1日
+        </date>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h1 id="android之view篇1view的事件分发">Android之View篇1————View的事件分发</h1>
+<h3 id="一目录">一.目录</h3>
+<p>@[toc]</p>
+<h3 id="二事件分发的基础认识">二.事件分发的基础认识</h3>
+<h4 id="1-事件分发是什么">1. 事件分发是什么</h4>
+<p>事件分发就是对MotionEvent事件进行分发的过程，即当一个MotionEvent产生后，系统需要把这个事件传递(处理)给一个具体的View，这个过程就是分发过程。</p>
+<h4 id="2-事件分发的简单过程">2. 事件分发的简单过程</h4>
+<p>当一个点击事件产生后，一般顺序事件先传递到Activity，在传到ViewGroup，最终传到View。</p>
+<h4 id="3-事件分发涉及的方法">3. 事件分发涉及的方法</h4>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th align="left">作用</th>
+<th align="left">调用时刻</th>
+<th align="left">返回值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dispathchTouchEvent</td>
+<td align="left">分发(传递)点击事件</td>
+<td align="left">事件传递给当前View时被调用</td>
+<td align="left">表示是否消耗当前事件</td>
+</tr>
+<tr>
+<td>onTouchEvent</td>
+<td align="left">处理点击事件</td>
+<td align="left">在dispathchTouchEvent内部调用</td>
+<td align="left">表示是否消耗当前事件</td>
+</tr>
+<tr>
+<td>onInterceptTouchEvent(只存在于ViewGroup)</td>
+<td align="left">判断是否拦截某个事件</td>
+<td align="left">在ViewGroup的dispatchTouchEvent（）内部调用</td>
+<td align="left">表示是否拦截当前事件</td>
+</tr>
+</tbody>
+</table>
+<p>三者之间的关系可以用下面的伪代码表示</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">//在一个ViewGroup中
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">public</span> boolen dispatchTouchEvent<span style="color:#a61717;background-color:#e3d2d2">（</span><span style="color:#a61717;background-color:#e3d2d2">）</span><span style="color:#000;font-weight:bold">{</span>
+	boolen consume <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#a61717;background-color:#e3d2d2">；</span>
+	<span style="color:#000;font-weight:bold">if</span><span style="color:#000;font-weight:bold">(</span>onInterceptTouchEvent<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">{</span>  
+		consume <span style="color:#000;font-weight:bold">=</span> onTouchEvent<span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">//如果被拦截，调用当前viewGroup的onTouchEvent
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">else</span><span style="color:#000;font-weight:bold">{</span>
+		consume <span style="color:#000;font-weight:bold">=</span> child<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">dispatchTouchEvent</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">//如果未被拦截，调用当前的子view的dispatchTouchEvent，即事件传递给子view
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">}</span>
+	<span style="color:#000;font-weight:bold">return</span> consume<span style="color:#000;font-weight:bold">;</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="三图解事件分发">三.图解事件分发</h3>
+<h4 id="1-图示事件分发-action_down">1. 图示事件分发 (ACTION_DOWN)</h4>
+<p><img src="https://img-blog.csdn.net/20180530201419741?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<h4 id="2-图示事件分发的说明">2. 图示事件分发的说明</h4>
+<ul>
+<li>图分为3层，从上向下以此为Activity，ViewGroup，View</li>
+<li>箭头中间的值代表方法返回值，（return true，return false ，return super.xxxx）,super意思是调用父类实现。</li>
+<li>dispatchTouchEvent和 onTouchEvent 对应的消费表示的意思是，该事件就此消费，不会继续往别的地方传来，事件终止。</li>
+<li>上面图的事件是针对ACTION_DOWN的，对于ACTION_MOVE和ACTION_UP我们最后做分析。</li>
+</ul>
+<h4 id="3-图示事件分发的结论">3. 图示事件分发的结论</h4>
+<p><strong>1.如果整个事件不被中断，那么整个事件就是一个类U型图。</strong>
+如果我们没有对控件里面的方法进行重写或者改变返回值。而直接调用super调用父类的默认实现，那么整个事件如下图所示。(前提:子Veiw都不消耗事件，即默认不可点击）
+<img src="https://img-blog.csdn.net/20180530202742502?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p><strong>2. dispatchTouchEvent 和 onTouchEvent 一旦return true,事件就停止传递了（到达终点）</strong>
+如下图所示，只有return turn事件就不会继续传下去，也就是我们常说的事件被消费了。
+<img src="https://img-blog.csdn.net/20180530203229421?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p><strong>3.dispatchTouchEvent和onTouchEven一旦return false事件都会回传给父控件onTouchEvent</strong>
+如下图所示，触Activity外，一旦进行了return false，都将事件传递给了父控件的onTouchEvent。</p>
+<ul>
+<li>对于dispatchTouchEvent 返回false的含义：事件停止往子View传递和分发，同时开始往父控件回溯。</li>
+<li>对于onTouchEvent返回false的含义:表示当前View不消耗次事件，并且让事件继续往父空间的方向流动，
+<img src="https://img-blog.csdn.net/20180530204523521?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></li>
+</ul>
+<p><strong>4.onInterceptTouchEvent 的作用</strong>
+Intercept表示拦截，在ViewGroup进行分发是，会询问拦截器是否需要拦截。</p>
+<ul>
+<li>return false：不拦截，继续向子View传递事件</li>
+<li>return ture: 拦截，自己对事件进行处理，将事件传递给自己的onTouchEvebt。</li>
+<li>super：默认情况下不拦截，继续向子View传递事件
+<img src="https://img-blog.csdn.net/20180530205350426?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></li>
+</ul>
+<h4 id="4-关于action_move-和-action_up">4. 关于ACTION_MOVE 和 ACTION_UP</h4>
+<p><strong>上面的讲解都是针对的ACTION_DOWN</strong>,ACTION_MOVE和ACTION_UP和ACTION_DOWN在传递过程中和ACTION_DOWN并不相同。</p>
+<p>简单来说，只有前一个事件返回了true时，才会收到ACTION_MOVE和ACTION_UP的事件。并且而最终会将ACTION_MOVE和ACTION_UP分发到消费到ACTION_DOWN的View手中。在分发的过程中，<strong>ACTION_MOVE和ACTION_UP与ACTION_DOWN分发的路线可能不回完全相同</strong>。</p>
+<p>例如:
+红色的箭头代表ACTION_DOWN 事件的流向
+蓝色的箭头代表ACTION_MOVE 和 ACTION_UP 事件的流向
+<img src="https://img-blog.csdnimg.cn/20190613200417244.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><img src="https://img-blog.csdnimg.cn/20190613200515673.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><img src="https://img-blog.csdnimg.cn/20190613200546590.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="四事件分发的源码">四.事件分发的源码</h3>
+<p>从上面的图示分析，事件分发其实包含了三部分的事件分发，即:</p>
+<ul>
+<li>Activity的事件分发</li>
+<li>ViewGroup的事件分发</li>
+<li>View的事件分发。
+所以要充分理解事件分发，要看上述这三块关于事件分发的处理。</li>
+</ul>
+<h4 id="1-activity的事件分发机制">1. Activity的事件分发机制</h4>
+<p>当一个点击事件发生后，事件先传递到Activity的dispatchTouchEvent。
+<strong>源码分析</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">77
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">78
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">79
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">80
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">81
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">82
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">   <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 源码分析Activity的dispatchTouchEvent方法
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">dispatchTouchEvent</span><span style="color:#000;font-weight:bold">(</span>MotionEvent ev<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getAction</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_DOWN</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#998;font-style:italic">//分析1
+</span><span style="color:#998;font-style:italic"></span>            onUserInteraction<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#998;font-style:italic">//分析2
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>getWindow<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">superDispatchTouchEvent</span><span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+
+            <span style="color:#998;font-style:italic">//如果getWindow().superDispatchTouchEvent(ev)返回ture
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#998;font-style:italic">//如果Activity的dispatchTouchEvent方法返回true/false，则事件分发结束，不会调用ctivity.onTouchEvent
+</span><span style="color:#998;font-style:italic"></span>
+            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#998;font-style:italic">//分析4
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">return</span> onTouchEvent<span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 分析1:Activity.1onUserInteraction()
+</span><span style="color:#998;font-style:italic">     * 空方法
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onUserInteraction</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 分析2:PhoneWindow.superDispatchTouchEvent
+</span><span style="color:#998;font-style:italic">     * 说明1:
+</span><span style="color:#998;font-style:italic">     *      1.getWindow()获得是Window的抽象类
+</span><span style="color:#998;font-style:italic">     *      2.而window的唯一实现就是PhoneWindow
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">superDispatchTouchEvent</span><span style="color:#000;font-weight:bold">(</span>MotionEvent event<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+
+        <span style="color:#998;font-style:italic">//Decor即是DecorView，所以honeWindow将事件传递给了DecorView
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">return</span> mDecor<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">superDispatchTouchEvent</span><span style="color:#000;font-weight:bold">(</span>event<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#998;font-style:italic">//分析3
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     *  分析3:DecorView.superDispatchTouchEvent()
+</span><span style="color:#998;font-style:italic">     *  说明:
+</span><span style="color:#998;font-style:italic">     *      1.DecorView是顶级View
+</span><span style="color:#998;font-style:italic">     *      2.DecorView继承自FrameLayout
+</span><span style="color:#998;font-style:italic">     *      3.FrameLayout继承子ViewGroup，所以DecorView的间接父类就是ViewGroup
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">superDispatchTouchEvent</span><span style="color:#000;font-weight:bold">(</span>MotionEvent event<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">dispatchTouchEvent</span><span style="color:#000;font-weight:bold">(</span>event<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#998;font-style:italic">// super.dispatchTouchEvent(event); --&gt;等于开始调用ViewGroup的方法，详见下面的ViewGroup源码
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     *  分析4 Activity.onTouchEvent方法
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">onTouchEvent</span><span style="color:#000;font-weight:bold">(</span>MotionEvent event<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#998;font-style:italic">//如果子view消费当前事件时
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">//分析5
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mWindow<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">shouldCloseOnTouch</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">,</span> event<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            finish<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 分析5 Window.shouldCloseOnTouch方法
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">shouldCloseOnTouch</span><span style="color:#000;font-weight:bold">(</span>Context context<span style="color:#000;font-weight:bold">,</span> MotionEvent event<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#998;font-style:italic">// 主要是对于处理边界外点击事件的判断：是否是DOWN事件，event的坐标是否在边界内等
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mCloseOnTouchOutside <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> event<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getAction</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_DOWN</span>
+                <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> isOutOfBounds<span style="color:#000;font-weight:bold">(</span>context<span style="color:#000;font-weight:bold">,</span> event<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> peekDecorView<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#998;font-style:italic">// 返回true：说明事件在边界外，即 消费事件
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">// 返回false：未消费（默认）
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#998;font-style:italic">// 回到分析4调用原处
+</span></code></pre></td></tr></table>
+</div>
+</div><p><strong>总结</strong>
+<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtZjhmZGE3NmJiZGFkN2I5Ni5wbmc?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<p>总的来说:Activity的dispatchTouchEvent调用到了ViewGroup的dispatchTouchEvent方法。即:默认情况下Activity的dispatchTouchEvent调用ViewGroup的dispatchTouchEvent方法，而无论dispatchTouchEvent返回什么都结束分发</p>
+<h4 id="2-viewgroup的事件分发机制">2. ViewGroup的事件分发机制</h4>
+<p><strong>ViewGroup的 dispatchTouchEvent。</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 77
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 78
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 79
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 80
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 81
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 82
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 83
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 84
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 85
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 86
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 87
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 88
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 89
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 90
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 91
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 92
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 93
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 94
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 95
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 96
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 97
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 98
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 99
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">100
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">101
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">102
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">103
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">104
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">105
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">106
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">107
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">108
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">109
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">110
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">111
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">112
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">113
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">114
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">115
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">116
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">117
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">118
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">119
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">120
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">121
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">122
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">123
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">124
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">125
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">126
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">127
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">128
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">129
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">130
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">131
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">132
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">133
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">134
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">135
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">136
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">137
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">138
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">139
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">140
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">141
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">142
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">143
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">144
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">145
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">146
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">147
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">148
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">149
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">150
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">151
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">152
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">153
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">154
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">155
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">156
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">157
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">158
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">159
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">160
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">161
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">162
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">163
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">164
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">165
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">166
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">167
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">168
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">169
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">170
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">171
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">172
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">173
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">174
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">175
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">176
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">177
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">178
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">179
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">180
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">181
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">182
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">183
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">184
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">185
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">186
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">187
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">188
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">189
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">190
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">191
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">192
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">193
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">194
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">195
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">   <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">dispatchTouchEvent</span><span style="color:#000;font-weight:bold">(</span>MotionEvent ev<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mInputEventConsistencyVerifier <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            mInputEventConsistencyVerifier<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onTouchEvent</span><span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">,</span> 1<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#458;font-weight:bold">boolean</span> handled <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>onFilterTouchEventForSecurity<span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">// view没有被遮罩，一般都成立
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> action <span style="color:#000;font-weight:bold">=</span> ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getAction</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> actionMasked <span style="color:#000;font-weight:bold">=</span> action <span style="color:#000;font-weight:bold">&amp;</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_MASK</span><span style="color:#000;font-weight:bold">;</span>
+
+            <span style="color:#998;font-style:italic">// Handle an initial down.
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>actionMasked <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_DOWN</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">// 一堆touch事件（从按下到松手）中的第一个down事件
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">// Throw away all previous state when starting a new touch gesture.
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">// The framework may have dropped the up or cancel event for the previous gesture
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">// due to an app switch, ANR, or some other state change.
+</span><span style="color:#998;font-style:italic"></span>                cancelAndClearTouchTargets<span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                resetTouchState<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 作为新一轮的开始，reset所有相关的状态
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">}</span>
+
+            <span style="color:#998;font-style:italic">// Check for interception.
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">boolean</span> intercepted<span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 检查是否要拦截
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#998;font-style:italic">//mFirstTouchTarget :当时间有子元素成功处理后，mFirstTouchTarget会被赋值并指向子元素。
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#998;font-style:italic">//mFirstTouchTarget!=null 即表示ViewGroup表示未拦截当前事件，
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>actionMasked <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_DOWN</span> <span style="color:#998;font-style:italic">// down事件
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span> mFirstTouchTarget <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">// 或者之前的某次事件已经经由此ViewGroup派发给children后被处理掉了
+</span><span style="color:#998;font-style:italic"></span>
+                <span style="color:#998;font-style:italic">//FLAG_DISALLOW_INTERCEPT设置后，ViewGroup无法栏除ACTION_DOWN之外的其他点击直接。
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">//原因:在ViewGroup分发事件时，如果是ACTION_DOWN,会重置这个标志位
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">//设置方法: requestDisallowInterceptTouchEvent
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">boolean</span> disallowIntercept <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>mGroupFlags <span style="color:#000;font-weight:bold">&amp;</span> FLAG_DISALLOW_INTERCEPT<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">!</span>disallowIntercept<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">// 只有允许拦截才执行onInterceptTouchEvent方法
+</span><span style="color:#998;font-style:italic"></span>                    intercepted <span style="color:#000;font-weight:bold">=</span> onInterceptTouchEvent<span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 默认返回false，不拦截
+</span><span style="color:#998;font-style:italic"></span>                    ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setAction</span><span style="color:#000;font-weight:bold">(</span>action<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// restore action in case it was changed
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+                    intercepted <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 不允许拦截的话，直接设为false
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#998;font-style:italic">// There are no touch targets and this action is not an initial down
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">// so this view group continues to intercept touches.
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">// 在这种情况下，actionMasked != ACTION_DOWN &amp;&amp; mFirstTouchTarget == null
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">// 第一次的down事件没有被此ViewGroup的children处理掉（要么是它们自己不处理，要么是ViewGroup从一
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">// 开始的down事件就开始拦截），则接下来的所有事件
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">// 也没它们的份，即不处理down事件的话，那表示你对后面接下来的事件也不感兴趣
+</span><span style="color:#998;font-style:italic"></span>                intercepted <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 这种情况下设置ViewGroup拦截接下来的事件
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">}</span>
+
+            <span style="color:#998;font-style:italic">// Check for cancelation.
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#998;font-style:italic">//检查CANCEL事件
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">boolean</span> canceled <span style="color:#000;font-weight:bold">=</span> resetCancelNextUpFlag<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">)</span>
+                    <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span> actionMasked <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_CANCEL</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 此touch事件是否取消了
+</span><span style="color:#998;font-style:italic"></span>
+            <span style="color:#998;font-style:italic">// Update list of touch targets for pointer down, if needed.
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#998;font-style:italic">// 是否拆分事件，3.0(包括)之后引入的，默认拆分
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">boolean</span> split <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>mGroupFlags <span style="color:#000;font-weight:bold">&amp;</span> FLAG_SPLIT_MOTION_EVENTS<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span>
+            TouchTarget newTouchTarget <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 接下来ViewGroup判断要将此touch事件交给谁处理
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#458;font-weight:bold">boolean</span> alreadyDispatchedToNewTouchTarget <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">!</span>canceled <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">!</span>intercepted<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">// 没取消也不拦截，即是个有效的touch事件
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>actionMasked <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_DOWN</span> <span style="color:#998;font-style:italic">// 第一个手指down
+</span><span style="color:#998;font-style:italic"></span>                        <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span> <span style="color:#000;font-weight:bold">(</span>split <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> actionMasked <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_POINTER_DOWN</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#998;font-style:italic">// 接下来的手指down
+</span><span style="color:#998;font-style:italic"></span>                        <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span> actionMasked <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_HOVER_MOVE</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> actionIndex <span style="color:#000;font-weight:bold">=</span> ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getActionIndex</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// always 0 for down
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> idBitsToAssign <span style="color:#000;font-weight:bold">=</span> split <span style="color:#000;font-weight:bold">?</span> 1 <span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000;font-weight:bold">&lt;</span> ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getPointerId</span><span style="color:#000;font-weight:bold">(</span>actionIndex<span style="color:#000;font-weight:bold">)</span>
+                            <span style="color:#000;font-weight:bold">:</span> TouchTarget<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ALL_POINTER_IDS</span><span style="color:#000;font-weight:bold">;</span>
+
+                    <span style="color:#998;font-style:italic">// Clean up earlier touch targets for this pointer id in case they
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#998;font-style:italic">// have become out of sync.
+</span><span style="color:#998;font-style:italic"></span>                    removePointersFromTouchTargets<span style="color:#000;font-weight:bold">(</span>idBitsToAssign<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+                    <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> childrenCount <span style="color:#000;font-weight:bold">=</span> mChildrenCount<span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>newTouchTarget <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span> <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> childrenCount <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">// 基本都成立
+</span><span style="color:#998;font-style:italic"></span>                        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">float</span> x <span style="color:#000;font-weight:bold">=</span> ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getX</span><span style="color:#000;font-weight:bold">(</span>actionIndex<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">float</span> y <span style="color:#000;font-weight:bold">=</span> ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getY</span><span style="color:#000;font-weight:bold">(</span>actionIndex<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                        <span style="color:#998;font-style:italic">// Find a child that can receive the event.
+</span><span style="color:#998;font-style:italic"></span>                        <span style="color:#998;font-style:italic">// Scan children from front to back.
+</span><span style="color:#998;font-style:italic"></span>                        <span style="color:#000;font-weight:bold">final</span> View<span style="color:#000;font-weight:bold">[</span><span style="color:#000;font-weight:bold">]</span> children <span style="color:#000;font-weight:bold">=</span> mChildren<span style="color:#000;font-weight:bold">;</span>
+
+                        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">boolean</span> customOrder <span style="color:#000;font-weight:bold">=</span> isChildrenDrawingOrderEnabled<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                        <span style="color:#998;font-style:italic">// 从最后一个向第一个找
+</span><span style="color:#998;font-style:italic"></span>                        <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> childrenCount <span style="color:#000;font-weight:bold">-</span> 1<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                            <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> childIndex <span style="color:#000;font-weight:bold">=</span> customOrder <span style="color:#000;font-weight:bold">?</span>
+                                    getChildDrawingOrder<span style="color:#000;font-weight:bold">(</span>childrenCount<span style="color:#000;font-weight:bold">,</span> i<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">:</span> i<span style="color:#000;font-weight:bold">;</span>
+                            <span style="color:#000;font-weight:bold">final</span> View child <span style="color:#000;font-weight:bold">=</span> children<span style="color:#000;font-weight:bold">[</span>childIndex<span style="color:#000;font-weight:bold">]</span><span style="color:#000;font-weight:bold">;</span>
+                            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">!</span>canViewReceivePointerEvents<span style="color:#000;font-weight:bold">(</span>child<span style="color:#000;font-weight:bold">)</span>
+                                    <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span> <span style="color:#000;font-weight:bold">!</span>isTransformedTouchPointInView<span style="color:#000;font-weight:bold">(</span>x<span style="color:#000;font-weight:bold">,</span> y<span style="color:#000;font-weight:bold">,</span> child<span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                                <span style="color:#000;font-weight:bold">continue</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 不满足这2个条件直接跳过，看下一个child
+</span><span style="color:#998;font-style:italic"></span>                            <span style="color:#000;font-weight:bold">}</span>
+
+                            <span style="color:#998;font-style:italic">// child view能receive touch事件而且touch坐标也在view边界内
+</span><span style="color:#998;font-style:italic"></span>
+                            newTouchTarget <span style="color:#000;font-weight:bold">=</span> getTouchTarget<span style="color:#000;font-weight:bold">(</span>child<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span><span style="color:#998;font-style:italic">// 查找child对应的TouchTarget
+</span><span style="color:#998;font-style:italic"></span>                            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>newTouchTarget <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">// 比如在同一个child上按下了多跟手指
+</span><span style="color:#998;font-style:italic"></span>                                <span style="color:#998;font-style:italic">// Child is already receiving touch within its bounds.
+</span><span style="color:#998;font-style:italic"></span>                                <span style="color:#998;font-style:italic">// Give it the new pointer in addition to the ones it is handling.
+</span><span style="color:#998;font-style:italic"></span>
+                                <span style="color:#998;font-style:italic">//子View已经在自己的范围内得到了触摸。
+</span><span style="color:#998;font-style:italic"></span>                                <span style="color:#998;font-style:italic">//除了它正在处理的那个，给它一个新的指针。
+</span><span style="color:#998;font-style:italic"></span>                                newTouchTarget<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">pointerIdBits</span> <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">=</span> idBitsToAssign<span style="color:#000;font-weight:bold">;</span>
+                                <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// newTouchTarget已经有了，跳出for循环
+</span><span style="color:#998;font-style:italic"></span>                            <span style="color:#000;font-weight:bold">}</span>
+
+                            resetCancelNextUpFlag<span style="color:#000;font-weight:bold">(</span>child<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                            <span style="color:#998;font-style:italic">// 将此事件交给child处理
+</span><span style="color:#998;font-style:italic"></span>                            <span style="color:#998;font-style:italic">// 有这种情况，一个手指按在了child1上，另一个手指按在了child2上，以此类推
+</span><span style="color:#998;font-style:italic"></span>                            <span style="color:#998;font-style:italic">// 这样TouchTarget的链就形成了
+</span><span style="color:#998;font-style:italic"></span>                            <span style="color:#998;font-style:italic">//进行子View的分发
+</span><span style="color:#998;font-style:italic"></span>                            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>dispatchTransformedTouchEvent<span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">,</span> child<span style="color:#000;font-weight:bold">,</span> idBitsToAssign<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                                <span style="color:#998;font-style:italic">// Child wants to receive touch within its bounds.
+</span><span style="color:#998;font-style:italic"></span>                                mLastTouchDownTime <span style="color:#000;font-weight:bold">=</span> ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getDownTime</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                                mLastTouchDownIndex <span style="color:#000;font-weight:bold">=</span> childIndex<span style="color:#000;font-weight:bold">;</span>
+                                mLastTouchDownX <span style="color:#000;font-weight:bold">=</span> ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getX</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                                mLastTouchDownY <span style="color:#000;font-weight:bold">=</span> ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getY</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                                <span style="color:#998;font-style:italic">// 如果处理掉了的话，将此child添加到touch链的头部
+</span><span style="color:#998;font-style:italic"></span>                                <span style="color:#998;font-style:italic">// 注意这个方法内部会更新 mFirstTouchTarget
+</span><span style="color:#998;font-style:italic"></span>                                newTouchTarget <span style="color:#000;font-weight:bold">=</span> addTouchTarget<span style="color:#000;font-weight:bold">(</span>child<span style="color:#000;font-weight:bold">,</span> idBitsToAssign<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                                alreadyDispatchedToNewTouchTarget <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// down或pointer_down事件已经被处理了
+</span><span style="color:#998;font-style:italic"></span>                                <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 可以退出for循环了。。。
+</span><span style="color:#998;font-style:italic"></span>                            <span style="color:#000;font-weight:bold">}</span>
+                        <span style="color:#000;font-weight:bold">}</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#998;font-style:italic">// 本次没找到newTouchTarget但之前的mFirstTouchTarget已经有了
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>newTouchTarget <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span> <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> mFirstTouchTarget <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        <span style="color:#998;font-style:italic">// Did not find a child to receive the event.
+</span><span style="color:#998;font-style:italic"></span>                        <span style="color:#998;font-style:italic">// Assign the pointer to the least recently added target.
+</span><span style="color:#998;font-style:italic"></span>                        newTouchTarget <span style="color:#000;font-weight:bold">=</span> mFirstTouchTarget<span style="color:#000;font-weight:bold">;</span>
+                        <span style="color:#000;font-weight:bold">while</span> <span style="color:#000;font-weight:bold">(</span>newTouchTarget<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">next</span> <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                            newTouchTarget <span style="color:#000;font-weight:bold">=</span> newTouchTarget<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">next</span><span style="color:#000;font-weight:bold">;</span>
+                        <span style="color:#000;font-weight:bold">}</span>
+                        <span style="color:#998;font-style:italic">// while结束后，newTouchTarget指向了最初的TouchTarget
+</span><span style="color:#998;font-style:italic"></span>                        newTouchTarget<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">pointerIdBits</span> <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">=</span> idBitsToAssign<span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#998;font-style:italic">// 非down事件直接从这里开始处理，不会走上面的一大堆寻找TouchTarget的逻辑
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#998;font-style:italic">// Dispatch to touch targets.
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mFirstTouchTarget <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#998;font-style:italic">// 没有children处理则派发给自己处理
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">// No touch targets so treat this as an ordinary view.
+</span><span style="color:#998;font-style:italic"></span>                handled <span style="color:#000;font-weight:bold">=</span> dispatchTransformedTouchEvent<span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">,</span> canceled<span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">,</span>
+                        TouchTarget<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ALL_POINTER_IDS</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#998;font-style:italic">// Dispatch to touch targets, excluding the new touch target if we already
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">// dispatched to it.  Cancel touch targets if necessary.
+</span><span style="color:#998;font-style:italic"></span>                TouchTarget predecessor <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+                TouchTarget target <span style="color:#000;font-weight:bold">=</span> mFirstTouchTarget<span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">while</span> <span style="color:#000;font-weight:bold">(</span>target <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">// 遍历TouchTarget形成的链表
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#000;font-weight:bold">final</span> TouchTarget next <span style="color:#000;font-weight:bold">=</span> target<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">next</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>alreadyDispatchedToNewTouchTarget <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> target <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> newTouchTarget<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        handled <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 已经处理过的不再让其处理事件
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+                        <span style="color:#998;font-style:italic">// 取消child标记
+</span><span style="color:#998;font-style:italic"></span>                        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">boolean</span> cancelChild <span style="color:#000;font-weight:bold">=</span> resetCancelNextUpFlag<span style="color:#000;font-weight:bold">(</span>target<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">child</span><span style="color:#000;font-weight:bold">)</span>
+                                <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span> intercepted<span style="color:#000;font-weight:bold">;</span>
+                        <span style="color:#998;font-style:italic">// 如果ViewGroup从半路拦截了touch事件则给touch链上的child发送cancel事件
+</span><span style="color:#998;font-style:italic"></span>                        <span style="color:#998;font-style:italic">// 如果cancelChild为true的话
+</span><span style="color:#998;font-style:italic"></span>                        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>dispatchTransformedTouchEvent<span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">,</span> cancelChild<span style="color:#000;font-weight:bold">,</span>
+                                target<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">child</span><span style="color:#000;font-weight:bold">,</span> target<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">pointerIdBits</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                            handled <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// TouchTarget链中任意一个处理了则设置handled为true
+</span><span style="color:#998;font-style:italic"></span>                        <span style="color:#000;font-weight:bold">}</span>
+                        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>cancelChild<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">// 如果是cancelChild的话，则回收此target节点
+</span><span style="color:#998;font-style:italic"></span>                            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>predecessor <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                                mFirstTouchTarget <span style="color:#000;font-weight:bold">=</span> next<span style="color:#000;font-weight:bold">;</span>
+                            <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+                                predecessor<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">next</span> <span style="color:#000;font-weight:bold">=</span> next<span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 相当于从链表中删除一个节点
+</span><span style="color:#998;font-style:italic"></span>                            <span style="color:#000;font-weight:bold">}</span>
+                            target<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">recycle</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 回收它
+</span><span style="color:#998;font-style:italic"></span>                            target <span style="color:#000;font-weight:bold">=</span> next<span style="color:#000;font-weight:bold">;</span>
+                            <span style="color:#000;font-weight:bold">continue</span><span style="color:#000;font-weight:bold">;</span>
+                        <span style="color:#000;font-weight:bold">}</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                    predecessor <span style="color:#000;font-weight:bold">=</span> target<span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 访问下一个节点
+</span><span style="color:#998;font-style:italic"></span>                    target <span style="color:#000;font-weight:bold">=</span> next<span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+            <span style="color:#998;font-style:italic">// Update list of touch targets for pointer up or cancel, if needed.
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>canceled
+                    <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span> actionMasked <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_UP</span>
+                    <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span> actionMasked <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_HOVER_MOVE</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#998;font-style:italic">// 取消或up事件时resetTouchState
+</span><span style="color:#998;font-style:italic"></span>                resetTouchState<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>split <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> actionMasked <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_POINTER_UP</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#998;font-style:italic">// 当某个手指抬起时，将其相关的信息移除
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> actionIndex <span style="color:#000;font-weight:bold">=</span> ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getActionIndex</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> idBitsToRemove <span style="color:#000;font-weight:bold">=</span> 1 <span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000;font-weight:bold">&lt;</span> ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getPointerId</span><span style="color:#000;font-weight:bold">(</span>actionIndex<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                removePointersFromTouchTargets<span style="color:#000;font-weight:bold">(</span>idBitsToRemove<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">!</span>handled <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> mInputEventConsistencyVerifier <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            mInputEventConsistencyVerifier<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onUnhandledEvent</span><span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">,</span> 1<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">return</span> handled<span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 返回处理的结果
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>总结:简单来说，就是ViewGroup会去询问onInterceptTouchEvent(第33行)，是否对该事件进行拦截。默认是不拦截的。如果不拦截，则将事件向子View进行分发(第107行)。</p>
+<p><strong>onInterceptTouchEvent(第33行)源码</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">/** 
+</span><span style="color:#998;font-style:italic">* 分析1：ViewGroup.onInterceptTouchEvent() 
+</span><span style="color:#998;font-style:italic">* 作用：是否拦截事件 * 说明： 
+</span><span style="color:#998;font-style:italic">* b. 返回false = 不拦截（默认）
+</span><span style="color:#998;font-style:italic">*  */</span>
+
+ <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">onInterceptTouchEvent</span><span style="color:#000;font-weight:bold">(</span>MotionEvent ev<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isFromSource</span><span style="color:#000;font-weight:bold">(</span>InputDevice<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">SOURCE_MOUSE</span><span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getAction</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_DOWN</span>
+                <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isButtonPressed</span><span style="color:#000;font-weight:bold">(</span>MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">BUTTON_PRIMARY</span><span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> isOnScrollbarThumb<span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getX</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">,</span> ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getY</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>dispatchTransformedTouchEvent(ev, false, child, idBitsToAssign)第107行</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">dispatchTransformedTouchEvent</span><span style="color:#000;font-weight:bold">(</span>MotionEvent event<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">boolean</span> cancel<span style="color:#000;font-weight:bold">,</span>
+            View child<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> desiredPointerIdBits<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">boolean</span> handled<span style="color:#000;font-weight:bold">;</span>
+
+       <span style="color:#998;font-style:italic">//仅分析核心代码
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">// Perform any necessary transformations and dispatch.
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>child <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            handled <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">dispatchTouchEvent</span><span style="color:#000;font-weight:bold">(</span>transformedEvent<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">float</span> offsetX <span style="color:#000;font-weight:bold">=</span> mScrollX <span style="color:#000;font-weight:bold">-</span> child<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">mLeft</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">float</span> offsetY <span style="color:#000;font-weight:bold">=</span> mScrollY <span style="color:#000;font-weight:bold">-</span> child<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">mTop</span><span style="color:#000;font-weight:bold">;</span>
+            transformedEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">offsetLocation</span><span style="color:#000;font-weight:bold">(</span>offsetX<span style="color:#000;font-weight:bold">,</span> offsetY<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">!</span> child<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">hasIdentityMatrix</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                transformedEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">transform</span><span style="color:#000;font-weight:bold">(</span>child<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getInverseMatrix</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+	<span style="color:#998;font-style:italic">//分发给子View的dispatchTouchEvent
+</span><span style="color:#998;font-style:italic"></span>            handled <span style="color:#000;font-weight:bold">=</span> child<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">dispatchTouchEvent</span><span style="color:#000;font-weight:bold">(</span>transformedEvent<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#998;font-style:italic">// Done.
+</span><span style="color:#998;font-style:italic"></span>        transformedEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">recycle</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">return</span> handled<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>总结：</strong>
+<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtNmVjMmU4NjRhZjdmZmQzNy5wbmc?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<h4 id="3-view的事件分发机制">3. View的事件分发机制</h4>
+<p>View的dispatchTouchEvent方法</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">dispatchTouchEvent</span><span style="color:#000;font-weight:bold">(</span>MotionEvent event<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mInputEventConsistencyVerifier <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            mInputEventConsistencyVerifier<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onTouchEvent</span><span style="color:#000;font-weight:bold">(</span>event<span style="color:#000;font-weight:bold">,</span> 0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>onFilterTouchEventForSecurity<span style="color:#000;font-weight:bold">(</span>event<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">// 一般都成立
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#998;font-style:italic">//noinspection SimplifiableIfStatement
+</span><span style="color:#998;font-style:italic"></span>            ListenerInfo li <span style="color:#000;font-weight:bold">=</span> mListenerInfo<span style="color:#000;font-weight:bold">;</span>
+
+            <span style="color:#998;font-style:italic">//首先判断是否设置OnTouchListener,如果OnTouchListener中的onTouch方法中返回true，那么onTouchEvent就不会被调用，
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>li <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span> <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> li<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">mOnTouchListener</span> <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span> <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">(</span>mViewFlags <span style="color:#000;font-weight:bold">&amp;</span> ENABLED_MASK<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> ENABLED
+                    <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> li<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">mOnTouchListener</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onTouch</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">,</span> event<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">// 先在ENABLED状态下尝试调用onTouch方法
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 如果被onTouch处理了，则直接返回true
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#998;font-style:italic">// 从这里我们可以看出，当你既设置了OnTouchListener又设置了OnClickListener，那么当前者返回true的时候，
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#998;font-style:italic">// onTouchEvent没机会被调用，当然你的OnClickListener也就不会被触发；另外还有个区别就是onTouch里可以
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#998;font-style:italic">// 收到每次touch事件，而onClickListener只是在up事件到来时触发。
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>onTouchEvent<span style="color:#000;font-weight:bold">(</span>event<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mInputEventConsistencyVerifier <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            mInputEventConsistencyVerifier<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onUnhandledEvent</span><span style="color:#000;font-weight:bold">(</span>event<span style="color:#000;font-weight:bold">,</span> 0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 上面的都没处理，则返回false
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>View的onTouchEvent</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 77
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 78
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 79
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 80
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 81
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 82
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 83
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 84
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 85
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 86
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 87
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 88
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 89
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 90
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 91
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 92
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 93
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 94
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 95
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 96
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 97
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 98
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 99
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">100
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">101
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">102
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">103
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">104
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">105
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">106
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">107
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">108
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">109
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">110
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">111
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">112
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">113
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">114
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">115
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">116
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">117
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">118
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">119
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">120
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">121
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">122
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">123
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">124
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">125
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">126
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">127
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">128
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">129
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">130
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">onTouchEvent</span><span style="color:#000;font-weight:bold">(</span>MotionEvent event<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">// View对touch事件的默认处理逻辑
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> viewFlags <span style="color:#000;font-weight:bold">=</span> mViewFlags<span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span>viewFlags <span style="color:#000;font-weight:bold">&amp;</span> ENABLED_MASK<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> DISABLED<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">// DISABLED的状态下
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>event<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getAction</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_UP</span> <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">(</span>mPrivateFlags <span style="color:#000;font-weight:bold">&amp;</span> PFLAG_PRESSED<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                setPressed<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 复原，如果之前是PRESSED状态
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#998;font-style:italic">// A disabled view that is clickable still consumes the touch
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#998;font-style:italic">// events, it just doesn&#39;t respond to them.
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span>viewFlags <span style="color:#000;font-weight:bold">&amp;</span> CLICKABLE<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> CLICKABLE <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span> <span style="color:#998;font-style:italic">// CLICKABLE或LONG_CLICKABLE的view标记为对事件处理了，
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#000;font-weight:bold">(</span>viewFlags <span style="color:#000;font-weight:bold">&amp;</span> LONG_CLICKABLE<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> LONG_CLICKABLE<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 只不过是以do nothing的方式处理了。
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mTouchDelegate <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mTouchDelegate<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onTouchEvent</span><span style="color:#000;font-weight:bold">(</span>event<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">// 如果有TouchDelegate的话，优先交给它处理
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 处理了返回true，否则接着往下走
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span>viewFlags <span style="color:#000;font-weight:bold">&amp;</span> CLICKABLE<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> CLICKABLE <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span> <span style="color:#998;font-style:italic">// View能对touch事件响应的前提要么是CLICKABLE要么是LONG_CLICKABLE
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">(</span>viewFlags <span style="color:#000;font-weight:bold">&amp;</span> LONG_CLICKABLE<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> LONG_CLICKABLE<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">switch</span> <span style="color:#000;font-weight:bold">(</span>event<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getAction</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">case</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_UP</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#998;font-style:italic">// UP事件
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#998;font-style:italic">// 如果外围有可以滚动的parent的话，当按下时会设置这个标志位
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#458;font-weight:bold">boolean</span> prepressed <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>mPrivateFlags <span style="color:#000;font-weight:bold">&amp;</span> PFLAG_PREPRESSED<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span>mPrivateFlags <span style="color:#000;font-weight:bold">&amp;</span> PFLAG_PRESSED<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> 0 <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span> prepressed<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">// 按下了或者预按下了
+</span><span style="color:#998;font-style:italic"></span>                        <span style="color:#998;font-style:italic">// take focus if we don&#39;t have it already and we should in
+</span><span style="color:#998;font-style:italic"></span>                        <span style="color:#998;font-style:italic">// touch mode.
+</span><span style="color:#998;font-style:italic"></span>                        <span style="color:#458;font-weight:bold">boolean</span> focusTaken <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+                        <span style="color:#998;font-style:italic">// 尝试requestFocus()，并将focusToken设置为true
+</span><span style="color:#998;font-style:italic"></span>                        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>isFocusable<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> isFocusableInTouchMode<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">!</span>isFocused<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                            focusTaken <span style="color:#000;font-weight:bold">=</span> requestFocus<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 能进来这个if，一般都会返回true
+</span><span style="color:#998;font-style:italic"></span>                        <span style="color:#000;font-weight:bold">}</span>
+
+                        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>prepressed<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                            <span style="color:#998;font-style:italic">// The button is being released before we actually
+</span><span style="color:#998;font-style:italic"></span>                            <span style="color:#998;font-style:italic">// showed it as pressed.  Make it show the pressed
+</span><span style="color:#998;font-style:italic"></span>                            <span style="color:#998;font-style:italic">// state now (before scheduling the click) to ensure
+</span><span style="color:#998;font-style:italic"></span>                            <span style="color:#998;font-style:italic">// the user sees it.
+</span><span style="color:#998;font-style:italic"></span>                            <span style="color:#998;font-style:italic">// 在前面down事件的时候我们延迟显示view的pressed状态
+</span><span style="color:#998;font-style:italic"></span>                            setPressed<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 直到up事件到来的时候才显示pressed状态
+</span><span style="color:#998;font-style:italic"></span>                        <span style="color:#000;font-weight:bold">}</span>
+
+                        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">!</span>mHasPerformedLongPress<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">// 如果没有长按发生的话
+</span><span style="color:#998;font-style:italic"></span>                            <span style="color:#998;font-style:italic">// This is a tap, so remove the longpress check
+</span><span style="color:#998;font-style:italic"></span>                            removeLongPressCallback<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 移除长按callback
+</span><span style="color:#998;font-style:italic"></span>
+                            <span style="color:#998;font-style:italic">// Only perform take click actions if we were in the pressed state
+</span><span style="color:#998;font-style:italic"></span>                            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">!</span>focusTaken<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">// 看到没，focusTaken是false才会进入下面的if语句
+</span><span style="color:#998;font-style:italic"></span>                                <span style="color:#998;font-style:italic">// Use a Runnable and post this rather than calling
+</span><span style="color:#998;font-style:italic"></span>                                <span style="color:#998;font-style:italic">// performClick directly. This lets other visual state
+</span><span style="color:#998;font-style:italic"></span>                                <span style="color:#998;font-style:italic">// of the view update before click actions start.
+</span><span style="color:#998;font-style:italic"></span>　　　　　　　　　　　　            <span style="color:#998;font-style:italic">// 也就是说在touch mode下，不take focus的view第一次点击的时候才会触发onClick事件
+</span><span style="color:#998;font-style:italic"></span>                                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mPerformClick <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                                    mPerformClick <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> PerformClick<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                                <span style="color:#000;font-weight:bold">}</span>
+                                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">!</span>post<span style="color:#000;font-weight:bold">(</span>mPerformClick<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">// 如果post失败了，则直接调用performClick()方法
+</span><span style="color:#998;font-style:italic"></span>                                    performClick<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 这2行代码会触发onClickListener
+</span><span style="color:#998;font-style:italic"></span>                                <span style="color:#000;font-weight:bold">}</span>
+                            <span style="color:#000;font-weight:bold">}</span>
+                        <span style="color:#000;font-weight:bold">}</span>
+
+                        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mUnsetPressedState <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                            mUnsetPressedState <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> UnsetPressedState<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// unset按下状态的
+</span><span style="color:#998;font-style:italic"></span>                        <span style="color:#000;font-weight:bold">}</span>
+
+                        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>prepressed<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                            postDelayed<span style="color:#000;font-weight:bold">(</span>mUnsetPressedState<span style="color:#000;font-weight:bold">,</span>
+                                    ViewConfiguration<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getPressedStateDuration</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">!</span>post<span style="color:#000;font-weight:bold">(</span>mUnsetPressedState<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                            <span style="color:#998;font-style:italic">// If the post failed, unpress right now
+</span><span style="color:#998;font-style:italic"></span>                            mUnsetPressedState<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">run</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                        <span style="color:#000;font-weight:bold">}</span>
+                        removeTapCallback<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                    <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+
+                <span style="color:#000;font-weight:bold">case</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_DOWN</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#998;font-style:italic">// DOWN事件
+</span><span style="color:#998;font-style:italic"></span>                    mHasPerformedLongPress <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+
+                    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>performButtonActionOnTouchDown<span style="color:#000;font-weight:bold">(</span>event<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+
+                    <span style="color:#998;font-style:italic">// Walk up the hierarchy to determine if we&#39;re inside a scrolling container.
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#458;font-weight:bold">boolean</span> isInScrollingContainer <span style="color:#000;font-weight:bold">=</span> isInScrollingContainer<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+                    <span style="color:#998;font-style:italic">// For views inside a scrolling container, delay the pressed feedback for
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#998;font-style:italic">// a short period in case this is a scroll.
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>isInScrollingContainer<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">// 如果是在可以滚动的container里面的话
+</span><span style="color:#998;font-style:italic"></span>                        mPrivateFlags <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">=</span> PFLAG_PREPRESSED<span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 设置PREPRESSED标志位
+</span><span style="color:#998;font-style:italic"></span>                        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mPendingCheckForTap <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                            mPendingCheckForTap <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> CheckForTap<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                        <span style="color:#000;font-weight:bold">}</span> <span style="color:#998;font-style:italic">// 延迟pressed feedback
+</span><span style="color:#998;font-style:italic"></span>                        postDelayed<span style="color:#000;font-weight:bold">(</span>mPendingCheckForTap<span style="color:#000;font-weight:bold">,</span> ViewConfiguration<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getTapTimeout</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+                        <span style="color:#998;font-style:italic">// Not inside a scrolling container, so show the feedback right away
+</span><span style="color:#998;font-style:italic"></span>                        setPressed<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 否则直接显示pressed feedback
+</span><span style="color:#998;font-style:italic"></span>                        checkForLongClick<span style="color:#000;font-weight:bold">(</span>0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 并启动长按监测
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#000;font-weight:bold">}</span>
+                    <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+
+                <span style="color:#000;font-weight:bold">case</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_CANCEL</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#998;font-style:italic">// 针对CANCEL事件的话，恢复各种状态，移除各种callback
+</span><span style="color:#998;font-style:italic"></span>                    setPressed<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    removeTapCallback<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    removeLongPressCallback<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+
+                <span style="color:#000;font-weight:bold">case</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_MOVE</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#998;font-style:italic">// MOVE事件
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> x <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">)</span> event<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getX</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> y <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">)</span> event<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getY</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+                    <span style="color:#998;font-style:italic">// Be lenient about moving outside of buttons
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">!</span>pointInView<span style="color:#000;font-weight:bold">(</span>x<span style="color:#000;font-weight:bold">,</span> y<span style="color:#000;font-weight:bold">,</span> mTouchSlop<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">// 如果移动到view的边界之外了，
+</span><span style="color:#998;font-style:italic"></span>                        <span style="color:#998;font-style:italic">// Outside button
+</span><span style="color:#998;font-style:italic"></span>                        removeTapCallback<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 则取消Tap callback，这样当你松手的时候onClick不会被触发
+</span><span style="color:#998;font-style:italic"></span>                        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span>mPrivateFlags <span style="color:#000;font-weight:bold">&amp;</span> PFLAG_PRESSED<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">// 当已经是按下状态的话
+</span><span style="color:#998;font-style:italic"></span>                            <span style="color:#998;font-style:italic">// Remove any future long press/tap checks
+</span><span style="color:#998;font-style:italic"></span>                            removeLongPressCallback<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 移除长按callback
+</span><span style="color:#998;font-style:italic"></span>
+                            setPressed<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 恢复按下状态
+</span><span style="color:#998;font-style:italic"></span>                        <span style="color:#000;font-weight:bold">}</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                    <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 最后返回true，表示对touch事件处理过了，消费了
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// 既不能单击也不能长按的View，返回false，表示不处理touch事件
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>总结:</strong>
+<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtNmVjMmU4NjRhZjdmZmQzNy5wbmc?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<h3 id="五事件分发的总结">五.事件分发的总结</h3>
+<ol>
+<li>同一事件序列是指从手指接触到屏幕的那一刻起，到手指离开的屏幕的那一瞬间结束，在这个过程中所产生的一系列的事件，这个事件以down事件开始，中间含有数量不等的move事件，最终以up事件结束</li>
+<li>正常情况下，一个事件序列只能被一个View拦截且消耗，这一条的原因可以参考(3),因为一旦一个元素拦截了此事件，那么同一事件序列内的所有事件都会直接交给它处理，因此同一个事件序列中的事件不能分别由两个View同时处理，但通过特殊手段可以做到，比如同一个事件序列中的事件不能分别由两个View同时处理，但通过特殊手段/可以做到，比如一个View将本该自己处理的事情通过onTouchEvent强行传递给其他View处理。</li>
+<li>某个View一旦决定拦截，那么这一个事件序列都只能由他处理，并且onInterceptTouchEvent都不会在被调用。</li>
+<li>某个View如果不消耗ACTION_DOWN事件。那么同一事件序列的其他事件也不会嫁给他，并且把事件重新交给它的父元素处理，即调用父元素的onTouchEvent。</li>
+<li>ViewGroup默认不拦截任何事件。即源码中onInterceptTouchEvent方法中默认 返回false</li>
+<li>View没有onIntercept方法，一旦有点击事件传递给他，那么他的onTouchEvent就会被调用</li>
+<li>View的onTouchEvent默认都会消耗事件，除非他是不可点击事件。（clickbale和longClickable同时为false），Veiw的longClickable默认属性都是false，chickable属性要分情况，比如button的clicjable属性默认是true，而TextView的clickanle的默认属性为fasle。</li>
+<li>onClick会发生的前提是当前View是可点击的。并且它收到了down和up事件</li>
+</ol>
+<h3 id="六参考资料">六.参考资料</h3>
+<p>《Android艺术开发探索》</p>
+<p><a href="https://www.jianshu.com/p/38015afcdb58">Android事件分发机制详解：史上最全面、最易懂</a></p>
+<p><a href="https://www.jianshu.com/p/e99b5e8bd67b">图解 Android 事件分发机制</a></p>
+<p><a href="https://www.cnblogs.com/xiaoweiz/p/3838682.html">Android touch事件处理流程</a></p>
+<p><a href="https://blog.csdn.net/guolin_blog/article/details/9097463">Android事件分发机制完全解析，带你从源码的角度彻底理解(上)</a></p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%872View%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%88%86%E5%8F%91/">http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%872View%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%88%86%E5%8F%91/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/%E6%96%87%E7%AB%A0%E5%AF%BC%E8%88%AA/">文章导航</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%8211Retrofit%E7%9A%84%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">Android之网络请求11————Retrofit的源码分析</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%8210Retrofit%E7%9A%84%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8/">Android之网络请求10————Retrofit的进阶使用</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%829Retrofit%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/">Android之网络请求8————Retrofit的简单使用</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%828OkHttp%E6%BA%90%E7%A0%815_%E7%BC%93%E5%AD%98%E7%9B%B8%E5%85%B3/">Android之网络请求8————OkHttp源码5:缓存相关</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            没有标签
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "https://github.com/hsc396612325/HSCBlog/tree/gh-pages"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一目录">一.目录</a></li>
+    <li><a href="#二事件分发的基础认识">二.事件分发的基础认识</a>
+      <ul>
+        <li><a href="#1-事件分发是什么">1. 事件分发是什么</a></li>
+        <li><a href="#2-事件分发的简单过程">2. 事件分发的简单过程</a></li>
+        <li><a href="#3-事件分发涉及的方法">3. 事件分发涉及的方法</a></li>
+      </ul>
+    </li>
+    <li><a href="#三图解事件分发">三.图解事件分发</a>
+      <ul>
+        <li><a href="#1-图示事件分发-action_down">1. 图示事件分发 (ACTION_DOWN)</a></li>
+        <li><a href="#2-图示事件分发的说明">2. 图示事件分发的说明</a></li>
+        <li><a href="#3-图示事件分发的结论">3. 图示事件分发的结论</a></li>
+        <li><a href="#4-关于action_move-和-action_up">4. 关于ACTION_MOVE 和 ACTION_UP</a></li>
+      </ul>
+    </li>
+    <li><a href="#四事件分发的源码">四.事件分发的源码</a>
+      <ul>
+        <li><a href="#1-activity的事件分发机制">1. Activity的事件分发机制</a></li>
+        <li><a href="#2-viewgroup的事件分发机制">2. ViewGroup的事件分发机制</a></li>
+        <li><a href="#3-view的事件分发机制">3. View的事件分发机制</a></li>
+      </ul>
+    </li>
+    <li><a href="#五事件分发的总结">五.事件分发的总结</a></li>
+    <li><a href="#六参考资料">六.参考资料</a></li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

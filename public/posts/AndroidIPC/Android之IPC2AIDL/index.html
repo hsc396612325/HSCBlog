@@ -1,0 +1,1513 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title> | 冰炭不投day的博客</title>
+    <meta property="og:title" content=" - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC2AIDL/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title"></h1>
+        </header>
+        <date class="post-meta meta-date">
+            1年1月1日
+        </date>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h1 id="android之ipc2aidl">Android之IPC2————AIDL</h1>
+<p>@[toc]</p>
+<h3 id="一aidl概述">一.AIDL概述</h3>
+<p>在上一篇博客中，我们讨论Service绑定时，所用的三种方法，即扩展的binder类，Messenger类，还有AIDL，上一章博客中当时我们只是简单的介绍了一下。在这里我们就详细的来看一看。</p>
+<h4 id="1aidl是什么">1.AIDL是什么</h4>
+<p>AIDL即Android接口定义语言，是IDL语言的一种。主要用来定义跨进程通信时都让双方都认可的编程接口。</p>
+<blockquote>
+<p>IDL是Interface description language的缩写，指接口描述语言.IDL通常用于远程调用软件。在这种情况下，一般是由远程客户终端调用不同操作系统上的对象组件，并且这些对象组件可能是由不同计算机语言编写的。IDL建立起了两个不同操作系统间通信的桥梁。</p>
+</blockquote>
+<h4 id="2使用场景">2.使用场景</h4>
+<p>在Android中，一个进程通常无法访问另一个进程的内存，所以进程需要将其对象分解成操作系统可以识别的原语，并将对象编组成可以跨界.所以在Android中，它常常被用来进行跨进程通信。</p>
+<h4 id="3一些语法">3.一些语法</h4>
+<p>在使用AIDL语言时，需要创建一个.aidl文件，此时AndroidSDK工具都会生成一个.aidl文件的IBinder接口，并且其报存在gen/目录中，Service视情况实现IBinder接口。然后将客户端与Service进行绑定，此时就可以调用IBindr的方法来执行IPC。</p>
+<p>创建AIDL时，可以通过可带参数和返回值的一个或多个方法来声明接口。参数和返回值可以时任意类型，甚至可以是其他AIDL生成的接口</p>
+<p>默认情况下，AIDL支持下列数据类似：</p>
+<ul>
+<li>JAVA中所有原语类型(如int,long,char,boolean等等)</li>
+<li>String</li>
+<li>CharSequence</li>
+<li>List：List中所有元素都必须是以上列表支持的数据类型，或者其他AIDL生成的接口或者声明的可打包类型。</li>
+<li>Map：同List一样，他也要求所有元素都必须是以上列表支持的数据类型，或者其他AIDL生成的接口或者声明的可打包类型。</li>
+</ul>
+<p>对于不是默认数据的类型，应该使其实现Parcelable接口，并编写对应的AIDL文件。</p>
+<p>定义接口时，注意：</p>
+<ul>
+<li>方法可以带零个或者多个参数，返回值或者NULl</li>
+<li>所有原语参数都需要指示数据走向方向标记，可以是in，out或者inout，原语默认是in,慎用inout参数，它会导致系统开销非常大。</li>
+<li>aidl 文件中包括的所有代码注释都包含在生成的 IBinder 接口中（import 和 package 语句之前的注释除外）</li>
+<li>只客户端调用其中的方法，不支持调用其中的AIDL 中的静态字段。</li>
+</ul>
+<h3 id="二aidl实现跨进程通信">二.AIDL实现跨进程通信</h3>
+<p>将一个Book类，在不同进程的客户端和服务中进行传递。</p>
+<p>因为Book类并不默认类型，所以首先让它实现Parcelable接口(序列化)</p>
+<p>关于序列化的问题，下一篇博客中进行分析。</p>
+<h4 id="1book实现-parcelable-接口">1.Book实现 Parcelable 接口</h4>
+<p>创建一个Book类，建立getter和setter</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Book</span> <span style="color:#000;font-weight:bold">{</span>
+
+    <span style="color:#000;font-weight:bold">private</span> String name<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">int</span> price<span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">getName</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">return</span> name<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setName</span><span style="color:#000;font-weight:bold">(</span>String name<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">name</span> <span style="color:#000;font-weight:bold">=</span> name<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">getPrice</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">return</span> price<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setPrice</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> price<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">price</span> <span style="color:#000;font-weight:bold">=</span> price<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">toString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#d14">&#34;书名:&#34;</span><span style="color:#000;font-weight:bold">+</span>name <span style="color:#000;font-weight:bold">+</span><span style="color:#d14">&#34;,价格&#34;</span><span style="color:#000;font-weight:bold">+</span>price<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">Book</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+<span style="color:#000;font-weight:bold">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>让其继承 Parcelable 接口，并根据AS的错误提醒，自动补全。或者自己手动补全。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Book</span> <span style="color:#000;font-weight:bold">implements</span> Parcelable <span style="color:#000;font-weight:bold">{</span>
+
+    <span style="color:#000;font-weight:bold">private</span> String name<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">int</span> price<span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">getName</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">return</span> name<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setName</span><span style="color:#000;font-weight:bold">(</span>String name<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">name</span> <span style="color:#000;font-weight:bold">=</span> name<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">getPrice</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">return</span> price<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setPrice</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> price<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">price</span> <span style="color:#000;font-weight:bold">=</span> price<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> String <span style="color:#900;font-weight:bold">toString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#d14">&#34;书名:&#34;</span><span style="color:#000;font-weight:bold">+</span>name <span style="color:#000;font-weight:bold">+</span><span style="color:#d14">&#34;,价格&#34;</span><span style="color:#000;font-weight:bold">+</span>price<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">Book</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">describeContents</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">return</span> 0<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">writeToParcel</span><span style="color:#000;font-weight:bold">(</span>Parcel dest<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> flags<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        dest<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">writeString</span><span style="color:#000;font-weight:bold">(</span>name<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        dest<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">writeInt</span><span style="color:#000;font-weight:bold">(</span>price<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#000;font-weight:bold">protected</span> <span style="color:#900;font-weight:bold">Book</span><span style="color:#000;font-weight:bold">(</span>Parcel in<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        name <span style="color:#000;font-weight:bold">=</span> in<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">readString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        price <span style="color:#000;font-weight:bold">=</span> in<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">readInt</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> Creator<span style="color:#000;font-weight:bold">&lt;</span>Book<span style="color:#000;font-weight:bold">&gt;</span> CREATOR <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Creator<span style="color:#000;font-weight:bold">&lt;</span>Book<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+        <span style="color:#000;font-weight:bold">public</span> Book <span style="color:#900;font-weight:bold">createFromParcel</span><span style="color:#000;font-weight:bold">(</span>Parcel in<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">new</span> Book<span style="color:#000;font-weight:bold">(</span>in<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+        <span style="color:#000;font-weight:bold">public</span> Book<span style="color:#000;font-weight:bold">[</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#900;font-weight:bold">newArray</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> size<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">new</span> Book<span style="color:#000;font-weight:bold">[</span>size<span style="color:#000;font-weight:bold">]</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">;</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="2生成aidl文件">2.生成AIDL文件</h4>
+<p>前面我们说过，因为Book类不是默认类型，所以也要生成关于Book类的AIDL文件。</p>
+<p>鼠标移到app上面去，点击右键，然后 new-&gt;AIDL-&gt;AIDL File，按下鼠标左键就会弹出一个框提示生成AIDL文件了。此时在java包层级下，多了一个aidl文件夹，在里面就可以新建aidl文件。</p>
+<p>Book.aidl文件</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">// Book.aidl
+</span><span style="color:#998;font-style:italic"></span><span style="color:#998;font-style:italic">//这个文件的作用是引入了一个序列化对象 Book 供其他的AIDL文件使用
+</span><span style="color:#998;font-style:italic"></span><span style="color:#998;font-style:italic">//注意：Book.aidl与Book.java的包名应当是一样的
+</span><span style="color:#998;font-style:italic"></span>
+<span style="color:#000;font-weight:bold">package</span> <span style="color:#555">com.heshucheng.servicedemo</span><span style="color:#000;font-weight:bold">;</span>
+
+<span style="color:#998;font-style:italic">//注意parcelable是小写
+</span><span style="color:#998;font-style:italic"></span>parcelable Book<span style="color:#000;font-weight:bold">;</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>BookManager.aidl文件</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">// BookManager.aidl
+</span><span style="color:#998;font-style:italic"></span><span style="color:#998;font-style:italic">//作用是定义方法接口
+</span><span style="color:#998;font-style:italic"></span>
+<span style="color:#000;font-weight:bold">package</span> <span style="color:#555">com.heshucheng.servicedemo</span><span style="color:#000;font-weight:bold">;</span>
+<span style="color:#998;font-style:italic">//导入所需要使用的非默认支持数据类型的包
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">import</span> <span style="color:#555">com.heshucheng.servicedemo.Book</span><span style="color:#000;font-weight:bold">;</span>
+<span style="color:#998;font-style:italic">// Declare any non-default types here with import statements
+</span><span style="color:#998;font-style:italic"></span>
+<span style="color:#000;font-weight:bold">interface</span>  <span style="color:#458;font-weight:bold">BookManager</span><span style="color:#000;font-weight:bold">{</span>
+
+ <span style="color:#998;font-style:italic">//所有的返回值前都不需要加任何东西，不管是什么数据类型
+</span><span style="color:#998;font-style:italic"></span>   List<span style="color:#000;font-weight:bold">&lt;</span>Book<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#900;font-weight:bold">getBooks</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+   <span style="color:#998;font-style:italic">//传参时除了Java基本类型以及String，CharSequence之外的类型
+</span><span style="color:#998;font-style:italic"></span>   <span style="color:#998;font-style:italic">//都需要在前面加上定向tag，具体加什么量需而定
+</span><span style="color:#998;font-style:italic"></span>   <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">addBook</span><span style="color:#000;font-weight:bold">(</span>in Book book<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+<span style="color:#000;font-weight:bold">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>在BookManager中，定义了两个接口，一个活的书的list，一个是添加书。</p>
+<h4 id="3在service中实现相关的接口">3.在Service中实现相关的接口</h4>
+<p>在AIDL的使用场景中经常在多次线程的情景下被调用，所以要考虑线程安全问题。同时完成请求的时间不止几毫秒，尽量避免在主线程中调用相关的接口。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">AIDLService</span> <span style="color:#000;font-weight:bold">extends</span> Service <span style="color:#000;font-weight:bold">{</span>
+
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> String TAG <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;AIDLService&#34;</span><span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#998;font-style:italic">//包含Book对象的List
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">private</span> List<span style="color:#000;font-weight:bold">&lt;</span>Book<span style="color:#000;font-weight:bold">&gt;</span> mBooks <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> ArrayList<span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#998;font-style:italic">//由AIDL文件生成的BookManager
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">final</span> BookManager<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Stub</span> mBookManager <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> BookManager<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Stub</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+        <span style="color:#000;font-weight:bold">public</span> List<span style="color:#000;font-weight:bold">&lt;</span>Book<span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#900;font-weight:bold">getBooks</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> RemoteException <span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">//实现对应的接口
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">synchronized</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>  <span style="color:#998;font-style:italic">//确保线程安全
+</span><span style="color:#998;font-style:italic"></span>                Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">w</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;getBooks: &#34;</span> <span style="color:#000;font-weight:bold">+</span> mBooks<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">toString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mBooks <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#000;font-weight:bold">return</span> mBooks<span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">new</span> ArrayList<span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">addBook</span><span style="color:#000;font-weight:bold">(</span>Book book<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> RemoteException <span style="color:#000;font-weight:bold">{</span><span style="color:#998;font-style:italic">//实现对应的接口
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">synchronized</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">{</span> <span style="color:#998;font-style:italic">//确保线程安全
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mBooks <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">{</span>
+                    mBooks <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> ArrayList<span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+
+                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>book <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">{</span>
+                    Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">w</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;addBook: &#34;</span> <span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    book <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Book<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+
+                <span style="color:#998;font-style:italic">//尝试修改book的参数，主要是为了观察其客户端的反馈
+</span><span style="color:#998;font-style:italic"></span>                book<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setPrice</span><span style="color:#000;font-weight:bold">(</span>2333<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">!</span>mBooks<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">contains</span><span style="color:#000;font-weight:bold">(</span>book<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">{</span>
+                    mBooks<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">add</span><span style="color:#000;font-weight:bold">(</span>book<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+
+                <span style="color:#998;font-style:italic">//打印mBooks列表，观察客户端传过来的值
+</span><span style="color:#998;font-style:italic"></span>                Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">w</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;addBook: &#34;</span><span style="color:#000;font-weight:bold">+</span>mBooks<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">toString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">AIDLService</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onCreate</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onCreate</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        Book book <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Book<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        book<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setName</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;Android艺术开发探索&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        book<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setPrice</span><span style="color:#000;font-weight:bold">(</span>28<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        mBooks<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">add</span><span style="color:#000;font-weight:bold">(</span>book<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> IBinder <span style="color:#900;font-weight:bold">onBind</span><span style="color:#000;font-weight:bold">(</span>Intent intent<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">w</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onBind: &#34;</span> <span style="color:#000;font-weight:bold">+</span>intent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">toString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">return</span> mBookManager<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>在Service中，实现相关的接口，同时确保线程安全，并在onBind类中将对于的BookManager传第过去</p>
+<h4 id="4在客户端中调用相关的接口">4.在客户端中调用相关的接口</h4>
+<p>注意，如果接口完成的时间不止几毫秒，尽量避免在主线程中调用相关的接口。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">77
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">78
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">79
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">80
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">81
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">82
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">83
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">84
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">85
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">86
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">87
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">88
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">89
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">90
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">91
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">92
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">93
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">AIDLActivity</span> <span style="color:#000;font-weight:bold">extends</span> AppCompatActivity <span style="color:#000;font-weight:bold">{</span>
+
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> String TAG <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;AIDLActivity&#34;</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#998;font-style:italic">//由AIDL文件生成的Java类
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">private</span> BookManager mBookManager <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#998;font-style:italic">//标志当前与服务端连接状况的情况
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">boolean</span> mBound <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#000;font-weight:bold">private</span> List<span style="color:#000;font-weight:bold">&lt;</span>Book<span style="color:#000;font-weight:bold">&gt;</span> mBooks<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onCreate</span><span style="color:#000;font-weight:bold">(</span>Bundle savedInstanceState<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onCreate</span><span style="color:#000;font-weight:bold">(</span>savedInstanceState<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        setContentView<span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">layout</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">activity_aidl</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">//按钮的点击事件
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">addBook</span><span style="color:#000;font-weight:bold">(</span>View view<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">if</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">!</span>mBound<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">{</span>
+            attemptToBindService<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            Toast<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">makeText</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">,</span><span style="color:#d14">&#34;当前与服务端处于未连接状态，正在尝试重连，请稍后再试&#34;</span><span style="color:#000;font-weight:bold">,</span> Toast<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">LENGTH_SHORT</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">show</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">return</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mBookManager <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span>
+            <span style="color:#000;font-weight:bold">return</span><span style="color:#000;font-weight:bold">;</span>
+
+        Book book <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Book<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        book<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setName</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;App研发录&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        book<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setPrice</span><span style="color:#000;font-weight:bold">(</span>30<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+            mBookManager<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">addBook</span><span style="color:#000;font-weight:bold">(</span>book<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">//调用对应的接口
+</span><span style="color:#998;font-style:italic"></span>            Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">w</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;addBook: &#34;</span><span style="color:#000;font-weight:bold">+</span>book<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">toString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>RemoteException e<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">{</span>
+            e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 尝试与服务端建立连接
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">attemptToBindService</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">{</span>
+        Intent intent <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span>  Intent<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        intent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setAction</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;com.heshucheng.aidl&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        intent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setPackage</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;com.heshucheng.servicedemo&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        bindService<span style="color:#000;font-weight:bold">(</span>intent<span style="color:#000;font-weight:bold">,</span>mServiceConnection<span style="color:#000;font-weight:bold">,</span> Context<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">BIND_AUTO_CREATE</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onStart</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onStart</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">if</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">!</span>mBound<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">{</span>
+            attemptToBindService<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onStop</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onStop</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">if</span><span style="color:#000;font-weight:bold">(</span>mBound<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">{</span>
+            unbindService<span style="color:#000;font-weight:bold">(</span> mServiceConnection<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            mBound <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">//绑定接口
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">private</span> ServiceConnection mServiceConnection <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> ServiceConnection<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onServiceConnected</span><span style="color:#000;font-weight:bold">(</span>ComponentName name<span style="color:#000;font-weight:bold">,</span> IBinder service<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">w</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;绑定成功&#34;</span> <span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            mBookManager <span style="color:#000;font-weight:bold">=</span> BookManager<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Stub</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">asInterface</span><span style="color:#000;font-weight:bold">(</span>service<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            mBound <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mBookManager <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+                    mBooks <span style="color:#000;font-weight:bold">=</span> mBookManager<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getBooks</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span><span style="color:#998;font-style:italic">//调用接口
+</span><span style="color:#998;font-style:italic"></span>                    Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">w</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span><span style="color:#d14">&#34;获取成功&#34;</span><span style="color:#000;font-weight:bold">+</span>mBooks<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">toString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>RemoteException e<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">{</span>
+                    e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onServiceDisconnected</span><span style="color:#000;font-weight:bold">(</span>ComponentName name<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">e</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;连接中断&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            mBound <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">;</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>在Activity中调用对应的接口。</p>
+<h4 id="5运行结果">5.运行结果</h4>
+<p>客户端
+<img src="https://img-blog.csdnimg.cn/20181101225020582.png" alt="在这里插入图片描述"></p>
+<p>服务端
+<img src="https://img-blog.csdnimg.cn/20181101225039473.png" alt="在这里插入图片描述"></p>
+<h3 id="三aidl生成binder类分析">三.AIDL生成Binder类分析</h3>
+<p>在上面的代码中，我们发现，在客户端和服务端中都没有出现aidl文件，但依然通过BookManager完成相应的工作，而它就是aidl生成的java文件，它的完整路径在app-&gt;build-&gt;generated-&gt;source-&gt;aidl-&gt;debug-&gt;com-&gt;包名-&gt;BookManager.java</p>
+<p>在上文中，我们在Service中实现相应的接口，并将其传递给客户端，在客户端中直接调用相关的接口。好像并没有关于进程方面的操作，但两个不同进程的相互调用，肯定需要进行IPC,那这一部分在哪实现的？</p>
+<p>答案就是在BookManager.java中。</p>
+<h4 id="1asinterface">1.asInterface</h4>
+<p>我们在获得BookManager类时，是通过这个语句</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"> mBookManager <span style="color:#000;font-weight:bold">=</span> BookManager<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Stub</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">asInterface</span><span style="color:#000;font-weight:bold">(</span>service<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>通过asIbterface获得BookManager。我们进入asInterface方法中。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">         <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">         * Cast an IBinder object into an com.heshucheng.servicedemo.BookManager interface,
+</span><span style="color:#998;font-style:italic">         * generating a proxy if needed.
+</span><span style="color:#998;font-style:italic">         *将IBinder对象转换为BookManager接口，根据需要生成代理。
+</span><span style="color:#998;font-style:italic">         */</span>
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">BookManager</span> <span style="color:#900;font-weight:bold">asInterface</span><span style="color:#000;font-weight:bold">(</span>android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">IBinder</span> obj<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#998;font-style:italic">//判断是否为空
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span>obj <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+            <span style="color:#998;font-style:italic">//搜索本地是否有可用对象，如果有就将其返回
+</span><span style="color:#998;font-style:italic"></span>            android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">IInterface</span> iin <span style="color:#000;font-weight:bold">=</span> obj<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">queryLocalInterface</span><span style="color:#000;font-weight:bold">(</span>DESCRIPTOR<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span>iin <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">(</span>iin <span style="color:#000;font-weight:bold">instanceof</span> com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">BookManager</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span>com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">BookManager</span><span style="color:#000;font-weight:bold">)</span> iin<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+            <span style="color:#998;font-style:italic">//如果没有，就新建一个
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">new</span> com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">BookManager</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Stub</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Proxy</span><span style="color:#000;font-weight:bold">(</span>obj<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>在上面的代码中，首先先进行了判空，然后调用了 queryLocalInterface() 方法，这个方法是 IBinder 接口里面的一个方法，它具体的源码涉及到IBinder相关内容，我们暂且不去深究。只说明它的作用，它就是去本地搜索是否有可以的对象</p>
+<p>当本地没有BookManager对象时。会去通过Proxy来获得一个BookManager对象。让我们继续来看Proxy中的源码</p>
+<h4 id="2proxy">2.proxy</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Proxy</span> <span style="color:#000;font-weight:bold">implements</span> com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">BookManager</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">private</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">IBinder</span> mRemote<span style="color:#000;font-weight:bold">;</span>
+
+            Proxy<span style="color:#000;font-weight:bold">(</span>android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">IBinder</span> remote<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                mRemote <span style="color:#000;font-weight:bold">=</span> remote<span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+            <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+            <span style="color:#000;font-weight:bold">public</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">IBinder</span> <span style="color:#900;font-weight:bold">asBinder</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">return</span> mRemote<span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+            <span style="color:#000;font-weight:bold">public</span> java<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">lang</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">String</span> <span style="color:#900;font-weight:bold">getInterfaceDescriptor</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">return</span> DESCRIPTOR<span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+            <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+            <span style="color:#000;font-weight:bold">public</span> java<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">util</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">List</span><span style="color:#000;font-weight:bold">&lt;</span>com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Book</span><span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#900;font-weight:bold">getBooks</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">RemoteException</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#998;font-style:italic">//_data存心客户端流向服务的数据流
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">//_reply存储服务流向客户端的数据流
+</span><span style="color:#998;font-style:italic"></span>                android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Parcel</span> _data <span style="color:#000;font-weight:bold">=</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Parcel</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">obtain</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Parcel</span> _reply <span style="color:#000;font-weight:bold">=</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Parcel</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">obtain</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                java<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">util</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">List</span><span style="color:#000;font-weight:bold">&lt;</span>com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Book</span><span style="color:#000;font-weight:bold">&gt;</span> _result<span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+                    _data<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">writeInterfaceToken</span><span style="color:#000;font-weight:bold">(</span>DESCRIPTOR<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+                    <span style="color:#998;font-style:italic">//调用transact() 方法将方法id和两个 Parcel 容器传过去Service
+</span><span style="color:#998;font-style:italic"></span>                    mRemote<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">transact</span><span style="color:#000;font-weight:bold">(</span>Stub<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">TRANSACTION_getBooks</span><span style="color:#000;font-weight:bold">,</span> _data<span style="color:#000;font-weight:bold">,</span> _reply<span style="color:#000;font-weight:bold">,</span> 0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    _reply<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">readException</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#998;font-style:italic">//从_reply取出结果
+</span><span style="color:#998;font-style:italic"></span>                    _result <span style="color:#000;font-weight:bold">=</span> _reply<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">createTypedArrayList</span><span style="color:#000;font-weight:bold">(</span>com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Book</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">CREATOR</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">finally</span> <span style="color:#000;font-weight:bold">{</span>
+                    _reply<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">recycle</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    _data<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">recycle</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">return</span> _result<span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+            <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+            <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">addBook</span><span style="color:#000;font-weight:bold">(</span>com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Book</span> book<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">RemoteException</span> <span style="color:#000;font-weight:bold">{</span>
+                android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Parcel</span> _data <span style="color:#000;font-weight:bold">=</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Parcel</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">obtain</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Parcel</span> _reply <span style="color:#000;font-weight:bold">=</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Parcel</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">obtain</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+                    _data<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">writeInterfaceToken</span><span style="color:#000;font-weight:bold">(</span>DESCRIPTOR<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span>book <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        <span style="color:#998;font-style:italic">//book存入
+</span><span style="color:#998;font-style:italic"></span>                        _data<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">writeInt</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                        book<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">writeToParcel</span><span style="color:#000;font-weight:bold">(</span>_data<span style="color:#000;font-weight:bold">,</span> 0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+                        _data<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">writeInt</span><span style="color:#000;font-weight:bold">(</span>0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                    <span style="color:#998;font-style:italic">//调用transact() 方法将方法id和两个 Parcel 容器传给Service
+</span><span style="color:#998;font-style:italic"></span>                    mRemote<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">transact</span><span style="color:#000;font-weight:bold">(</span>Stub<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">TRANSACTION_addBook</span><span style="color:#000;font-weight:bold">,</span> _data<span style="color:#000;font-weight:bold">,</span> _reply<span style="color:#000;font-weight:bold">,</span> 0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    _reply<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">readException</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">finally</span> <span style="color:#000;font-weight:bold">{</span>
+                    _reply<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">recycle</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    _data<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">recycle</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> TRANSACTION_getBooks <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">IBinder</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">FIRST_CALL_TRANSACTION</span> <span style="color:#000;font-weight:bold">+</span> 0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> TRANSACTION_addBook <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">IBinder</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">FIRST_CALL_TRANSACTION</span> <span style="color:#000;font-weight:bold">+</span> 1<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>说明：</p>
+<ul>
+<li>关于 Parcel ：简单的来说，Parcel 是一个用来存放和读取数据的容器。我们可以用它来进行客户端和服务端之间的数据传输，当然，它能传输的只能是可序列化的数据。具体 Parcel 的使用方法和相关原理可以参见这篇文章<a href="https://blog.csdn.net/qinjuning/article/details/6785517">Android中Parcel的分析以及使用</a></li>
+<li>关于 transact() 方法：这是客户端和服务器端通信的核心方法。调用这个方法之后，客户端会挂起当前线程，等待服务端执行完先关任务后通知并接受返回的 _reply 数据流。</li>
+<li>transact()第一个参数，是方法ID，这个是客户端和服务器端约定好的给方法特殊编码，彼此一一对应，在AIDL文件转化为java文件的时候，系统会自动给AIDL每一个方法自动分配一个方法ID</li>
+<li>transact()第四个参数是一个int值，他的作用是设置IPC的模式，为0表示数据可以双向流动，即reply 流可以正常的携带数据回来，如果为 1 的话那么数据将只能单向流通，从服务端回来的 _reply 流将不携带任何数据。在AIDL生成的java文件里，这个参数均为0.</li>
+<li>关于transact()设计到了Binder机制比较低层的东西，博主没有太深的研究，所以就直接借用别的结论。</li>
+</ul>
+<p>总结一下Proxy类方法的一般工作流程</p>
+<ul>
+<li>生成_data和_reply数据流，并向_data中存入客户端的数据</li>
+<li>通过transact() 方法将它们传递给服务端，并请求服务端调用指定方法。</li>
+<li>接收_reoly数据流，并从中取出服务端传回的数据</li>
+</ul>
+<h4 id="3ontransact">3.onTransact</h4>
+<p>在前面说了客户端通过transact() 方法将数据和请求发送过去，那么很显然，在服务端也应该有个方法来接收这些传过来的东西：在 BookManager.java 里面我们可以很轻易的找到一个叫做 onTransact() 的方法——看这名字就知道，多半和它脱不了关系，再一看它的传参 (int code, android.os.Parcel data, android.os.Parcel reply, int flags) ——和 transact() 方法的传参是一样的。所以 onTransact和transac之间肯定有很大联系，我们来看其代码</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">onTransact</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> code<span style="color:#000;font-weight:bold">,</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Parcel</span> data<span style="color:#000;font-weight:bold">,</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Parcel</span> reply<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> flags<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">RemoteException</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">switch</span> <span style="color:#000;font-weight:bold">(</span>code<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">case</span> INTERFACE_TRANSACTION<span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">{</span>
+                    reply<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">writeString</span><span style="color:#000;font-weight:bold">(</span>DESCRIPTOR<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">case</span> TRANSACTION_getBooks<span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">{</span>
+                    data<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">enforceInterface</span><span style="color:#000;font-weight:bold">(</span>DESCRIPTOR<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#998;font-style:italic">//调用 this.getBooks() 方法，在这里开始执行具体的事务逻辑
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#998;font-style:italic">//此时result调用 getBooks() 方法的返回值
+</span><span style="color:#998;font-style:italic"></span>                    java<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">util</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">List</span><span style="color:#000;font-weight:bold">&lt;</span>com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Book</span><span style="color:#000;font-weight:bold">&gt;</span> _result <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getBooks</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    reply<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">writeNoException</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#998;font-style:italic">//将方法执行的结果写入 reply
+</span><span style="color:#998;font-style:italic"></span>                    reply<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">writeTypedList</span><span style="color:#000;font-weight:bold">(</span>_result<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">case</span> TRANSACTION_addBook<span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">{</span>
+                    data<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">enforceInterface</span><span style="color:#000;font-weight:bold">(</span>DESCRIPTOR<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Book</span> _arg0<span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span>0 <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> data<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">readInt</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        _arg0 <span style="color:#000;font-weight:bold">=</span> com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Book</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">CREATOR</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">createFromParcel</span><span style="color:#000;font-weight:bold">(</span>data<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+                        _arg0 <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                    <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">addBook</span><span style="color:#000;font-weight:bold">(</span>_arg0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    reply<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">writeNoException</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onTransact</span><span style="color:#000;font-weight:bold">(</span>code<span style="color:#000;font-weight:bold">,</span> data<span style="color:#000;font-weight:bold">,</span> reply<span style="color:#000;font-weight:bold">,</span> flags<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>在 onTransact先进行switch选择，之后根剧不同的方法进入不同的分支，在分支中，获得客户端的参数，并服务的实现的方法，井参数传入，最后将返回值写入reply 流。</p>
+<p>总结服务端的流程：</p>
+<ul>
+<li>获取客户端传过来的数据，根剧方法ID执行相应的操作</li>
+<li>将传过来的数据取出，调用本地对应的方法</li>
+<li>将需要的数据写入reply流，传回客户端。</li>
+</ul>
+<h4 id="5全部代码">5.全部代码</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 77
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 78
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 79
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 80
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 81
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 82
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 83
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 84
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 85
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 86
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 87
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 88
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 89
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 90
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 91
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 92
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 93
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 94
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 95
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 96
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 97
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 98
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 99
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">100
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">101
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">102
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">103
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">104
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">105
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">106
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">107
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">108
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">109
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">110
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">111
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">112
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">113
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">114
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">115
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">116
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">117
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">118
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">119
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">120
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">121
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">122
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">123
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">124
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">125
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">126
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">127
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">128
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">129
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">130
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">131
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">132
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">133
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">134
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">135
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">136
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">137
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">138
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">139
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">140
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">141
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">142
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">interface</span> <span style="color:#458;font-weight:bold">BookManager</span> <span style="color:#000;font-weight:bold">extends</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">IInterface</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * Local-side IPC implementation stub class.
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">abstract</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Stub</span> <span style="color:#000;font-weight:bold">extends</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Binder</span> <span style="color:#000;font-weight:bold">implements</span> com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">BookManager</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> java<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">lang</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">String</span> DESCRIPTOR <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;com.heshucheng.servicedemo.BookManager&#34;</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">         * Construct the stub at attach it to the interface.
+</span><span style="color:#998;font-style:italic">         */</span>
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">Stub</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">attachInterface</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">,</span> DESCRIPTOR<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">         * Cast an IBinder object into an com.heshucheng.servicedemo.BookManager interface,
+</span><span style="color:#998;font-style:italic">         * generating a proxy if needed.
+</span><span style="color:#998;font-style:italic">         */</span>
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">BookManager</span> <span style="color:#900;font-weight:bold">asInterface</span><span style="color:#000;font-weight:bold">(</span>android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">IBinder</span> obj<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#998;font-style:italic">//判断是否为空
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span>obj <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+            <span style="color:#998;font-style:italic">//搜索本地是否有可用对象，如果有就将其返回
+</span><span style="color:#998;font-style:italic"></span>            android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">IInterface</span> iin <span style="color:#000;font-weight:bold">=</span> obj<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">queryLocalInterface</span><span style="color:#000;font-weight:bold">(</span>DESCRIPTOR<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span>iin <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">(</span>iin <span style="color:#000;font-weight:bold">instanceof</span> com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">BookManager</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span>com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">BookManager</span><span style="color:#000;font-weight:bold">)</span> iin<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+            <span style="color:#998;font-style:italic">//如果没有，就新建一个
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">new</span> com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">BookManager</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Stub</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Proxy</span><span style="color:#000;font-weight:bold">(</span>obj<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+        <span style="color:#000;font-weight:bold">public</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">IBinder</span> <span style="color:#900;font-weight:bold">asBinder</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">onTransact</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> code<span style="color:#000;font-weight:bold">,</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Parcel</span> data<span style="color:#000;font-weight:bold">,</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Parcel</span> reply<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span> flags<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">RemoteException</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">switch</span> <span style="color:#000;font-weight:bold">(</span>code<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">case</span> INTERFACE_TRANSACTION<span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">{</span>
+                    reply<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">writeString</span><span style="color:#000;font-weight:bold">(</span>DESCRIPTOR<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">case</span> TRANSACTION_getBooks<span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">{</span>
+                    data<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">enforceInterface</span><span style="color:#000;font-weight:bold">(</span>DESCRIPTOR<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#998;font-style:italic">//调用 this.getBooks() 方法，在这里开始执行具体的事务逻辑
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#998;font-style:italic">//此时result调用 getBooks() 方法的返回值
+</span><span style="color:#998;font-style:italic"></span>                    java<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">util</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">List</span><span style="color:#000;font-weight:bold">&lt;</span>com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Book</span><span style="color:#000;font-weight:bold">&gt;</span> _result <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getBooks</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    reply<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">writeNoException</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#998;font-style:italic">//将方法执行的结果写入 reply
+</span><span style="color:#998;font-style:italic"></span>                    reply<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">writeTypedList</span><span style="color:#000;font-weight:bold">(</span>_result<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">case</span> TRANSACTION_addBook<span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">{</span>
+                    data<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">enforceInterface</span><span style="color:#000;font-weight:bold">(</span>DESCRIPTOR<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Book</span> _arg0<span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span>0 <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> data<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">readInt</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        _arg0 <span style="color:#000;font-weight:bold">=</span> com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Book</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">CREATOR</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">createFromParcel</span><span style="color:#000;font-weight:bold">(</span>data<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+                        _arg0 <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                    <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">addBook</span><span style="color:#000;font-weight:bold">(</span>_arg0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    reply<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">writeNoException</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onTransact</span><span style="color:#000;font-weight:bold">(</span>code<span style="color:#000;font-weight:bold">,</span> data<span style="color:#000;font-weight:bold">,</span> reply<span style="color:#000;font-weight:bold">,</span> flags<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">Proxy</span> <span style="color:#000;font-weight:bold">implements</span> com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">BookManager</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">private</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">IBinder</span> mRemote<span style="color:#000;font-weight:bold">;</span>
+
+            Proxy<span style="color:#000;font-weight:bold">(</span>android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">IBinder</span> remote<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                mRemote <span style="color:#000;font-weight:bold">=</span> remote<span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+            <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+            <span style="color:#000;font-weight:bold">public</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">IBinder</span> <span style="color:#900;font-weight:bold">asBinder</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">return</span> mRemote<span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+            <span style="color:#000;font-weight:bold">public</span> java<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">lang</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">String</span> <span style="color:#900;font-weight:bold">getInterfaceDescriptor</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">return</span> DESCRIPTOR<span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+            <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+            <span style="color:#000;font-weight:bold">public</span> java<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">util</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">List</span><span style="color:#000;font-weight:bold">&lt;</span>com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Book</span><span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#900;font-weight:bold">getBooks</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">RemoteException</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#998;font-style:italic">//_data存心客户端流向服务的数据流
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">//_reply存储服务流向客户端的数据流
+</span><span style="color:#998;font-style:italic"></span>                android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Parcel</span> _data <span style="color:#000;font-weight:bold">=</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Parcel</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">obtain</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Parcel</span> _reply <span style="color:#000;font-weight:bold">=</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Parcel</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">obtain</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                java<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">util</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">List</span><span style="color:#000;font-weight:bold">&lt;</span>com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Book</span><span style="color:#000;font-weight:bold">&gt;</span> _result<span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+                    _data<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">writeInterfaceToken</span><span style="color:#000;font-weight:bold">(</span>DESCRIPTOR<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+                    <span style="color:#998;font-style:italic">//调用transact() 方法将方法id和两个 Parcel 容器传过去Service
+</span><span style="color:#998;font-style:italic"></span>                    mRemote<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">transact</span><span style="color:#000;font-weight:bold">(</span>Stub<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">TRANSACTION_getBooks</span><span style="color:#000;font-weight:bold">,</span> _data<span style="color:#000;font-weight:bold">,</span> _reply<span style="color:#000;font-weight:bold">,</span> 0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    _reply<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">readException</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#998;font-style:italic">//从_reply取出结果
+</span><span style="color:#998;font-style:italic"></span>                    _result <span style="color:#000;font-weight:bold">=</span> _reply<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">createTypedArrayList</span><span style="color:#000;font-weight:bold">(</span>com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Book</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">CREATOR</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">finally</span> <span style="color:#000;font-weight:bold">{</span>
+                    _reply<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">recycle</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    _data<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">recycle</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">return</span> _result<span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+            <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+            <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">addBook</span><span style="color:#000;font-weight:bold">(</span>com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Book</span> book<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">RemoteException</span> <span style="color:#000;font-weight:bold">{</span>
+                android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Parcel</span> _data <span style="color:#000;font-weight:bold">=</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Parcel</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">obtain</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Parcel</span> _reply <span style="color:#000;font-weight:bold">=</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Parcel</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">obtain</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+                    _data<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">writeInterfaceToken</span><span style="color:#000;font-weight:bold">(</span>DESCRIPTOR<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span>book <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        <span style="color:#998;font-style:italic">//book存入
+</span><span style="color:#998;font-style:italic"></span>                        _data<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">writeInt</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                        book<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">writeToParcel</span><span style="color:#000;font-weight:bold">(</span>_data<span style="color:#000;font-weight:bold">,</span> 0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+                        _data<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">writeInt</span><span style="color:#000;font-weight:bold">(</span>0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                    <span style="color:#998;font-style:italic">//调用transact() 方法将方法id和两个 Parcel 容器传给Service
+</span><span style="color:#998;font-style:italic"></span>                    mRemote<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">transact</span><span style="color:#000;font-weight:bold">(</span>Stub<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">TRANSACTION_addBook</span><span style="color:#000;font-weight:bold">,</span> _data<span style="color:#000;font-weight:bold">,</span> _reply<span style="color:#000;font-weight:bold">,</span> 0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    _reply<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">readException</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">finally</span> <span style="color:#000;font-weight:bold">{</span>
+                    _reply<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">recycle</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    _data<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">recycle</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> TRANSACTION_getBooks <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">IBinder</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">FIRST_CALL_TRANSACTION</span> <span style="color:#000;font-weight:bold">+</span> 0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> TRANSACTION_addBook <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">IBinder</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">FIRST_CALL_TRANSACTION</span> <span style="color:#000;font-weight:bold">+</span> 1<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+
+    <span style="color:#000;font-weight:bold">public</span> java<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">util</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">List</span><span style="color:#000;font-weight:bold">&lt;</span>com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Book</span><span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#900;font-weight:bold">getBooks</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">RemoteException</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">addBook</span><span style="color:#000;font-weight:bold">(</span>com<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">heshucheng</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">servicedemo</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Book</span> book<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">throws</span> android<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">os</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">RemoteException</span><span style="color:#000;font-weight:bold">;</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="6示意图">6.示意图</h4>
+<p>通过上面的分析，我们大致明白的AIDL的过程，我们可以发现我们完全可以不使用AIDL文件提供的Binder文件，可以实际实现Binder。下图就是AIDL生成的Binder的工作过程</p>
+<p><img src="https://img-blog.csdnimg.cn/20181103195717670.png" alt="在这里插入图片描述"></p>
+<h3 id="四参考资料">四.参考资料</h3>
+<p>android艺术开发探索
+<a href="https://developer.android.com/guide/components/aidl?hl=zh-cn">AIDL官方文档</a>
+<a href="https://blog.csdn.net/luoyanglizi/article/details/51980630">Android：学习AIDL，这一篇文章就够了(上)</a>
+<a href="https://blog.csdn.net/luoyanglizi/article/details/52029091">Android：学习AIDL，这一篇文章就够了(下)</a></p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC2AIDL/">http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC2AIDL/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/%E6%96%87%E7%AB%A0%E5%AF%BC%E8%88%AA/">文章导航</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%8211Retrofit%E7%9A%84%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">Android之网络请求11————Retrofit的源码分析</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%8210Retrofit%E7%9A%84%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8/">Android之网络请求10————Retrofit的进阶使用</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%829Retrofit%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/">Android之网络请求8————Retrofit的简单使用</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%828OkHttp%E6%BA%90%E7%A0%815_%E7%BC%93%E5%AD%98%E7%9B%B8%E5%85%B3/">Android之网络请求8————OkHttp源码5:缓存相关</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            没有标签
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "https://github.com/hsc396612325/HSCBlog/tree/gh-pages"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一aidl概述">一.AIDL概述</a>
+      <ul>
+        <li><a href="#1aidl是什么">1.AIDL是什么</a></li>
+        <li><a href="#2使用场景">2.使用场景</a></li>
+        <li><a href="#3一些语法">3.一些语法</a></li>
+      </ul>
+    </li>
+    <li><a href="#二aidl实现跨进程通信">二.AIDL实现跨进程通信</a>
+      <ul>
+        <li><a href="#1book实现-parcelable-接口">1.Book实现 Parcelable 接口</a></li>
+        <li><a href="#2生成aidl文件">2.生成AIDL文件</a></li>
+        <li><a href="#3在service中实现相关的接口">3.在Service中实现相关的接口</a></li>
+        <li><a href="#4在客户端中调用相关的接口">4.在客户端中调用相关的接口</a></li>
+        <li><a href="#5运行结果">5.运行结果</a></li>
+      </ul>
+    </li>
+    <li><a href="#三aidl生成binder类分析">三.AIDL生成Binder类分析</a>
+      <ul>
+        <li><a href="#1asinterface">1.asInterface</a></li>
+        <li><a href="#2proxy">2.proxy</a></li>
+        <li><a href="#3ontransact">3.onTransact</a></li>
+        <li><a href="#5全部代码">5.全部代码</a></li>
+        <li><a href="#6示意图">6.示意图</a></li>
+      </ul>
+    </li>
+    <li><a href="#四参考资料">四.参考资料</a></li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

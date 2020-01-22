@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>计算机网络2————数据链路层 | 冰炭不投day的博客</title>
+    <meta property="og:title" content="计算机网络2————数据链路层 - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2019-01-19T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2019-01-19T22:40:54&#43;08:00'>
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="计算机网络2————数据链路层">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C2%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">计算机网络2————数据链路层</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2019年1月19日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C'>计算机网络</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h3 id="一链路层概述">一.链路层概述</h3>
+<h4 id="1链路层的概念">1.链路层的概念</h4>
+<p>数据链路可以理解为数据传输通道，在物理层和网络层之间，是数据传输中比较重要的一层。物理设备为终端设备间传递传输媒介及连接，但通讯设备之间的传输连接只能在通讯时短暂连接。每次通信都要经过建立通信连接和拆除通信连接两个过程，这种建立起来的数据收发就叫数据链路，承担这种工作任务的设备就称为数据链路设备。常见的有网卡，网桥，交换机。</p>
+<h4 id="2链路层任务">2.链路层任务</h4>
+<p>链路层主要任务就在于将网络层的PDU，进行通过帧的形式来传递。
+所以链路层的协议就规定了：单端链路的两端结点之间的交互的帧格式，以及这些结点在发送和接收帧是所采取的操作</p>
+<p><img src="https://img-blog.csdnimg.cn/20190103214551536.png" alt="在这里插入图片描述">
+注意一条端到端路径上的不同单端链路可运行不同的链路协议，并且每种链路层的协议提供的服务可能不同。</p>
+<h4 id="3结点间链路类型">3.结点间链路类型</h4>
+<p>上面说，链路层负责将网络层的PDU(IP数据报)在两个结点间进行传递。而结点间的链路分为两种：</p>
+<ul>
+<li>点对点链路：是由链路一端的单个发送结点和链路另一端的单个接收结点组成，许多链路层的协议就是为点到点链路设计的，比如说<strong>PPP</strong>，<strong>HDLC</strong>协议。</li>
+<li>广播链路：能够让多个发送结点和接收结点都能连接到单一的，共享的广播信道上（此时必须要有专用的共享的信道协议来协调这些结点的数据发送），<strong>以太网</strong>和<strong>无线局域网</strong>都采用了广播链路</li>
+</ul>
+<h4 id="4链路设备">4.链路设备</h4>
+<p><strong>a.网卡（网络适配器）</strong>
+<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9nc3MwLmJkc3RhdGljLmNvbS8tNG8zZFNhZ194STRraEdrcG9XSzFIRjZoaHkvYmFpa2Uvdz0yNjg7Zz0wL3NpZ249NTAxZGJjOGQ3ZmNiMGE0Njg1MjI4YzNmNTM1ODkxMTkvYjgxMmM4ZmNjM2NlYzNmZGEwZWRmOTAyZDI4OGQ0M2Y4Njk0MjdmMS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述">
+作用：是连接计算机与网络的硬件设备，可以实现与局域网传输介质直接的物理连接和电信号匹配，还涉及到帧的发送与接收，帧的封装与拆封，介质访问控制，数据的编码与解码以及数据缓存的功能等。</p>
+<blockquote>
+<p>“计算机与外界局域网的连接是通过主机箱内插入一块网络接口板（或者是在笔记本电脑中插入一块PCMCIA卡）。网络接口板又称为通信适配器或网络适配器（Network Adapter）或网络接口卡NIC（Network Interface Card），但是更多的人愿意使用更为简单的名称‘网卡’。” —— 百度百科</p>
+</blockquote>
+<p><strong>b.网桥</strong>
+<img src="https://img-blog.csdn.net/20170415203727272?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMzUxMjA2OTU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="在这里插入图片描述">作用：是实现局域网互连的存储转发设备。网桥从一个局域网接收MAC帧，拆封、校对、校验之后，按另一个局域网的格式重新组装，发往它的物理层</p>
+<blockquote>
+<p>“网桥像一个聪明的中继器，它将两个相似的网络连接起来，并对网络数据的流通进行管理，不但能扩展网络的距离或范围，而且可提高网络的性能、可靠性和安全性” —— 百度百科</p>
+</blockquote>
+<p><strong>c.交换机</strong>
+<img src="https://img-blog.csdn.net/20170415204419088?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMzUxMjA2OTU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="在这里插入图片描述">
+作用：是一种用于电信号转发的网络设备，可以把要传输的信息发送的符合要求的设备上。</p>
+<blockquote>
+<p>交换机内部的cpu会在每个端口连接成功时，通过将mac地址和端口对应起来，形成一张mac表，在之后的通信中，发送该mac地址的数据包将仅发送器对应的端口，而不是所有的端口。</p>
+</blockquote>
+<h3 id="二ppp协议和hdlc协议">二.PPP协议和HDLC协议</h3>
+<p>在上面的节点中结点间链路类型有两种，一种为点对点链路,一种为广播链路。其中广播链路中的以太网和无线局域网比较广为人知。而点对点链路中的相关协议，接触的比较少。我们简单来看看点对点协议中的两种典型代表：PPP协议和HDLC协议</p>
+<h4 id="1ppp协议">1.PPP协议</h4>
+<p>ppp(点到点协议)是为在同等单元之间传输数据包这样简单的链路设计的链路层协议。这种链路是双全工操作，并按照顺序传递数据包。设计目的是主要通过拨号或专线方式建立点对点连接发送数据，使其成为各种主机，网桥和路由器之间简单连接的一种共通的解决方案。</p>
+<p>它的优点就是简单，具备用户识别认证能力以及支持动态ip地址分配，家庭拨号上网就是通过PPP在用户端上和运营商的接入服务器之间建立通信链路。</p>
+<p><strong>a.组成</strong></p>
+<ul>
+<li>链路控制协议LCP</li>
+<li>网路控制协议NCP</li>
+<li>将IP数据报封装到串行链路的解决方案：IP数据报是PPP帧的信息部分</li>
+</ul>
+<p><strong>b.帧格式</strong>
+<img src="https://img-blog.csdnimg.cn/20190104153020734.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述">
+说明：</p>
+<ul>
+<li>F：标志字段“01111110”，表示一个帧的开始和结束</li>
+<li>A：地址字段A只置为0xff</li>
+<li>C：控制字段C通常置为0x03</li>
+<li>协议：表明数据部分中，是什么协议数据（比如0x0021，就是指IP数据报）</li>
+<li>FCS:CRC冗余校验码</li>
+<li>目前AC并没有什么具体的含义</li>
+</ul>
+<p><strong>c.特点</strong></p>
+<ul>
+<li>PPP是不可靠传输，不用序号也不用确认机制</li>
+<li>仅支持点对点通信，不支持多点通信</li>
+<li>只支持全双工链路</li>
+<li>ppp两端可以是不同的网络层协议</li>
+</ul>
+<h4 id="2hdlc协议">2.HDLC协议</h4>
+<p>HDLC——面向比特的同步协议，它不依赖任何一种字符编码集，数据报文可以透明传输，全双工通信，CRC检验，且对帧进行顺序编号，防止漏发或者重发，可靠性高；传输控制功能与处理功能分离，较为灵活。</p>
+<p><strong>帧格式</strong>
+除了少了协议字段，其他几乎和PPP相同。
+帧格式也是FAC+信息字段+FCS(2字节)+F</p>
+<h4 id="3透明传输">3.透明传输</h4>
+<p>透明传输什么样意思呢？</p>
+<p>前面我们知道，PPP和HDLC都存在一个标志字段F，来表示帧的开始和结束。但是如果帧的内容中本身就存在标志字端，那是不是会将后面的数据舍弃。为了解决这个问题，提出了透明传输。</p>
+<p><strong>a.解决</strong></p>
+<ul>
+<li>发送端的数据链路层在数据中出现控制字段，在他前面添加一个转义字符“ESC” （1B）。</li>
+<li>字节填充或者字符填充，接受端的数据链路层在将数据送往网络层之前删除插入的转义字符。</li>
+<li>如果转义字符也出现在数据中，那么应在转义字符前插入一个转义字符。</li>
+</ul>
+<p><strong>b.PPP的字节填充</strong></p>
+<ul>
+<li>将数据部分中出现的每一个标志字段0x7e字节转变为2字节序列（0x7d，0x5e）</li>
+<li>若数据部分出现一个转义字符0x7d字节，则将其变为两字节序列（0x7d，0x5d）</li>
+<li>若数据部分出现数值小于0x20的字符，也在其前面添加一个0x7d字节</li>
+</ul>
+<p><strong>c.ppp的零比特填充</strong></p>
+<ul>
+<li>同步传输</li>
+<li>在发送端，只要发现5个连续1，则立即填入一个0</li>
+<li>接收端对比特流进行扫描，每当发现5个连续1时，就把这个五个1后的一个0删除。
+<img src="https://img-blog.csdnimg.cn/20190104163402663.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+</ul>
+<h4 id="4ppp和hdlc综合对比">4.PPP和HDLC综合对比</h4>
+<ul>
+<li>PPP面向字节，HDLC面向比特</li>
+<li>PPP多了一个2字节的协议字段，当协议字段是0x0021时，表示信息字段数据IP数据。</li>
+<li>PPP不使用序号和确认机制，只保证无差错接收，硬件进行CRC检验，HDLC协议的信息帧使用编号和确认机制。</li>
+</ul>
+<h3 id="三多路访问协议">三.多路访问协议</h3>
+<p>在上面我们说的是点对点的链路传输，我们看看广播链路。广播链路一般用于局域网环境，采用的是多路访问方式</p>
+<h4 id="1概述">1.概述</h4>
+<p>多路访问协议特征</p>
+<ul>
+<li>结点：N个</li>
+<li>单一信号:为N个结点共用</li>
+</ul>
+<p>多路访问会产生一个问题，就是碰撞。比如，两个结点同时发送帧，信号会发生纠缠，无法分清。</p>
+<p>对于多路访问带来的碰撞问题，有三种方法可以解决</p>
+<ul>
+<li>信道划分协议</li>
+<li>轮流协议</li>
+<li>随机接入协议</li>
+</ul>
+<p>下面来分别说上面三种协议。</p>
+<h4 id="2信道划分协议">2.信道划分协议</h4>
+<p>信道划分协议</p>
+<ul>
+<li>频分复用</li>
+<li>时分复用</li>
+<li>波分复用</li>
+<li>码分复用</li>
+</ul>
+<p>特点：</p>
+<ul>
+<li>信道在用户通信时固定分配给用户，用户只要得到信道就不会和别的用户发生碰撞，</li>
+<li>消除了碰撞，非常公平，每个节点得到R/N的传输速度。</li>
+</ul>
+<p>适用场合：存在大量需要频繁访问信道的结点，信道划分协议可以公平的为每个节点分配的固定的信道资源。</p>
+<p>但是不适用局域网，因为局域网对于带宽的需求是无法预见的。</p>
+<h4 id="3轮流协议">3.轮流协议</h4>
+<p>轮流协议主要分为两种：</p>
+<ul>
+<li>令牌传递协议</li>
+<li>轮询协议</li>
+</ul>
+<p>适用场合：
+希望共享信道，但是无法预测访问结点数量的场景。</p>
+<p><strong>令牌传递</strong>：
+在令牌总线网当中，各个站点连接到总线式的电脑上面，在逻辑上所有的站点是构成了一个环形。每一个站点都知道自己的左边和右边站点的地址，逻辑环初始化以后账号最大的站点可以发送第一帧，然后发送一个令牌给其后的邻居，把发送权交给邻站，那么令牌是代表1个帧发送权限的控制。
+<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9zczAuYmFpZHUuY29tLzZPTldzamlwMFFJWjh0eWhucS9pdC91PTU0MTE2ODc3NiwxODM2MTI4MTI2JmZtPTE3MyZhcHA9MjUmZj1KUEVH?x-oss-process=image/format,png" alt="在这里插入图片描述">令牌绕着逻辑环来进行传送，站点只有获得令牌才能够发送帧，那么令牌沿着逻辑环传递的时候，任何一个时刻只会有一个站点获得令牌，因此令牌总线网当中不会产生冲突。</p>
+<p>需要注意的是这种逻辑环上的站点的次序和总线上的站点的实际顺序是没有关系的，因为总线是一个广播的信道，每一个站点都能接收到所有的帧，但是会把不能发送给自己的帧丢弃掉。</p>
+<p>令牌环一个重要的优点就是信道访问时间具有确切的上界，这个就是令牌环网重要的优点。</p>
+<h4 id="4随机接入协议">4.随机接入协议</h4>
+<p>随机接入协议常见的有以下几种：</p>
+<ul>
+<li>ALOHA</li>
+<li>时隙ALOHA</li>
+<li>CSMA，CSMA/CD(以太网)，CSMA/CA（无线局域网）</li>
+</ul>
+<p>特点：</p>
+<ul>
+<li>信道资源动态分配给用户</li>
+<li>每个节点总是以信道全部速率R发送帧，随机发送</li>
+<li>有碰撞，涉及碰撞的节点将反复重复发生它的帧，直到发送成功。</li>
+</ul>
+<p>CSMA载波监听策略分为两种：</p>
+<ul>
+<li>非坚持CSMA：一但监听到信道忙，就不在监听；延迟一个随机时间后再次监听</li>
+<li>坚持CSMA：监听到信道忙时，仍继续监听，直到信道空闲。
+<ul>
+<li>i - 坚持CSMA：一听到信道空闲就立即发送数据</li>
+<li>p - 坚持CSMA：听到信道空闲时，以概率p发送数据（以概率1-p延迟一段时间后在发送）</li>
+</ul>
+</li>
+</ul>
+<h3 id="四以太网">四.以太网</h3>
+<h4 id="1以太网概述">1.以太网概述</h4>
+<p>以太网特指DIX Ethernet V2所描述的技术，在1982年，IEEE 802委员会以DIX Ethernet V2为基础，推出来IEEE802.3.虽然“以太网”和IEEE802.3略有区别，但在忽略网络协议细节时，人们习惯性将IEEE802.3称为以太网。</p>
+<p><img src="https://img-blog.csdnimg.cn/20190107145659757.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述">
+目前世界上超过80%的局域网都采用以太网技术
+<img src="https://img-blog.csdnimg.cn/20190107145921568.png" alt="在这里插入图片描述"></p>
+<h4 id="2ieee802标准主要成员">2.IEEE802标准主要成员</h4>
+<p>上面说的是IEEE802.3是指局域网，我们看看802其他协议</p>
+<p><img src="https://img-blog.csdnimg.cn/20190107150125130.png" alt="在这里插入图片描述">
+<img src="https://img-blog.csdnimg.cn/20190107150110220.png" alt="在这里插入图片描述"></p>
+<h4 id="3以太网的问题和解决">3.以太网的问题和解决</h4>
+<p>问题1：就在于如何在具体广播性质的总线上实现一对一通信。
+解决：以广播的形式将帧发送给所有节点，但只有目标节点接收，其他节点将不是发给自己的帧丢失。
+<img src="https://img-blog.csdnimg.cn/20190107151444420.png" alt="在这里插入图片描述">
+问题2：如果快捷方便的进行通信。
+解决：a.不保证可靠传输，即，不建立连接，不进行编号，不进行错误重传。可靠传输交给上层实现。b.使用曼彻斯特码对传输的数据进行编码</p>
+<p>问题3:如何解决碰撞
+解决：刚开始是使用CSMA/CD解决的碰撞</p>
+<h4 id="4以太网的多路访问协议">4.以太网的多路访问协议</h4>
+<p>以太网采用的是带碰撞检验的载波监听多点接入CSAM/CD.</p>
+<p><strong>a.内容</strong>
+发送前先监听信道是否空闲，若空闲则立即发送数据，在发送是，边发送边监听。若监听到碰撞，则立即停止发送，等待一段随机时间后，在重新尝试。</p>
+<p>总结来说，四句话：
+发前先监听，空闲则发送
+边发边检测，碰撞则回退
+<strong>b.流程</strong>
+<img src="https://img-blog.csdnimg.cn/20190107164642785.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>发送帧时期：可以通过数据发送帧后，当经过2个传播时延后，没有发送碰撞，则可以推断出，未发送碰撞</li>
+<li>发送阻塞信号：当发生数据的站一旦发生碰撞后，还要发送48比特的人为干扰信号，以便让所有用户都知道发送碰撞了</li>
+<li>退避等待时，采用截断二进制退避算法。</li>
+</ul>
+<p><strong>c.截断二进制指数退避算法</strong>
+算法让发送碰撞的站停止发送数据后，不是等待信道空闲后立即再发送数据，而是要推迟一个随机等待时间。</p>
+<p>具体算法如下：</p>
+<ul>
+<li>基本退避时间为争取期2t</li>
+<li>设重传参数n（n &lt;10）,n = Min[重传此时，10]</li>
+<li>从整数集合[0,1,(2^n -1)]中随机取随机，记为k。重传所需要的时间为 k*2t</li>
+<li>当重传达16次仍不能成功时，则丢弃该帧，并向高层报告</li>
+</ul>
+<p><strong>d.以太网中应用CSMA/CD</strong></p>
+<ul>
+<li>当以太网采用半双工方式时使用CSMA/CD协议</li>
+<li>当以太网采用全双工方式是不需要使用CSMA/CD协议</li>
+</ul>
+<blockquote>
+<p>半双工是指传输过程中只能向一个方向传输，一方数据结束之后，另一方在回应。也就是说同时只能有一个节点能够传输，如果两个节点同时传输数据的话就会产生拥挤</p>
+</blockquote>
+<blockquote>
+<p>全双工是以太网此采用两对电缆线，而不是半双工那样采用一对电缆线。全双工模式在发送设备的发送方和接收设备的接收方采用点对点连接。由于发送数据和接收数据是在不同的电缆线上完成，因此不会产生冲突。</p>
+</blockquote>
+<h4 id="5mac地址">5.MAC地址</h4>
+<p>IEEE802标志为每一个DTE规定了一个48位的全局地址，他是站点全球唯一的标识符，与其物理位置无关。其格式如下：</p>
+<p><img src="https://img-blog.csdnimg.cn/20190107194500662.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述">其前3个字节表示厂商信息，后4字节由厂商分配给每一个网卡。</p>
+<p>mac地址的广播地址：FF-FF-FF-FF-FF-FF-FF</p>
+<h4 id="6mac帧">6.MAC帧</h4>
+<p>下图就是我们常用的MAC帧
+<img src="https://img-blog.csdnimg.cn/20190107195223121.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>目的地址：接收端的MAC地址</li>
+<li>源地址：发送端的MAC地址</li>
+<li>类型：上层使用的协议，比如0x0800表示，上层使用的是IP协议</li>
+<li>数据：上次的数据字段，其长度在46-1500字节，当数据字段小于46字节四，加入整数字节的填充字段。</li>
+<li>FCS：以太网使用的是CRC差错检验算法</li>
+</ul>
+<p>为了达到比特同步的目的，在传输媒体上实际传输的要比MAC帧多8字节的前导码
+<img src="https://img-blog.csdnimg.cn/20190107200825908.png" alt="在这里插入图片描述">
+同时在两个帧之间还存在帧间最小间隔，称为帧间隙，长度为12Byte。适配器只有检测到超过12B没有电流，就知道一个帧结束了。</p>
+<p><img src="https://img-blog.csdnimg.cn/20190107201628189.png" alt="在这里插入图片描述"></p>
+<h3 id="五交换器">五.交换器</h3>
+<h4 id="1概述-1">1.概述</h4>
+<p>交换机的是二层设备，处于数据链路层。交换机内部的CPU会在每个端口成功连接时，通过将mac地址和端口对应，形成一种mac表，在今后的通信中，仅仅将mac地址的数据包送到其对应的端口。</p>
+<h4 id="2过滤和转发">2.过滤和转发</h4>
+<ul>
+<li>过滤是指交换机决定应该将一个帧转发到某个接口还是应该丢弃的功能</li>
+<li>转发是决定应该将一个帧导向那个接口并将该帧移动到对应的接口的交换机。</li>
+</ul>
+<p>其过程如下：
+<img src="https://img-blog.csdnimg.cn/20190107214235883.png" alt="在这里插入图片描述"></p>
+<h4 id="2自学习算法">2.自学习算法</h4>
+<p>在交换机过滤转发的过程，最重要的是mac表的生成。mac表的生成是采用的自学习算法。
+其过程如下：</p>
+<ul>
+<li>初始化过程。交换机加电开机，交换机初始化表项为空</li>
+<li>学习过程。当某个接口接收到一个帧，交换机在其交换表储存如下信息：a.该帧原地址字段的MAC地址。b.该帧到达的接口。c.当前的时间，</li>
+<li>更新过程。接口每首到一个帧，如果交换表中已经有相关信息，就会刷新相关表项的当前时间。当经过一段时间，即老化期后，交换器将该mac表项删除。</li>
+</ul>
+<h4 id="3消除回路生成树算法">3.消除回路(生成树算法)</h4>
+<p>在采用交换机的以太网局域网中，会产生广播风暴(当主机X发送一个广播帧，或者不在ab交换机的mac地址表的这帧)，所以为了避免产生广播风暴，交换机采用一种生成树算法（STP）来消除回路。</p>
+<p>生成树协议构造过程中，要经历如下的三个过程：</p>
+<ul>
+<li>选举跟网桥</li>
+<li>为每一个非跟网桥选出一个根端口</li>
+<li>为每一个网段确定一个指派网桥和指派端口。</li>
+</ul>
+<p><strong>a.选举根网桥</strong>
+每个网桥广播自己的网桥ID，ID最小的成为生成树的根，在给定广播域内，只有一个网桥成为根网桥。网桥的所有端口都处于<strong>转发</strong>状态。</p>
+<p>名次解释：</p>
+<ul>
+<li>根网桥：类似于树的根节点</li>
+<li>网桥ID：每个网桥都需要的唯一表示，由2字节的优先级(高字节)+6字节的MAC地址（低字节），优先级默认为中间值32768
+<img src="https://img-blog.csdnimg.cn/20190107220952103.png" alt="在这里插入图片描述">* 转发状态：一个端口可以发生，接收数据帧</li>
+</ul>
+<p><strong>b.选取根端口</strong>
+选出根网桥后，每个非跟网桥都要选出一个根端口，这是通过比较非跟网桥的每个端口到根网桥的根路径的开销来决定的。具有最小跟路径开销的端口被选做根端口，如果具有相同的开销，则具有最小的端口ID的端口被选做跟端口，一个网桥只能有一个跟端口。</p>
+<p>根端口也处于转发状态
+名词接收：</p>
+<ul>
+<li>到跟路径的开销：该网桥到跟网桥沿途的带宽，带宽越大，开销越小</li>
+</ul>
+<p><strong>c.确定指派网桥和指派端口</strong>
+对于每一个网段，在所有连接到它的网桥端口中，选择一个到跟网桥最近的端口，负责该网桥间的数据传递，这个端口就称为该网段的指派端口，其他端口通常处于非指派端口，非指派端口通常处于阻塞状态。</p>
+<p>名词解释：</p>
+<ul>
+<li>阻塞：处于阻塞状态的端口，不转发流量。</li>
+</ul>
+<p>一个具有三个交换机的形成的生成树
+<img src="https://img-blog.csdnimg.cn/20190107222742817.png" alt="在这里插入图片描述">
+<strong>d.重新计算生成树</strong>
+当网桥或者链路由于故障导致拓扑结构发生改变时，生成树协议通过将阻塞端口变为转发状态来确保连接。如下图：
+<img src="https://img-blog.csdnimg.cn/20190107223431291.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述">
+<strong>e.生成树状态</strong>
+生成树在通过状态维护了一个无环路的拓扑，有如下四种状态。
+<img src="https://img-blog.csdnimg.cn/20190107223348813.png" alt="在这里插入图片描述"></p>
+<h4 id="4虚拟局域网vlan">4.虚拟局域网VLAN</h4>
+<p><strong>a.概念</strong></p>
+<ul>
+<li>VLAN是一个在物理网络上根据用途，工作组，应用等来逻辑划分的局域网络，与用户的物理位置无关。</li>
+<li>VLAN的成员处于同一个广播域，VlAN中的每一个成员都可以听到同同一个VLAN中其他成员发出的广播</li>
+<li>VLAN中成员是通过交换机来通信的，一个VLAN中的成员看不到另一个VlAN中的成员
+<img src="https://img-blog.csdnimg.cn/20190107224234349.png" alt="在这里插入图片描述"></li>
+</ul>
+<h4 id="5链路层交换的特点">5.链路层交换的特点</h4>
+<ul>
+<li>无碰撞,在使用交换机构建的局域网中，每个接口都是双工且只与一个节点相连，节点和交换机能够同时收发帧，绝不会在同一个网段上传输多个帧。</li>
+<li>异质的链路：交换机接口隔离了不同的链路，这些链路可以在不同的数据传输速率上运行在不同的媒体</li>
+<li>便与管理：交换机可以快速的检测出，出现问题的适配器</li>
+<li>更安全：当A节点仅向B节点发送帧时，C节点不会受到该帧。</li>
+</ul>
+<h3 id="六参考资料">六.参考资料</h3>
+<p>《计算机网络：原理和实践》</p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C2%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/">http://blog.bingtan.online/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C2%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C1%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E5%92%8C%E5%8D%8F%E8%AE%AE%E5%88%86%E5%B1%82/">计算机网络1————基础概念和协议分层</a></li>
+        
+        <li><a href="/about/">关于我</a></li>
+        
+        <li><a href="/posts/AndroidIPC/Android%E4%B9%8BIPC4Bander1-%E6%A6%82%E8%BF%B0%E4%B8%8EBander%E9%A9%B1%E5%8A%A8/"></a></li>
+        
+        <li><a href="/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-6Rxjava-%E5%8A%9F%E8%83%BD%E6%93%8D%E4%BD%9C%E7%AC%A6/"></a></li>
+        
+        <li><a href="/posts/AndroidIPC/Android%E4%B9%8BIPC5Binder2-Native%E5%B1%82%E5%88%86%E6%9E%90/"></a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/%E7%BD%91%E7%BB%9C'>网络</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "https://github.com/hsc396612325/HSCBlog/tree/gh-pages"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一链路层概述">一.链路层概述</a>
+      <ul>
+        <li><a href="#1链路层的概念">1.链路层的概念</a></li>
+        <li><a href="#2链路层任务">2.链路层任务</a></li>
+        <li><a href="#3结点间链路类型">3.结点间链路类型</a></li>
+        <li><a href="#4链路设备">4.链路设备</a></li>
+      </ul>
+    </li>
+    <li><a href="#二ppp协议和hdlc协议">二.PPP协议和HDLC协议</a>
+      <ul>
+        <li><a href="#1ppp协议">1.PPP协议</a></li>
+        <li><a href="#2hdlc协议">2.HDLC协议</a></li>
+        <li><a href="#3透明传输">3.透明传输</a></li>
+        <li><a href="#4ppp和hdlc综合对比">4.PPP和HDLC综合对比</a></li>
+      </ul>
+    </li>
+    <li><a href="#三多路访问协议">三.多路访问协议</a>
+      <ul>
+        <li><a href="#1概述">1.概述</a></li>
+        <li><a href="#2信道划分协议">2.信道划分协议</a></li>
+        <li><a href="#3轮流协议">3.轮流协议</a></li>
+        <li><a href="#4随机接入协议">4.随机接入协议</a></li>
+      </ul>
+    </li>
+    <li><a href="#四以太网">四.以太网</a>
+      <ul>
+        <li><a href="#1以太网概述">1.以太网概述</a></li>
+        <li><a href="#2ieee802标准主要成员">2.IEEE802标准主要成员</a></li>
+        <li><a href="#3以太网的问题和解决">3.以太网的问题和解决</a></li>
+        <li><a href="#4以太网的多路访问协议">4.以太网的多路访问协议</a></li>
+        <li><a href="#5mac地址">5.MAC地址</a></li>
+        <li><a href="#6mac帧">6.MAC帧</a></li>
+      </ul>
+    </li>
+    <li><a href="#五交换器">五.交换器</a>
+      <ul>
+        <li><a href="#1概述-1">1.概述</a></li>
+        <li><a href="#2过滤和转发">2.过滤和转发</a></li>
+        <li><a href="#2自学习算法">2.自学习算法</a></li>
+        <li><a href="#3消除回路生成树算法">3.消除回路(生成树算法)</a></li>
+        <li><a href="#4虚拟局域网vlan">4.虚拟局域网VLAN</a></li>
+        <li><a href="#5链路层交换的特点">5.链路层交换的特点</a></li>
+      </ul>
+    </li>
+    <li><a href="#六参考资料">六.参考资料</a></li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>
