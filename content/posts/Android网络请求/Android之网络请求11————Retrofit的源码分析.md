@@ -12,11 +12,11 @@ tags: ["Android","网络"]
 [Android：手把手带你 深入读懂 Retrofit 2.0 源码](https://www.jianshu.com/p/0c055ad46b6c)
 ### 二.Retrofit的大致流程分析
 一般网络请求的过程：
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtODMwYmM5MGRmMmUxZDFmYy5wbmc?x-oss-process=image/format,png)
+![在这里插入图片描述](/image/Android_jsjwl/6_0.png)
 
 Retrofit和上面本质上是差不多的，只不过Retrofit通过使用大量的设计模式进行功能模块的解耦，使得上面的过程更加简单。
 
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtNzJmMzczZmJiYjk2MGI2OS5wbmc?x-oss-process=image/format,png)
+![在这里插入图片描述](/image/Android_jsjwl/6_1.png)
 
 具体过程解释如下：
 1. 通过解析网络请求接口的注解 配置网络请求参数
@@ -1107,11 +1107,11 @@ Retrofit本质是一个一个 RESTful 的HTTP 网络请求框架的封装，即�
 * 最后执行HTTP请求
 
 #### 2.源码分析图
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtNTZkZjlmOWVkNjQ3ZjdkYS5wbmc?x-oss-process=image/format,png)
+![在这里插入图片描述](/image/Android_jsjwl/6_2.png)
 
 
 #### 3.流程图
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy82MjUyOTktMjlhNjMyNjM4ZDlmNTE4Zi5wbmc?x-oss-process=image/format,png)
+![在这里插入图片描述](/image/Android_jsjwl/6_3.png)
 ### 九.参考资料
 [Retrofit分析-漂亮的解耦套路(视频版) ](http://www.stay4it.com/course/22)
 [Android：手把手带你 深入读懂 Retrofit 2.0 源码](https://www.jianshu.com/p/0c055ad46b6c)

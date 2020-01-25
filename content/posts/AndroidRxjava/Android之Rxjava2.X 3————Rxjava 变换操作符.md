@@ -1,4 +1,11 @@
-﻿# Android之Rxjava2.X 3————Rxjava 变换操作符
+﻿---
+title: "Android之Rxjava2.X 3————Rxjava 变换操作符"
+date: 2019-04-03T22:40:54+08:00
+draft: false
+categories: ["Android","Android之Rxjava"]
+tags: ["Android","Rxjava"]
+---
+
 ### 一. 目录
 @[toc]
 ### 二.概述
@@ -7,12 +14,12 @@
 
 #### 2. 类型
 常见的变化操作符如下
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtNzFlYjU2OWIyOTZjMWYxOC5wbmc?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_Rxjava/6_0.png)
 ### 三.对应操作符的介绍
 #### 1.Map()
 * 作用：对Observable发射的每一项数据应用一个函数，执行变换操作
 * 应用场景：数据类型转化
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-bDsNsOUP-1579367058397)(https://mcxiaoke.gitbooks.io/rxdocs/content/images/operators/map.png)]
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-bDsNsOUP-1579367058397)(/image/Android_Rxjava/6_1.png)]
 
 代码示例：
 ```java
@@ -53,11 +60,11 @@ Observable.create(new ObservableOnSubscribe<Integer>() {
                 });
 
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180814144900776)
+![这里写图片描述](/image/Android_Rxjava/6_2.png)
 #### 2.flatMap()
 * 作用：将一个发射数据的Observable变换为多个Observables，然后将它们发射的数据合并后放进一个单独的Observable
 * 应用场景:**无序**的将被观察者发送的整个事件序列进行变换
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL2ZsYXRNYXAucG5n?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_Rxjava/6_3.png)
 ```java
    Observable.create(new ObservableOnSubscribe<Integer>() {
             @Override
@@ -102,12 +109,12 @@ Observable.create(new ObservableOnSubscribe<Integer>() {
             }
         });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180814153010364)
+![这里写图片描述](/image/Android_Rxjava/6_4.png)
 #### 3.ConcatMap()
 * 作用类似与FlatMap（）操作符
 * 区别：拆分 & 重新合并生成的事件序列 的顺序 = 被观察者旧序列生产的顺序
 * 用于场景:有序的将被观察者发送的整个事件序列进行变换
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-0aIQHof7-1579367058398)(https://mcxiaoke.gitbooks.io/rxdocs/content/images/operators/concatMap.png)]
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-0aIQHof7-1579367058398)(/image/Android_Rxjava/6_5.png)]
 ```java
  Observable.create(new ObservableOnSubscribe<Integer>() {
             @Override
@@ -153,11 +160,11 @@ Observable.create(new ObservableOnSubscribe<Integer>() {
         });
 
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180814153403162)
+![这里写图片描述](/image/Android_Rxjava/6_6.png)
 #### 4.Buffrt()
 * 作用：定期从 被观察者（Obervable）需要发送的事件中 获取一定数量的事件 & 放到缓存区中，最终发送
 * 应用场景：缓存被观察者发送的事件
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL2J1ZmZlcjQucG5n?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_Rxjava/6_7.png)
 ```java
 Observable.just(1, 2, 3, 4, 5)
                 .buffer(3, 1) // 设置缓存区大小 & 步长
@@ -189,7 +196,7 @@ Observable.just(1, 2, 3, 4, 5)
                 });
 
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180814154926756)
+![这里写图片描述](/image/Android_Rxjava/6_8.png)
 ### 四.参考资料
 [ReactiveX文档中文翻译](https://mcxiaoke.gitbooks.io/rxdocs/content/topics/Getting-Started.html)
 [Android Rxjava：这是一篇 清晰 & 易懂的Rxjava 入门教程 ](https://www.jianshu.com/p/a406b94f3188)

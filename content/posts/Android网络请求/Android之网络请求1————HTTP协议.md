@@ -25,7 +25,7 @@ http协议有如下特点:
 
 ### 二.http协议的响应步骤
 http的响应步骤分为7步，大致内容如下：
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy8yMDkyNjk0LTJlNDI1NDc3OTE4OGEzNGMucG5n?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_jsjwl/9_0.png)
 #### 1. 建立TCP连接
 在HTTP工作开始之前, Web浏览器首先要通过网络与Web服务器建立连接, 该连接是通过TCP来完成的, 该协议与IP协议共同构建Internet, 即著名的TCP/IP协议族, 因此Internet又被称作是TCP/IP网络.
 
@@ -147,7 +147,7 @@ HTTP 1.1引入了许多的关键的性能优化:keepalive连接，chunked编码�
 允许HTTP设备在事务处理结束之后将TCP连接保持在打开的状态，一遍未来的HTTP请求重用现在的连接，直到客户端或服务器端决定将其关闭为止。
 
 在HTTP1.0中使用长连接需要添加请求头 Connection: Keep-Alive，而在HTTP 1.1 所有的连接默认都是长连接，除非特殊声明不支持（ HTTP请求报文首部加上Connection: close ）
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cDovL2F0YTItaW1nLmNuLWhhbmd6aG91LmltZy1wdWIuYWxpeXVuLWluYy5jb20vMGE3ZTIwY2JmYTczMmZjNjYxZTg4ZWI2NzBhYTRhYTkucG5n?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_jsjwl/9_1.png)
 
 **b.chunked编码传输**
 该编码将实体分块传送并逐块标明长度,直到长度为0块表示传输结束, 这在实体长度未知时特别有用(比如由数据库动态产生的数据)

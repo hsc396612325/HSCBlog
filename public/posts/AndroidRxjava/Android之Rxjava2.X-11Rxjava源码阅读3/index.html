@@ -6,13 +6,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title> | 冰炭不投day的博客</title>
-    <meta property="og:title" content=" - 冰炭不投day的博客">
+    <title>Android之Rxjava2.X 11————Rxjava源码阅读3 | 冰炭不投day的博客</title>
+    <meta property="og:title" content="Android之Rxjava2.X 11————Rxjava源码阅读3 - 冰炭不投day的博客">
     <meta property="og:type" content="article">
         
+    <meta property="article:published_time" content='2019-04-11T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2019-04-11T22:40:54&#43;08:00'>
         
     <meta name="Keywords" content="Android 冰炭不投day">
-    <meta name="description" content="">
+    <meta name="description" content="Android之Rxjava2.X 11————Rxjava源码阅读3">
         
     <meta name="author" content="冰炭不投day">
     <meta property="og:url" content="http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-11Rxjava%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB3/">
@@ -80,11 +84,20 @@
     
     <article class="post">
         <header>
-            <h1 class="post-title"></h1>
+            <h1 class="post-title">Android之Rxjava2.X 11————Rxjava源码阅读3</h1>
         </header>
         <date class="post-meta meta-date">
-            1年1月1日
+            2019年4月11日
         </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android'>Android</a></span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8BRxjava'>Android之Rxjava</a></span>
+            
+        </div>
         
         
         <div class="post-meta">
@@ -96,8 +109,7 @@
         
         
         <div class="post-content">
-            <h1 id="android之rxjava2x-11rxjava源码阅读3">Android之Rxjava2.X 11————Rxjava源码阅读3</h1>
-<h3 id="一目录">一.目录</h3>
+            <h3 id="一目录">一.目录</h3>
 <p>@[toc]</p>
 <h3 id="二目的">二.目的</h3>
 <p>这次分析源码有如下目的：</p>
@@ -1333,15 +1345,15 @@ create方法</p>
     <h2>See Also</h2>
     <ul class="listing">
         
-        <li><a href="/posts/%E6%96%87%E7%AB%A0%E5%AF%BC%E8%88%AA/">文章导航</a></li>
+        <li><a href="/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-10Rxjava%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB2/">Android之Rxjava2.X 10————Rxjava源码阅读2 </a></li>
         
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%872View%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%88%86%E5%8F%91/">Android之View篇2————View的事件分发</a></li>
+        <li><a href="/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-9Rxjava%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB1/">Android之Rxjava2.X 9————Rxjava源码阅读1</a></li>
         
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%873View%E6%BB%91%E5%8A%A8%E5%86%B2%E7%AA%81%E7%9A%84%E8%A7%A3%E5%86%B3/">Android之View篇3————View滑动冲突的解决</a></li>
+        <li><a href="/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-8Rxjava-%E8%83%8C%E5%8E%8B%E7%AD%96%E7%95%A5/">Android之Rxjava2.X 8————Rxjava 背压策略</a></li>
         
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%874View%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">Android之View篇4————View的工作原理</a></li>
+        <li><a href="/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-7Rxjava-%E6%9D%A1%E4%BB%B6%E6%93%8D%E4%BD%9C%E7%AC%A6/">Android之Rxjava2.X 7————Rxjava 条件操作符</a></li>
         
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%875%E8%87%AA%E5%AE%9A%E4%B9%89View/">Android之View篇5————自定义View</a></li>
+        <li><a href="/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-6Rxjava-%E5%8A%9F%E8%83%BD%E6%93%8D%E4%BD%9C%E7%AC%A6/">Android之Rxjava2.X 6————Rxjava 功能操作符</a></li>
         
     </ul>
 </div>
@@ -1349,7 +1361,13 @@ create方法</p>
 
         <div class="post-meta meta-tags">
             
-            没有标签
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/Android'>Android</a></li>
+                
+                <li><a href='http://blog.bingtan.online/tags/Rxjava'>Rxjava</a></li>
+                
+            </ul>
             
         </div>
     </article>

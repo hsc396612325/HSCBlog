@@ -1,16 +1,23 @@
-﻿# Android之Rxjava2.X 2————Rxjava 创建操作符
+﻿---
+title: "Android之Rxjava2.X 2————Rxjava 创建操作符"
+date: 2019-04-02T22:40:54+08:00
+draft: false
+categories: ["Android","Android之Rxjava"]
+tags: ["Android","Rxjava"]
+---
+
 ### 一.目录
 @[toc]
 ### 二.概述
 #### 1.作用
 创建 被观察者（ Observable） 对象 & 发送事件。
 #### 2. 类型
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtYjAyYWRiNDYwNzUzMjliMC5wbmc?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_Rxjava/4_0.png)
 ### 三.基本创建
 需求场景: 完整的创建被观察者对象
 #### 1. create（）
 你可以使用Create操作符创建一个完整的Observable，可以传递onNext，onError和onCompleted等事件。
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL2NyZWF0ZS5jLnBuZw?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_Rxjava/4_1.png)
 代码示例：
 ```java
  Observable.create(new ObservableOnSubscribe<Integer>() {
@@ -43,7 +50,7 @@
         });
 ```
 运行结果
-![这里写图片描述](https://img-blog.csdn.net/20180813172532425)
+![这里写图片描述](/image/Android_Rxjava/4_2.png)
 
 注意:当观察者发送一个Complete/Error事件后，被观察者在，Complrte/Error事件将会继续发送，但观察者收到Complete/Error事件后，不会继续接收任何事件。被观察者可以不发生Complete/Erroe事件
 ### 四.快速创建
@@ -53,7 +60,7 @@
 * 发送事件的特点：直接发送传入的事件
 * 注意1:just最多只能发送9个参数
 * 注意2：如果你传递null给Just，它会返回一个发射null值的Observable
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL2p1c3QucG5n?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_Rxjava/4_3.png)
 代码示例
 ```java
   Observable.just(1, 2, 3)
@@ -79,7 +86,7 @@
                    }
                });
 ```
-![这里写图片描述](https://img-blog.csdn.net/2018081320191198)
+![这里写图片描述](/image/Android_Rxjava/4_4.png)
 
 #### 2.fromArray（）
 * 作用：快速创建一个被观察者对象
@@ -88,7 +95,7 @@
 * 应用场景:被观察者对象（Observable） & 发送10个以上事件（数组形式),数组遍历
 
 图中的From包括fromArray（）以及下面的fromIterable（）
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL2Zyb20uYy5wbmc?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_Rxjava/4_5.png)
 
 ```java
 Integer[] items = { 0, 1, 2, 3, 4 };
@@ -115,7 +122,7 @@ Integer[] items = { 0, 1, 2, 3, 4 };
                    }
                });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180813203203119)
+![这里写图片描述](/image/Android_Rxjava/4_6.png)
 
 #### 3.fromIterable（）
 * 作用:快速创建1个被观察者对象（Observable）
@@ -151,7 +158,7 @@ Integer[] items = { 0, 1, 2, 3, 4 };
                });
     }
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180813203848779)
+![这里写图片描述](/image/Android_Rxjava/4_7.png)
 
 #### 4.其他
  下列方法一般用于测试使用
@@ -228,11 +235,11 @@ Observable.never()
                    }
                });
 ```
-![这里写图片描述](https://img-blog.csdn.net/2018081320460146)
+![这里写图片描述](/image/Android_Rxjava/4_8.png)
 
-![这里写图片描述](https://img-blog.csdn.net/20180813204946557)
+![这里写图片描述](/image/Android_Rxjava/4_9.png)
 
-![这里写图片描述](https://img-blog.csdn.net/20180813205122569)
+![这里写图片描述](/image/Android_Rxjava/4_10.png)
 
 ### 五. 延迟创建
 需求场景：
@@ -243,7 +250,7 @@ Observable.never()
 * 作用:defer（）操作符会一直等待直到有观察者订阅它，然后它使用Observable工厂方法生成一个Observable。在某些情况下，等待直到最后一分钟（就是知道订阅发生时）才生成Observable可以确保Observable包含最新的数据。
 * 使用场景：动态创建被观察者对象（Observable） & 获取最新的Observable对象数据
 
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL2RlZmVyLnBuZw?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_Rxjava/4_11.png)
 
 ```java
   //  1. 第1次对i赋值
@@ -281,12 +288,12 @@ Observable.never()
                     }
                 });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180813211830829)
+![这里写图片描述](/image/Android_Rxjava/4_12.png)
 
 #### 2.timer（）
 * 作用:创建一个Observable，它在一个给定的延迟后发射一个特殊的值。
 * 应用:延迟指定事件，发送一个0，一般用于检测
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL3RpbWVyLnBuZw?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_Rxjava/4_13.png)
 ```java
         // 该例子 = 延迟2s后，发送一个long类型数值
         Observable.timer(2, TimeUnit.SECONDS).subscribe(new Observer<Long>() {
@@ -311,12 +318,12 @@ Observable.never()
             }
         });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180813212414407)
+![这里写图片描述](/image/Android_Rxjava/4_14.png)
 #### 3.interval（）
 * 作用 : 按固定的时间间隔发射一个无限递增的整数序列。
 *  interval(long,TimeUnit,Scheduler)) 
 *  参数说明： 参数1 = 第1次延迟时间，参数2 = 间隔时间数字，参数3 = 时间单位；
-![这里写图片描述](https://img-blog.csdn.net/20180813213614682)
+![这里写图片描述](/image/Android_Rxjava/4_15.png)
 ```java
     Observable.interval(3, 1, TimeUnit.SECONDS)
                 // 该例子发送的事件序列特点：延迟3s后发送事件，每隔1秒产生1个数字（从0开始递增1，无限个）
@@ -342,7 +349,7 @@ Observable.never()
                     }
                 });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180813213121499)
+![这里写图片描述](/image/Android_Rxjava/4_16.png)
 #### 4.intervalRange（）
 * 作用:发送事件的特点：每隔指定时间 就发送 事件，可指定发送的数据（从0开始、无限递增1的的整数）的数量
 ```java
@@ -378,12 +385,12 @@ Observable.intervalRange(3, 10, 2, 1, TimeUnit.SECONDS)
                 });
 
 ```
-![这里写图片描述](https://img-blog.csdn.net/2018081321393671)
+![这里写图片描述](/image/Android_Rxjava/4_17.png)
 #### 5.range（） /rangeLong（）
 range（） 作用：连续发送 1个事件序列，可指定范围,作用类似于intervalRange（），但区别在于：无延迟发送事件
 
 rangeLong（）类似于range（），区别在于该方法支持数据类型 = Long
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL3JhbmdlLnBuZw?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_Rxjava/4_18.png)
 ```java
  // 参数说明：
         // 参数1 = 事件序列起始点；
@@ -414,10 +421,10 @@ rangeLong（）类似于range（），区别在于该方法支持数据类型 = 
                 });
 
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180813215515119)
+![这里写图片描述](/image/Android_Rxjava/4_19.png)
 
 ### 六. 总结
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtZDM2YzZlZDMxOTU2NWFjYy5wbmc?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_Rxjava/4_20.png)
 ### 七.参考资料
 [ReactiveX文档中文翻译](https://mcxiaoke.gitbooks.io/rxdocs/content/topics/Getting-Started.html)
 [Android Rxjava：这是一篇 清晰 & 易懂的Rxjava 入门教程 ](https://www.jianshu.com/p/a406b94f3188)

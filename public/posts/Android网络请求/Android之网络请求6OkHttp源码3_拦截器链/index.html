@@ -1220,7 +1220,7 @@
 </code></pre></td></tr></table>
 </div>
 </div><h4 id="5-流程图">5. 流程图</h4>
-<p><img src="https://img-blog.csdn.net/20180910172857699?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p><img src="/image/Android_jsjwl/7_0.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
 <h3 id="五bridgeinterceptor类">五.BridgeInterceptor类</h3>
 <p>在RetryAndFollowUpInterceptor 执行response = realChain.proceed(request, streamAllocation, null, null)代码时，此时会调用下一个拦截器，即BridgeInterceptor拦截器</p>
 <p>BridgeInterceptor转换拦截器主要工作就是为请求添加请求头，为响应添加响应头</p>
@@ -2064,7 +2064,7 @@
 </code></pre></td></tr></table>
 </div>
 </div><h4 id="5流程图">5.流程图</h4>
-<p><img src="https://img-blog.csdn.net/20180913192931430?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p><img src="/image/Android_jsjwl/7_1.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
 <h3 id="七connectinterceptor类">七.ConnectInterceptor类</h3>
 <p>ConnectInterceptor,是一个连接相关的拦截器,作用就是打开与服务器之间的连接，正式开启OkHttp的网络请求</p>
 <p>首先还是先看ConnectInterceptor类的intercept方法</p>
@@ -2356,10 +2356,10 @@
 </div>
 </div><p>最后将response返回给上一个拦截器</p>
 <h4 id="2流程图">2.流程图</h4>
-<p><img src="https://img-blog.csdn.net/20180914141718167?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p><img src="/image/Android_jsjwl/7_2.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
 <h3 id="九总结">九.总结</h3>
 <p>经过上面这一篇和上一篇文章的分析，大家应该对OkHttp的整体流程有了一个比较深入的了解了吧，这里我最后用一种流程图总结一下。</p>
-<p><img src="https://img-blog.csdn.net/20180914142852842?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p><img src="/image/Android_jsjwl/7_3.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
 <h3 id="十-参考资料">十. 参考资料</h3>
 <p><a href="https://blog.csdn.net/qq_19431333/article/details/53207220">深入理解OkHttp源码（二）——获取响应</a>
 <a href="https://yq.aliyun.com/articles/78104?spm=a2c4e.11153940.blogcont78105.12.182237be0CB6ln">OkHttp 3.7源码分析（二）——拦截器&amp;一个实际网络请求的实现</a>

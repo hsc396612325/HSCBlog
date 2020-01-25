@@ -95,7 +95,7 @@
             
             <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android'>Android</a></span>
             
-            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82'>Android之网络请求</a></span>
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8BView'>Android之View</a></span>
             
         </div>
         
@@ -114,10 +114,10 @@
 <h3 id="二-view的基础知识">二. View的基础知识</h3>
 <h4 id="1什么是view">1.什么是View</h4>
 <p>View是所有Android中所有控件的基类，是界面层次上的一种抽象
-<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWFnZXMyMDE1LmNuYmxvZ3MuY29tL2Jsb2cvNjM0ODMyLzIwMTYwOC82MzQ4MzItMjAxNjA4MDExNjQ4MTQyMDAtMTAxNzkyOTA2My5wbmc?x-oss-process=image/format,png" alt="image"></p>
+<img src="/image/Android_View/1_0.png" alt="image"></p>
 <h4 id="2view的位置参数">2.View的位置参数</h4>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWFnZXMyMDE1LmNuYmxvZ3MuY29tL2Jsb2cvNjM0ODMyLzIwMTYwOC82MzQ4MzItMjAxNjA4MDExNjQ4Mjk0OTctMTE0MzQ4MzQ2My5wbmc?x-oss-process=image/format,png" alt="image">
-<img src="https://img-blog.csdn.net/20180524152057118?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p><img src="/image/Android_View/1_1.png" alt="image">
+<img src="/image/Android_View/1_2.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
 <h4 id="3motionevent">3.MotionEvent</h4>
 <p>MotionEvent是指触屏事件(Touch事件)的相关细节（触摸发生的时间，位置）包装而成，典型的事件有以下几类:</p>
 <table>
@@ -162,7 +162,7 @@
 <p>特别说明:事件列</p>
 <ul>
 <li>从手指接触屏幕 至 手指离开屏幕，这个过程产生的一系列事件一般情况下，事件列都是以DOWN事件开始、UP事件结束，中间有无数的MOVE事件，如下图：</li>
-<li><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtNzliMWU4Njc5MzUxNGU5OS5wbmc?x-oss-process=image/format,png" alt="这里写图片描述"></li>
+<li><img src="/image/Android_View/1_3.png" alt="这里写图片描述"></li>
 </ul>
 <h4 id="4touchslop">4.TouchSlop</h4>
 <p>TouchSlop是系统所能识别的被认为是滑动的最小距离。这是个常量，和设备有关，在不同设备上这个值可能是不同的。</p>
@@ -284,7 +284,7 @@ velocityTracker.recycle();
 <h4 id="1使用scrolltoscrollby">1.使用scrollTo/scrollBy</h4>
 <p>使用：<br>
 调用控件所在父容器的scrollTo/scrollBy方法
-<img src="https://img-blog.csdn.net/20180524152718190?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<img src="/image/Android_View/1_4.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
 <p>scrollTo/scrollBy的区别:</p>
 <ul>
 <li>scrollTo是基于参数的绝对滑动。</li>
@@ -344,10 +344,10 @@ velocityTracker.recycle();
  Animation animation = AnimationUtils.loadAnimation(this, R.anim.translate);
         layout.setAnimation(animation);
         animation.start();
-</code></pre><p><img src="https://img-blog.csdn.net/20180524161009621?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+</code></pre><p><img src="/image/Android_View/1_5.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
 <p>属性动画</p>
 <pre><code>ObjectAnimator.ofFloat(layout,&quot;translationX&quot;,0,100).setDuration(1000).start();
-</code></pre><p><img src="https://img-blog.csdn.net/20180524161355418?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+</code></pre><p><img src="/image/Android_View/1_6.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
 <p>根据gif图很容易可以看出了:
 View动画是对View的影像进行操作的。也就是说View动画并不能真正的改变View的位置。
 属性动画是真正改变View的位置，但它是从Android3.0开始推出的。</p>
@@ -358,7 +358,7 @@ View动画是对View的影像进行操作的。也就是说View动画并不能�
                 params.leftMargin+=300;
                 layout.requestLayout();
 </code></pre><h4 id="4各种滑动方式的对比">4.各种滑动方式的对比</h4>
-<p><img src="https://img-blog.csdn.net/20180524161917982?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p><img src="/image/Android_View/1_7.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
 <h3 id="四-弹性滑动">四. 弹性滑动</h3>
 <p>实现View的弹性滑动，即渐进式滑动。实现的方法很多，但都有一个共同的思想，将一次大的滑动分成若干次小的滑动，并在一个时间段中完成，下面就是常见的实现滑动的方法。</p>
 <h4 id="1使用scroller">1.使用Scroller</h4>
@@ -461,7 +461,7 @@ public void computeScroll() {
                 
                 <li><a href='http://blog.bingtan.online/tags/Android'>Android</a></li>
                 
-                <li><a href='http://blog.bingtan.online/tags/%E7%BD%91%E7%BB%9C'>网络</a></li>
+                <li><a href='http://blog.bingtan.online/tags/View'>View</a></li>
                 
             </ul>
             

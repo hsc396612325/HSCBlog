@@ -2,19 +2,19 @@
 title: "Android之View篇1————初识View"
 date: 2019-03-01T22:40:54+08:00
 draft: false
-categories: ["Android","Android之网络请求"]
-tags: ["Android","网络"]
+categories: ["Android","Android之View"]
+tags: ["Android","View"]
 ---
 ### 一. 目录
 @[toc]
 ### 二. View的基础知识
 #### 1.什么是View
 View是所有Android中所有控件的基类，是界面层次上的一种抽象
-![image](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWFnZXMyMDE1LmNuYmxvZ3MuY29tL2Jsb2cvNjM0ODMyLzIwMTYwOC82MzQ4MzItMjAxNjA4MDExNjQ4MTQyMDAtMTAxNzkyOTA2My5wbmc?x-oss-process=image/format,png)
+![image](/image/Android_View/1_0.png)
 
 #### 2.View的位置参数
-![image](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWFnZXMyMDE1LmNuYmxvZ3MuY29tL2Jsb2cvNjM0ODMyLzIwMTYwOC82MzQ4MzItMjAxNjA4MDExNjQ4Mjk0OTctMTE0MzQ4MzQ2My5wbmc?x-oss-process=image/format,png)
-![这里写图片描述](https://img-blog.csdn.net/20180524152057118?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![image](/image/Android_View/1_1.png)
+![这里写图片描述](/image/Android_View/1_2.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 #### 3.MotionEvent
 MotionEvent是指触屏事件(Touch事件)的相关细节（触摸发生的时间，位置）包装而成，典型的事件有以下几类:
 
@@ -37,7 +37,7 @@ MotionEvent是指触屏事件(Touch事件)的相关细节（触摸发生的时�
 特别说明:事件列
 
 * 从手指接触屏幕 至 手指离开屏幕，这个过程产生的一系列事件一般情况下，事件列都是以DOWN事件开始、UP事件结束，中间有无数的MOVE事件，如下图：
-*  ![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtNzliMWU4Njc5MzUxNGU5OS5wbmc?x-oss-process=image/format,png)
+*  ![这里写图片描述](/image/Android_View/1_3.png)
 #### 4.TouchSlop
 TouchSlop是系统所能识别的被认为是滑动的最小距离。这是个常量，和设备有关，在不同设备上这个值可能是不同的。
 
@@ -168,7 +168,7 @@ View的滑动的实现有3种方法:
 #### 1.使用scrollTo/scrollBy
 使用：  
 调用控件所在父容器的scrollTo/scrollBy方法
-![这里写图片描述](https://img-blog.csdn.net/20180524152718190?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_View/1_4.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
 scrollTo/scrollBy的区别:
 
@@ -234,13 +234,13 @@ scrollTo/scrollBy的区别:
         layout.setAnimation(animation);
         animation.start();
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180524161009621?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_View/1_5.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
 属性动画
 ```
 ObjectAnimator.ofFloat(layout,"translationX",0,100).setDuration(1000).start();
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180524161355418?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_View/1_6.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
 根据gif图很容易可以看出了:
 View动画是对View的影像进行操作的。也就是说View动画并不能真正的改变View的位置。
@@ -255,7 +255,7 @@ View动画是对View的影像进行操作的。也就是说View动画并不能�
 ```
 
 #### 4.各种滑动方式的对比
-![这里写图片描述](https://img-blog.csdn.net/20180524161917982?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_View/1_7.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 ### 四. 弹性滑动
 实现View的弹性滑动，即渐进式滑动。实现的方法很多，但都有一个共同的思想，将一次大的滑动分成若干次小的滑动，并在一个时间段中完成，下面就是常见的实现滑动的方法。
 #### 1.使用Scroller

@@ -1,4 +1,11 @@
-﻿# Android之Rxjava2.X 10————Rxjava源码阅读2 
+﻿---
+title: "Android之Rxjava2.X 10————Rxjava源码阅读2 "
+date: 2019-04-10T22:40:54+08:00
+draft: false
+categories: ["Android","Android之Rxjava"]
+tags: ["Android","Rxjava"]
+---
+
 ### 一. 目录
 @[toc]
 ### 二. 目的

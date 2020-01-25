@@ -1,10 +1,15 @@
-﻿
-# Android之IPC5————Binder2 Native层分析
-@[toc]
+﻿---
+title: "Android之IPC5————Binder2 Native层分析"
+date: 2019-05-05T22:40:54+08:00
+draft: false
+categories: ["Android","Android之IPC"]
+tags: ["Android","IPC"]
+---
+
 ### 一.前言
 在上一篇里，我们介绍了binder机制的简单介绍，以及binder内核，ServiceManager的启动。
 在上一篇也简单提过，ServiceManager的作用，即注册服务，和获取服务。
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/aHR0cDovL2dpdHl1YW4uY29tL2ltYWdlcy9iaW5kZXIvamF2YV9iaW5kZXIvamF2YV9iaW5kZXIuanBn?x-oss-process=image/format,png)
+![在这里插入图片描述](/image/Android_IPC/1_0.png)
 在这一篇中，我们中 主要分析native层，主要分析其注册服务和获取服务的过程，大致流程就是获取BpServiceManager，通过它来和Binder驱动进行通信，ServiceManager在死循环中读写事物，对注册服务和获取服务进行处理，并将结果返回给Binder驱动，binder驱动在将结果返回给客户端或服务端。
 
 本篇文章主要以下面几个方面展开：

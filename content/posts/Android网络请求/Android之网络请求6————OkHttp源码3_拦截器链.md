@@ -577,7 +577,7 @@ while(true){
 
 ```
 #### 5. 流程图
-![这里写图片描述](https://img-blog.csdn.net/20180910172857699?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_jsjwl/7_0.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 ### 五.BridgeInterceptor类
 在RetryAndFollowUpInterceptor 执行response = realChain.proceed(request, streamAllocation, null, null)代码时，此时会调用下一个拦截器，即BridgeInterceptor拦截器
 
@@ -1013,7 +1013,7 @@ intercept中进行网络请求的部分
     return response;
 ```
 #### 5.流程图
-![这里写图片描述](https://img-blog.csdn.net/20180913192931430?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_jsjwl/7_1.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 ### 七.ConnectInterceptor类
 ConnectInterceptor,是一个连接相关的拦截器,作用就是打开与服务器之间的连接，正式开启OkHttp的网络请求
 
@@ -1166,12 +1166,12 @@ if (forWebSocket && code == 101) {
 
 #### 2.流程图
 
-![这里写图片描述](https://img-blog.csdn.net/20180914141718167?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_jsjwl/7_2.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
 ### 九.总结
 经过上面这一篇和上一篇文章的分析，大家应该对OkHttp的整体流程有了一个比较深入的了解了吧，这里我最后用一种流程图总结一下。
 
-![这里写图片描述](https://img-blog.csdn.net/20180914142852842?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_jsjwl/7_3.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
 ### 十. 参考资料
 [深入理解OkHttp源码（二）——获取响应](https://blog.csdn.net/qq_19431333/article/details/53207220)

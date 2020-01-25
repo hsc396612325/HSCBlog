@@ -1,5 +1,11 @@
-﻿# Android之IPC3————序列化
-@[toc]
+﻿---
+title: "Android之IPC3————序列化"
+date: 2019-05-03T22:40:54+08:00
+draft: false
+categories: ["Android","Android之IPC"]
+tags: ["Android","IPC"]
+---
+
 ### 一.前言
 说起序列化，大家应该都不会陌生，在Android中的应用也比较多，特别是在Activity直接传递对象时。就需要使用序列化，我一般是使用Serialization对对象进行序列化，然后进行传递。而在上篇文章中，在使用AIDL时，对跨进程传递的对象也进行了序列化，当时我们使用的是Parcelable。它也是一种序列化的方法。
 

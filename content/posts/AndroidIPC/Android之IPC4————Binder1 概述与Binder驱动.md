@@ -1,5 +1,11 @@
-﻿# Android之IPC4————Bander1 概述与Bander驱动
-@[toc]
+﻿---
+title: "Android之IPC4————Binder1 概述与Bander驱动"
+date: 2019-05-04T22:40:54+08:00
+draft: false
+categories: ["Android","Android之IPC"]
+tags: ["Android","IPC"]
+---
+
 ### 一.概述
 
 最近才看AndroidIPC中，Binder一直是绕不过的坎，他是AndroidIPC很重要的一种方式，在Android系统中也有着举足轻重的作用。在之前的博客里，特别是AIDL中，我们只是说了AIDL实际上是实现的binder的接口。也在文章的最后简单说了一下，binder是如何进行数据通信的。但是由于Binder的封装，我还是没有发现，binder是如何做的跨进程通信的。
@@ -14,7 +20,7 @@
 在正式讲之前，先简单介绍一些基础知识
 
 #### 1.进程空间的划分
-![进程空间](https://imgconvert.csdnimg.cn/aHR0cDovL2dpdHl1YW4uY29tL2ltYWdlcy9iaW5kZXIvcHJlcGFyZS9iaW5kZXJfaW50ZXJwcm9jZXNzX2NvbW11bmljYXRpb24ucG5n?x-oss-process=image/format,png)
+![进程空间](/image/Android_IPC/2_0.png)
 每个Android的进程中，都只能运行在自己进程所拥有的虚拟地址空间，对应一个4GB的虚拟地址空间，其中3GB是用户空间，1GB是内核空间。当然两者的大小时可以进程跳转的。
 
 用户空间：不同进程之间无法共享  
@@ -26,7 +32,7 @@
 
 #### 3.Android的框架
 让我们来看一看，Android的整体框架
-![android框架](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy8yNjI4NDQ1LTU2NjQyMGYxNGQ3ZjRjNzkucG5n?x-oss-process=image/format,png)
+![android框架](/image/Android_IPC/2_1.png)
 
 从下往上依次为：
 
@@ -68,7 +74,7 @@ Android是基于linux的操作系统，而操作系统中已经有了多种IPC�
 
 #### 3.Binder原理
 binder通信采用C/S架构，从组件的角度来说，Binder分为Client，Service，ServiceManager，binder驱动。构架图如下：
-![binder](https://imgconvert.csdnimg.cn/aHR0cDovL2dpdHl1YW4uY29tL2ltYWdlcy9iaW5kZXIvcHJlcGFyZS9JUEMtQmluZGVyLmpwZw?x-oss-process=image/format,png)
+![binder](/image/Android_IPC/2_2.png)
 
 图中处理客户端和服务端外，还有两个角色，即ServiceManager和BInder驱动。下面分别简单介绍一下。
 
@@ -85,7 +91,7 @@ binder通信采用C/S架构，从组件的角度来说，Binder分为Client，Se
 图中Client，Service，ServiceManager之间交互是虚线表示，但他们都处于不同的进程，所以他们之间并不是真正的交互，而是通过与Binder驱动进行交互，从而实现IPC通信方式。
 #### 4.Binder框架
 上面的图主要是native层Binder的框架，下面的图是Binder在android中整体框架
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/aHR0cDovL2dpdHl1YW4uY29tL2ltYWdlcy9iaW5kZXIvamF2YV9iaW5kZXIvamF2YV9iaW5kZXIuanBn?x-oss-process=image/format,png)
+![在这里插入图片描述](/image/Android_IPC/2_3.png)
 * 图中红色部分表示整个framwork层binder框架相关组件
 * 蓝色组件表示Native层Binder架构相关组件；
 * 上层framework层的Binder逻辑是建立在Native层架构基础之上的，核心逻辑都是交予Native层方法来处理。
@@ -95,7 +101,7 @@ Binder涉及的类
 #### 5. C/S模式
 BpBinder(客户端)和BBinder(服务端)都是Android中Binder通信相关的代表，它们都从IBinder类中派生而来，关系图如下：
 
-![image](https://imgconvert.csdnimg.cn/aHR0cDovL2dpdHl1YW4uY29tL2ltYWdlcy9iaW5kZXIvcHJlcGFyZS9JYmluZGVyX2NsYXNzZXMuanBn?x-oss-process=image/format,png)
+![image](/image/Android_IPC/2_4.png)
 
 * 客户端：BpBinder.transact()来发送事物请求
 * 服务端：BBinder.onTransact()会接收到相应事务。
@@ -126,7 +132,7 @@ binder_open()作用是打开binder驱动，并进行如下过程：
 #### 3. binder_mmap
 主要功能：首先在内核虚拟地址空间中，申请一块与用户虚拟内存大小相同的内存。在申请一个page大小的物理内存，再讲同一块物理内存分别映射到内核虚拟地址空间个用户虚拟内存空间，从而实现了用户空间的Buffer和内核空间的Buffer同步操作的功能。最后创建一块Binder_buffer对象，并放入当前binder_proc的proc->buffers链表。
 
-![内存机制](https://imgconvert.csdnimg.cn/aHR0cDovL2dpdHl1YW4uY29tL2ltYWdlcy9iaW5kZXIvYmluZGVyX2Rldi9iaW5kZXJfcGh5c2ljYWxfbWVtb3J5LmpwZw?x-oss-process=image/format,png)
+![内存机制](/image/Android_IPC/2_5.png)
 
 上图就是，使用mmap后的内存机制，虚拟进程地址空间(vm_area_struct))和虚拟内核地址空间(vm_struct)都映射到同一块物理内存空间。当客户端和服务端发送数据是，客户端先从自己的进程空间吧ipc通信数据复制到内核空间，而Server端作为数据接受端与内核共享数据，所以不需要在拷贝数据，而是通过内存地址的偏移量，即可获得内存地址。整个过程只发送一次内存复制。 
 

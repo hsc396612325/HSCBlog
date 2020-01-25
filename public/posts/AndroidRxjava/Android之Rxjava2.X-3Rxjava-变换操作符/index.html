@@ -6,13 +6,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title> | 冰炭不投day的博客</title>
-    <meta property="og:title" content=" - 冰炭不投day的博客">
+    <title>Android之Rxjava2.X 3————Rxjava 变换操作符 | 冰炭不投day的博客</title>
+    <meta property="og:title" content="Android之Rxjava2.X 3————Rxjava 变换操作符 - 冰炭不投day的博客">
     <meta property="og:type" content="article">
         
+    <meta property="article:published_time" content='2019-04-03T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2019-04-03T22:40:54&#43;08:00'>
         
     <meta name="Keywords" content="Android 冰炭不投day">
-    <meta name="description" content="">
+    <meta name="description" content="Android之Rxjava2.X 3————Rxjava 变换操作符">
         
     <meta name="author" content="冰炭不投day">
     <meta property="og:url" content="http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-3Rxjava-%E5%8F%98%E6%8D%A2%E6%93%8D%E4%BD%9C%E7%AC%A6/">
@@ -80,11 +84,20 @@
     
     <article class="post">
         <header>
-            <h1 class="post-title"></h1>
+            <h1 class="post-title">Android之Rxjava2.X 3————Rxjava 变换操作符</h1>
         </header>
         <date class="post-meta meta-date">
-            1年1月1日
+            2019年4月3日
         </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android'>Android</a></span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8BRxjava'>Android之Rxjava</a></span>
+            
+        </div>
         
         
         <div class="post-meta">
@@ -96,21 +109,20 @@
         
         
         <div class="post-content">
-            <h1 id="android之rxjava2x-3rxjava-变换操作符">Android之Rxjava2.X 3————Rxjava 变换操作符</h1>
-<h3 id="一-目录">一. 目录</h3>
+            <h3 id="一-目录">一. 目录</h3>
 <p>@[toc]</p>
 <h3 id="二概述">二.概述</h3>
 <h4 id="1作用">1.作用</h4>
 <p>对事件序列中的事件 / 整个事件序列 进行加工处理（即变换），使得其转变成不同的事件 / 整个事件序列</p>
 <h4 id="2-类型">2. 类型</h4>
 <p>常见的变化操作符如下
-<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtNzFlYjU2OWIyOTZjMWYxOC5wbmc?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<img src="/image/Android_Rxjava/6_0.png" alt="这里写图片描述"></p>
 <h3 id="三对应操作符的介绍">三.对应操作符的介绍</h3>
 <h4 id="1map">1.Map()</h4>
 <ul>
 <li>作用：对Observable发射的每一项数据应用一个函数，执行变换操作</li>
 <li>应用场景：数据类型转化
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-bDsNsOUP-1579367058397)(https://mcxiaoke.gitbooks.io/rxdocs/content/images/operators/map.png)]</li>
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-bDsNsOUP-1579367058397)(/image/Android_Rxjava/6_1.png)]</li>
 </ul>
 <p>代码示例：</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
@@ -191,12 +203,12 @@
 
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/20180814144900776" alt="这里写图片描述"></p>
+</div><p><img src="/image/Android_Rxjava/6_2.png" alt="这里写图片描述"></p>
 <h4 id="2flatmap">2.flatMap()</h4>
 <ul>
 <li>作用：将一个发射数据的Observable变换为多个Observables，然后将它们发射的数据合并后放进一个单独的Observable</li>
 <li>应用场景:<strong>无序</strong>的将被观察者发送的整个事件序列进行变换
-<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL2ZsYXRNYXAucG5n?x-oss-process=image/format,png" alt="这里写图片描述"></li>
+<img src="/image/Android_Rxjava/6_3.png" alt="这里写图片描述"></li>
 </ul>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -288,13 +300,13 @@
         <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/20180814153010364" alt="这里写图片描述"></p>
+</div><p><img src="/image/Android_Rxjava/6_4.png" alt="这里写图片描述"></p>
 <h4 id="3concatmap">3.ConcatMap()</h4>
 <ul>
 <li>作用类似与FlatMap（）操作符</li>
 <li>区别：拆分 &amp; 重新合并生成的事件序列 的顺序 = 被观察者旧序列生产的顺序</li>
 <li>用于场景:有序的将被观察者发送的整个事件序列进行变换
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-0aIQHof7-1579367058398)(https://mcxiaoke.gitbooks.io/rxdocs/content/images/operators/concatMap.png)]</li>
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-0aIQHof7-1579367058398)(/image/Android_Rxjava/6_5.png)]</li>
 </ul>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -388,12 +400,12 @@
 
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/20180814153403162" alt="这里写图片描述"></p>
+</div><p><img src="/image/Android_Rxjava/6_6.png" alt="这里写图片描述"></p>
 <h4 id="4buffrt">4.Buffrt()</h4>
 <ul>
 <li>作用：定期从 被观察者（Obervable）需要发送的事件中 获取一定数量的事件 &amp; 放到缓存区中，最终发送</li>
 <li>应用场景：缓存被观察者发送的事件
-<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL2J1ZmZlcjQucG5n?x-oss-process=image/format,png" alt="这里写图片描述"></li>
+<img src="/image/Android_Rxjava/6_7.png" alt="这里写图片描述"></li>
 </ul>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -459,7 +471,7 @@
 
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/20180814154926756" alt="这里写图片描述"></p>
+</div><p><img src="/image/Android_Rxjava/6_8.png" alt="这里写图片描述"></p>
 <h3 id="四参考资料">四.参考资料</h3>
 <p><a href="https://mcxiaoke.gitbooks.io/rxdocs/content/topics/Getting-Started.html">ReactiveX文档中文翻译</a>
 <a href="https://www.jianshu.com/p/a406b94f3188">Android Rxjava：这是一篇 清晰 &amp; 易懂的Rxjava 入门教程 </a>
@@ -501,15 +513,15 @@
     <h2>See Also</h2>
     <ul class="listing">
         
-        <li><a href="/posts/%E6%96%87%E7%AB%A0%E5%AF%BC%E8%88%AA/">文章导航</a></li>
+        <li><a href="/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-2Rxjava-%E5%88%9B%E5%BB%BA%E6%93%8D%E4%BD%9C%E7%AC%A6/">Android之Rxjava2.X 2————Rxjava 创建操作符</a></li>
         
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%872View%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%88%86%E5%8F%91/">Android之View篇2————View的事件分发</a></li>
+        <li><a href="/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-1Rxjava%E6%A6%82%E8%BF%B0/">Android之Rxjava2.X 1————Rxjava概述</a></li>
         
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%873View%E6%BB%91%E5%8A%A8%E5%86%B2%E7%AA%81%E7%9A%84%E8%A7%A3%E5%86%B3/">Android之View篇3————View滑动冲突的解决</a></li>
-        
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%874View%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">Android之View篇4————View的工作原理</a></li>
+        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%876%E4%BB%BF%E9%99%8C%E9%99%8C%E5%8D%A1%E7%89%87%E5%B7%A6%E5%8F%B3%E6%BB%91%E5%8A%A8%E9%80%89%E6%8B%A9%E5%B8%83%E5%B1%80/">Android之View篇6————仿陌陌卡片左右滑动选择控件</a></li>
         
         <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%875%E8%87%AA%E5%AE%9A%E4%B9%89View/">Android之View篇5————自定义View</a></li>
+        
+        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%874View%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">Android之View篇4————View的工作原理</a></li>
         
     </ul>
 </div>
@@ -517,7 +529,13 @@
 
         <div class="post-meta meta-tags">
             
-            没有标签
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/Android'>Android</a></li>
+                
+                <li><a href='http://blog.bingtan.online/tags/Rxjava'>Rxjava</a></li>
+                
+            </ul>
             
         </div>
     </article>

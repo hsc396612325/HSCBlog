@@ -10,10 +10,10 @@
     <meta property="og:title" content="Android之View篇3————View滑动冲突的解决 - 冰炭不投day的博客">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content='2019-03-02T22:40:54&#43;08:00'>
+    <meta property="article:published_time" content='2019-03-03T22:40:54&#43;08:00'>
         
         
-    <meta property="article:modified_time" content='2019-03-02T22:40:54&#43;08:00'>
+    <meta property="article:modified_time" content='2019-03-03T22:40:54&#43;08:00'>
         
     <meta name="Keywords" content="Android 冰炭不投day">
     <meta name="description" content="Android之View篇3————View滑动冲突的解决">
@@ -87,7 +87,7 @@
             <h1 class="post-title">Android之View篇3————View滑动冲突的解决</h1>
         </header>
         <date class="post-meta meta-date">
-            2019年3月2日
+            2019年3月3日
         </date>
         
         <div class="post-meta">
@@ -95,7 +95,7 @@
             
             <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android'>Android</a></span>
             
-            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82'>Android之网络请求</a></span>
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8BView'>Android之View</a></span>
             
         </div>
         
@@ -120,7 +120,7 @@
 <li>场景1——外部滑动方向和内部滑动方向不一致</li>
 <li>场景2——外部滑动方向和内部滑动方向一致</li>
 <li>场景3——上面两种情况的嵌套
-<img src="https://img-blog.csdn.net/2018060422093063?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></li>
+<img src="/image/Android_View/5_0.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></li>
 </ul>
 <p>场景1:主要是将ViewPager和Fragment配合使用的情况，所组成的页面滑动效果，在这种效果中，可以通过左右滑动来切换画面，而每个页面内部往往又是一个listView，这种情况下本来是有滑动冲突的，但viewPager内部处理了这种滑动冲突，但如果我们采用的是ScrollView时，就必须手动处理滑动冲突。</p>
 <p>场景2：这种情况下，当内外层都存在同一个方向可以滑动的时候，就存在一个逻辑问题时，当手指开始滑动时，系统无法知道用户到底想让那一层滑动，所以当手指滑动时，就会出现问题，要么只有一层滑动，要么滑动很卡顿。</p>
@@ -250,13 +250,13 @@
         
         <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%872View%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%88%86%E5%8F%91/">Android之View篇2————View的事件分发</a></li>
         
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%874View%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">Android之View篇4————View的工作原理</a></li>
-        
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%875%E8%87%AA%E5%AE%9A%E4%B9%89View/">Android之View篇5————自定义View</a></li>
-        
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%876%E4%BB%BF%E9%99%8C%E9%99%8C%E5%8D%A1%E7%89%87%E5%B7%A6%E5%8F%B3%E6%BB%91%E5%8A%A8%E9%80%89%E6%8B%A9%E5%B8%83%E5%B1%80/">Android之View篇6————仿陌陌卡片左右滑动选择控件</a></li>
-        
         <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%871%E5%88%9D%E8%AF%86View/">Android之View篇1————初识View</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%8211Retrofit%E7%9A%84%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">Android之网络请求11————Retrofit的源码分析</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%8210Retrofit%E7%9A%84%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8/">Android之网络请求10————Retrofit的进阶使用</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%829Retrofit%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/">Android之网络请求9————Retrofit的简单使用</a></li>
         
     </ul>
 </div>
@@ -268,7 +268,7 @@
                 
                 <li><a href='http://blog.bingtan.online/tags/Android'>Android</a></li>
                 
-                <li><a href='http://blog.bingtan.online/tags/%E7%BD%91%E7%BB%9C'>网络</a></li>
+                <li><a href='http://blog.bingtan.online/tags/View'>View</a></li>
                 
             </ul>
             

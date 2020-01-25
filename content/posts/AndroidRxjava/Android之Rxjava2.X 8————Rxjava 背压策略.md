@@ -1,4 +1,11 @@
-﻿# Android之Rxjava2.X 8————Rxjava 背压策略
+﻿---
+title: "Android之Rxjava2.X 8————Rxjava 背压策略"
+date: 2019-04-08T22:40:54+08:00
+draft: false
+categories: ["Android","Android之Rxjava"]
+tags: ["Android","Rxjava"]
+---
+
 ### 一.目录
 @[toc]
 **注:本文大部分参考[Android RxJava ：图文详解 背压策略](https://www.jianshu.com/p/ceb48ed8719d)**
@@ -31,7 +38,7 @@
             }
         });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180816111442735)
+![这里写图片描述](/image/Android_Rxjava/11_0.png)
 而背压策略就是为了解决上述的问题，而引入的
 ### 三.背压的概述
 #### 1.背压定义
@@ -45,7 +52,7 @@ Backpressure，也称为Reactive Pull，就是下游需要多少（具体是通�
 * 对于被观察者:反馈控制，即被观察者根据观察者的接受能力，从而控制发送事件的速度
 * 对于缓存区：对超出缓存区大小的事件进行丢弃，保留，报错。
 
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtZDM3Yjg5Yjg2YWVhMTA0ZC5wbmc?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_Rxjava/11_1.png)
 ### 四.背压的实现Flowable
 #### 1.Flowable 介绍
 在Rxjava2.0中，被观察者(Observable)的一种新实现，但和Observable不同之处，在于Flowable实现了非阻塞式背压策略。
@@ -96,13 +103,13 @@ Flowable.create(new FlowableOnSubscribe<Integer>() {
 
         });
 ```
-![这里写图片描述](https://img-blog.csdn.net/2018081615155320)
+![这里写图片描述](/image/Android_Rxjava/11_2.png)
 ### 五.背压的使用
 #### 1. 控制观察者接受事件的速度
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtYzAxNmI3MWEwODAyNjViMC5wbmc?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_Rxjava/11_3.png)
 ##### 1.1 异步订阅情况
 * 简介：
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtYzAxNmI3MWEwODAyNjViMC5wbmc?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_Rxjava/11_3.png)
 * 具体使用
 ```java
  Flowable.create(new FlowableOnSubscribe<Integer>() {
@@ -149,7 +156,7 @@ Flowable.create(new FlowableOnSubscribe<Integer>() {
 
                 });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180816153834482)
+![这里写图片描述](/image/Android_Rxjava/11_5.png)
 
 * 特别注意：对与异步订阅情况，如果观察者没有设置Subscription.request(long n),即说明观察者不接受事件，但此时
 	
@@ -264,7 +271,7 @@ Flowable.create(new FlowableOnSubscribe<Integer>() {
 
                 });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180816161004697?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_Rxjava/11_6.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
 ##### 1.2 同步订阅情况
 同步订阅 & 异步订阅 的区别在于：
@@ -312,7 +319,7 @@ Flowable.create(new FlowableOnSubscribe<Integer>() {
 
         });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180816161828233)
+![这里写图片描述](/image/Android_Rxjava/11_7.png)
 示意图
 
 所以，实际上并不会出现被观察者发送事件速度 > 观察者接收事件速度的情况。可是，却会出现被观察者发送事件数量 > 观察者接收事件数量的问题。
@@ -357,13 +364,13 @@ Flowable.create(new FlowableOnSubscribe<Integer>() {
 
         });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180816162105794?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_Rxjava/11_8.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
 * 有1个特殊情况需要注意:如果观察者没有设置Subscription.request(long n),此时被观察者开始发送事件，那么被观察者不会收到被观察者的任何事件，并且抛出MissingBackpreeureException异常
 
 
 #### 2. 控制 被观察者发送事件 的速度
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtZjE4YTQwYjU5N2M2OGM4Zi5wbmc?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_Rxjava/11_9.png)
 
 * FlowableEmitter类的requested()介绍
 ```java
@@ -379,7 +386,7 @@ public interface FlowableEmitter<T> extends Emitter<T> {
 每个线程中的requested（）的返回值 = 该线程中的request（a）的a值
 
 原理图：
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtODhlMWYzYzY0MWViNTRlMy5wbmc?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_Rxjava/11_10.png)
 
 ##### 2.1 同步订阅情况
 即在同步订阅情况中，被观察者 通过 FlowableEmitter.requested()获得了观察者自身接收事件能力，从而根据该信息控制事件发送速度，从而达到了观察者反向控制被观察者的效果
@@ -430,7 +437,7 @@ public interface FlowableEmitter<T> extends Emitter<T> {
 
         });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180816164147567)
+![这里写图片描述](/image/Android_Rxjava/11_11.png)
 使用特性：
 
 * 可叠加性： 观查者可连续接收事件，被观察者会进行叠加一起发送
@@ -479,12 +486,12 @@ public interface FlowableEmitter<T> extends Emitter<T> {
 
                 });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180816171934817)
+![这里写图片描述](/image/Android_Rxjava/11_12.png)
 
 **而在异步订阅关系中，反向控制的原理是：通过RxJava内部固定调用被观察者线程中的request(n) 从而 反向控制被观察者的发送事件速度**
 
 关于RxJava内部调用request(n)（n = 128、96、0）的逻辑如下：
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtZjYzMTRhYmE2MGMwODQ1NS5wbmc?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_Rxjava/11_13.png)
 
 代码演示
 ```java
@@ -551,9 +558,9 @@ Button button = findViewById(R.id.bt);
 
                 });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180816172709116)
+![这里写图片描述](/image/Android_Rxjava/11_14.png)
 点击两次按钮后
-![这里写图片描述](https://img-blog.csdn.net/20180816172742683)
+![这里写图片描述](/image/Android_Rxjava/11_15.png)
 
 #### 3.采用背压策略模式
 ##### 3.1 背压模式介绍：
@@ -561,7 +568,7 @@ Button button = findViewById(R.id.bt);
 其作用是:当缓存区大小存满、被观察者仍然继续发送下1个事件时，该如何处理的策略方式
 
 ##### 3.2 背压模式类型
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtNDdiNTVlZGVjMjk5ZmFlYS5wbmc?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_Rxjava/11_16.png)
 
 **模式1：BackpressureStrategy.ERROR**
 处理方法：直接抛出异常
@@ -608,26 +615,26 @@ Flowable.create(new FlowableOnSubscribe<Integer>() {
 
                 });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180816173852330)
+![这里写图片描述](/image/Android_Rxjava/11_17.png)
 
 **模式2：BackpressureStrategy.MISSING**
 处理方法：友好提示：缓存区满了
 代码同上 不过把BackpressureStrategy.ERROR-->BackpressureStrategy.MISSING
 
-![这里写图片描述](https://img-blog.csdn.net/20180816174242526)
+![这里写图片描述](/image/Android_Rxjava/11_18.png)
 
 **模式3：BackpressureStrategy.BUFFER**
 处理方法：将缓存区大小设置成无限大
 代码同上 不过把BackpressureStrategy.ERROR-->BackpressureStrategy.BUFFER
-![这里写图片描述](https://img-blog.csdn.net/20180816175342498)
+![这里写图片描述](/image/Android_Rxjava/11_19.png)
 
 **模式4： BackpressureStrategy.DROP**
 处理方法：超过缓存区大小（128）的事件丢弃
 代码同上 不过把BackpressureStrategy.ERROR-->BackpressureStrategy.DROP
-![这里写图片描述](https://img-blog.csdn.net/20180816192300922)
+![这里写图片描述](/image/Android_Rxjava/11_20.png)
 **模式5：BackpressureStrategy.LATEST**
 处理方法：只保存最新（最后）事件，超过缓存区大小（128）的事件丢弃（即如果发送了150个事件，缓存区里会保存129个事件（第1-第128 + 第150事件））
-![这里写图片描述](https://img-blog.csdn.net/20180816192420748?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_Rxjava/11_21.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 ### 六.参考资料
 [Android RxJava ：图文详解 背压策略](https://www.jianshu.com/p/ceb48ed8719d)
 [关于RxJava最友好的文章——背压（Backpressure）](https://www.jianshu.com/p/2c4799fa91a4)

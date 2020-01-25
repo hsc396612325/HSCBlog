@@ -6,7 +6,7 @@
     <description>Recent content in Tags on 冰炭不投day的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 02 Mar 2019 22:40:54 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 06 May 2019 22:40:54 +0800</lastBuildDate>
     
 	<atom:link href="http://blog.bingtan.online/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,16 +14,43 @@
     <item>
       <title>Android</title>
       <link>http://blog.bingtan.online/tags/Android/</link>
-      <pubDate>Sat, 02 Mar 2019 22:40:54 +0800</pubDate>
+      <pubDate>Mon, 06 May 2019 22:40:54 +0800</pubDate>
       
       <guid>http://blog.bingtan.online/tags/Android/</guid>
       <description></description>
     </item>
     
     <item>
+      <title>IPC</title>
+      <link>http://blog.bingtan.online/tags/IPC/</link>
+      <pubDate>Mon, 06 May 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/tags/IPC/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Rxjava</title>
+      <link>http://blog.bingtan.online/tags/Rxjava/</link>
+      <pubDate>Thu, 11 Apr 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/tags/Rxjava/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>View</title>
+      <link>http://blog.bingtan.online/tags/View/</link>
+      <pubDate>Wed, 06 Mar 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/tags/View/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>网络</title>
       <link>http://blog.bingtan.online/tags/%E7%BD%91%E7%BB%9C/</link>
-      <pubDate>Sat, 02 Mar 2019 22:40:54 +0800</pubDate>
+      <pubDate>Mon, 11 Feb 2019 22:40:54 +0800</pubDate>
       
       <guid>http://blog.bingtan.online/tags/%E7%BD%91%E7%BB%9C/</guid>
       <description></description>

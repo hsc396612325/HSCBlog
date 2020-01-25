@@ -109,7 +109,7 @@ Interceptor appInterceptor = new Interceptor() {
     }
 ```
 #### 4.运行结果
-![这里写图片描述](https://img-blog.csdn.net/20180903173107596)
+![这里写图片描述](/image/Android_jsjwl/10_0.png)
 
 ### 三.拦截器的实际应用
 #### 1.统一添加Header

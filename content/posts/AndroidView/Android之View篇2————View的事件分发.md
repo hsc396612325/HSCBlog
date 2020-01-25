@@ -2,10 +2,9 @@
 title: "Android之View篇2————View的事件分发"
 date: 2019-03-02T22:40:54+08:00
 draft: false
-categories: ["Android","Android之网络请求"]
-tags: ["Android","网络"]
+categories: ["Android","Android之View"]
+tags: ["Android","View"]
 ---
-
 ### 一.目录
 @[toc]
 ### 二.事件分发的基础认识
@@ -36,7 +35,7 @@ public boolen dispatchTouchEvent（）{
 ```
 ### 三.图解事件分发
 #### 1. 图示事件分发 (ACTION_DOWN)
-![这里写图片描述](https://img-blog.csdn.net/20180530201419741?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_View/6_0.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 #### 2. 图示事件分发的说明 
 * 图分为3层，从上向下以此为Activity，ViewGroup，View
 * 箭头中间的值代表方法返回值，（return true，return false ，return super.xxxx）,super意思是调用父类实现。
@@ -45,18 +44,18 @@ public boolen dispatchTouchEvent（）{
 #### 3. 图示事件分发的结论
 **1.如果整个事件不被中断，那么整个事件就是一个类U型图。**
 如果我们没有对控件里面的方法进行重写或者改变返回值。而直接调用super调用父类的默认实现，那么整个事件如下图所示。(前提:子Veiw都不消耗事件，即默认不可点击）
-![这里写图片描述](https://img-blog.csdn.net/20180530202742502?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_View/6_1.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
 **2. dispatchTouchEvent 和 onTouchEvent 一旦return true,事件就停止传递了（到达终点）**
 如下图所示，只有return turn事件就不会继续传下去，也就是我们常说的事件被消费了。
-![这里写图片描述](https://img-blog.csdn.net/20180530203229421?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_View/6_2.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
 **3.dispatchTouchEvent和onTouchEven一旦return false事件都会回传给父控件onTouchEvent**
 如下图所示，触Activity外，一旦进行了return false，都将事件传递给了父控件的onTouchEvent。
 
 *  对于dispatchTouchEvent 返回false的含义：事件停止往子View传递和分发，同时开始往父控件回溯。
 *  对于onTouchEvent返回false的含义:表示当前View不消耗次事件，并且让事件继续往父空间的方向流动，
-![这里写图片描述](https://img-blog.csdn.net/20180530204523521?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_View/6_3.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
 **4.onInterceptTouchEvent 的作用**
 Intercept表示拦截，在ViewGroup进行分发是，会询问拦截器是否需要拦截。
@@ -64,7 +63,7 @@ Intercept表示拦截，在ViewGroup进行分发是，会询问拦截器是否�
 * return false：不拦截，继续向子View传递事件
 * return ture: 拦截，自己对事件进行处理，将事件传递给自己的onTouchEvebt。
 * super：默认情况下不拦截，继续向子View传递事件
-![这里写图片描述](https://img-blog.csdn.net/20180530205350426?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_View/6_4.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
 #### 4. 关于ACTION_MOVE 和 ACTION_UP
 **上面的讲解都是针对的ACTION_DOWN**,ACTION_MOVE和ACTION_UP和ACTION_DOWN在传递过程中和ACTION_DOWN并不相同。
@@ -74,11 +73,11 @@ Intercept表示拦截，在ViewGroup进行分发是，会询问拦截器是否�
 例如:
 红色的箭头代表ACTION_DOWN 事件的流向
 蓝色的箭头代表ACTION_MOVE 和 ACTION_UP 事件的流向
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20190613200417244.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](/image/Android_View/6_5.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70)
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20190613200515673.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](/image/Android_View/6_6.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70)
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20190613200546590.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](/image/Android_View/6_7.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70)
 ### 四.事件分发的源码
 从上面的图示分析，事件分发其实包含了三部分的事件分发，即:
 
@@ -174,7 +173,7 @@ Intercept表示拦截，在ViewGroup进行分发是，会询问拦截器是否�
     // 回到分析4调用原处
 ```
 **总结**
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtZjhmZGE3NmJiZGFkN2I5Ni5wbmc?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_View/6_8.png)
 
 总的来说:Activity的dispatchTouchEvent调用到了ViewGroup的dispatchTouchEvent方法。即:默认情况下Activity的dispatchTouchEvent调用ViewGroup的dispatchTouchEvent方法，而无论dispatchTouchEvent返回什么都结束分发
 #### 2. ViewGroup的事件分发机制
@@ -424,7 +423,7 @@ Intercept表示拦截，在ViewGroup进行分发是，会询问拦截器是否�
     }
 ```
 **总结：**
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtNmVjMmU4NjRhZjdmZmQzNy5wbmc?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_View/6_9.png)
 #### 3. View的事件分发机制
 View的dispatchTouchEvent方法
 ```java
@@ -590,7 +589,7 @@ View的onTouchEvent
     }
 ```
 **总结:**
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtNmVjMmU4NjRhZjdmZmQzNy5wbmc?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_View/6_9.png)
 ### 五.事件分发的总结
 
 1. 同一事件序列是指从手指接触到屏幕的那一刻起，到手指离开的屏幕的那一瞬间结束，在这个过程中所产生的一系列的事件，这个事件以down事件开始，中间含有数量不等的move事件，最终以up事件结束

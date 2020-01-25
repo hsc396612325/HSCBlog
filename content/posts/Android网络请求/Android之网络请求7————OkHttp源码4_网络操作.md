@@ -1243,7 +1243,7 @@ httpCodec.openResponseBody(response)
 其次是连接放入连接池，和从连接池中取出的过程。还有新建一个连接后，将其从跟后台socket进行连接(封装成Okio)。
 
 最后是通过OKio发送请求和获得响应。
-![在这里插入图片描述](https://img-blog.csdn.net/20180918230227903)
+![在这里插入图片描述](/image/Android_jsjwl/8_0.png)
 ### 八.参考资料
 [深入理解OkHttp源码（三）——网络操作](https://blog.csdn.net/qq_19431333/article/details/53419249)
 [OkHttp源码（三）](https://www.jianshu.com/p/14b60bbedb01)

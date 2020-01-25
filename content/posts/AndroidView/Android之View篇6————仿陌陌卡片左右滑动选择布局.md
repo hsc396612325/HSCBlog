@@ -1,15 +1,15 @@
 ﻿---
 title: "Android之View篇6————仿陌陌卡片左右滑动选择控件"
-date: 2019-03-02T22:40:54+08:00
+date: 2019-03-06T22:40:54+08:00
 draft: false
-categories: ["Android","Android之网络请求"]
-tags: ["Android","网络"]
+categories: ["Android","Android之View"]
+tags: ["Android","View"]
 ---
 
 ### 一.目录
 @[toc]
 ### 二.效果图
-![这里写图片描述](https://img-blog.csdn.net/20180801121016572?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_View/3_0.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 ### 三.业务需求梳理
 1. 卡片随着手指的移动进行移动
 2. 卡片在移动过程中，随着距离的加大，卡片绕z轴旋转

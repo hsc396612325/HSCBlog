@@ -95,7 +95,7 @@
             
             <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android'>Android</a></span>
             
-            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82'>Android之网络请求</a></span>
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8BView'>Android之View</a></span>
             
         </div>
         
@@ -176,7 +176,7 @@
 </div>
 </div><h3 id="三图解事件分发">三.图解事件分发</h3>
 <h4 id="1-图示事件分发-action_down">1. 图示事件分发 (ACTION_DOWN)</h4>
-<p><img src="https://img-blog.csdn.net/20180530201419741?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p><img src="/image/Android_View/6_0.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
 <h4 id="2-图示事件分发的说明">2. 图示事件分发的说明</h4>
 <ul>
 <li>图分为3层，从上向下以此为Activity，ViewGroup，View</li>
@@ -187,16 +187,16 @@
 <h4 id="3-图示事件分发的结论">3. 图示事件分发的结论</h4>
 <p><strong>1.如果整个事件不被中断，那么整个事件就是一个类U型图。</strong>
 如果我们没有对控件里面的方法进行重写或者改变返回值。而直接调用super调用父类的默认实现，那么整个事件如下图所示。(前提:子Veiw都不消耗事件，即默认不可点击）
-<img src="https://img-blog.csdn.net/20180530202742502?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<img src="/image/Android_View/6_1.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
 <p><strong>2. dispatchTouchEvent 和 onTouchEvent 一旦return true,事件就停止传递了（到达终点）</strong>
 如下图所示，只有return turn事件就不会继续传下去，也就是我们常说的事件被消费了。
-<img src="https://img-blog.csdn.net/20180530203229421?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<img src="/image/Android_View/6_2.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
 <p><strong>3.dispatchTouchEvent和onTouchEven一旦return false事件都会回传给父控件onTouchEvent</strong>
 如下图所示，触Activity外，一旦进行了return false，都将事件传递给了父控件的onTouchEvent。</p>
 <ul>
 <li>对于dispatchTouchEvent 返回false的含义：事件停止往子View传递和分发，同时开始往父控件回溯。</li>
 <li>对于onTouchEvent返回false的含义:表示当前View不消耗次事件，并且让事件继续往父空间的方向流动，
-<img src="https://img-blog.csdn.net/20180530204523521?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></li>
+<img src="/image/Android_View/6_3.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></li>
 </ul>
 <p><strong>4.onInterceptTouchEvent 的作用</strong>
 Intercept表示拦截，在ViewGroup进行分发是，会询问拦截器是否需要拦截。</p>
@@ -204,7 +204,7 @@ Intercept表示拦截，在ViewGroup进行分发是，会询问拦截器是否�
 <li>return false：不拦截，继续向子View传递事件</li>
 <li>return ture: 拦截，自己对事件进行处理，将事件传递给自己的onTouchEvebt。</li>
 <li>super：默认情况下不拦截，继续向子View传递事件
-<img src="https://img-blog.csdn.net/20180530205350426?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></li>
+<img src="/image/Android_View/6_4.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></li>
 </ul>
 <h4 id="4-关于action_move-和-action_up">4. 关于ACTION_MOVE 和 ACTION_UP</h4>
 <p><strong>上面的讲解都是针对的ACTION_DOWN</strong>,ACTION_MOVE和ACTION_UP和ACTION_DOWN在传递过程中和ACTION_DOWN并不相同。</p>
@@ -212,9 +212,9 @@ Intercept表示拦截，在ViewGroup进行分发是，会询问拦截器是否�
 <p>例如:
 红色的箭头代表ACTION_DOWN 事件的流向
 蓝色的箭头代表ACTION_MOVE 和 ACTION_UP 事件的流向
-<img src="https://img-blog.csdnimg.cn/20190613200417244.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<p><img src="https://img-blog.csdnimg.cn/20190613200515673.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<p><img src="https://img-blog.csdnimg.cn/20190613200546590.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<img src="/image/Android_View/6_5.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><img src="/image/Android_View/6_6.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><img src="/image/Android_View/6_7.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 <h3 id="四事件分发的源码">四.事件分发的源码</h3>
 <p>从上面的图示分析，事件分发其实包含了三部分的事件分发，即:</p>
 <ul>
@@ -397,7 +397,7 @@ Intercept表示拦截，在ViewGroup进行分发是，会询问拦截器是否�
 </span></code></pre></td></tr></table>
 </div>
 </div><p><strong>总结</strong>
-<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtZjhmZGE3NmJiZGFkN2I5Ni5wbmc?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<img src="/image/Android_View/6_8.png" alt="这里写图片描述"></p>
 <p>总的来说:Activity的dispatchTouchEvent调用到了ViewGroup的dispatchTouchEvent方法。即:默认情况下Activity的dispatchTouchEvent调用ViewGroup的dispatchTouchEvent方法，而无论dispatchTouchEvent返回什么都结束分发</p>
 <h4 id="2-viewgroup的事件分发机制">2. ViewGroup的事件分发机制</h4>
 <p><strong>ViewGroup的 dispatchTouchEvent。</strong></p>
@@ -891,7 +891,7 @@ Intercept表示拦截，在ViewGroup进行分发是，会询问拦截器是否�
 </code></pre></td></tr></table>
 </div>
 </div><p><strong>总结：</strong>
-<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtNmVjMmU4NjRhZjdmZmQzNy5wbmc?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<img src="/image/Android_View/6_9.png" alt="这里写图片描述"></p>
 <h4 id="3-view的事件分发机制">3. View的事件分发机制</h4>
 <p>View的dispatchTouchEvent方法</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
@@ -1222,7 +1222,7 @@ Intercept表示拦截，在ViewGroup进行分发是，会询问拦截器是否�
 </code></pre></td></tr></table>
 </div>
 </div><p><strong>总结:</strong>
-<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtNmVjMmU4NjRhZjdmZmQzNy5wbmc?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<img src="/image/Android_View/6_9.png" alt="这里写图片描述"></p>
 <h3 id="五事件分发的总结">五.事件分发的总结</h3>
 <ol>
 <li>同一事件序列是指从手指接触到屏幕的那一刻起，到手指离开的屏幕的那一瞬间结束，在这个过程中所产生的一系列的事件，这个事件以down事件开始，中间含有数量不等的move事件，最终以up事件结束</li>
@@ -1261,15 +1261,15 @@ Intercept表示拦截，在ViewGroup进行分发是，会询问拦截器是否�
     <h2>See Also</h2>
     <ul class="listing">
         
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%873View%E6%BB%91%E5%8A%A8%E5%86%B2%E7%AA%81%E7%9A%84%E8%A7%A3%E5%86%B3/">Android之View篇3————View滑动冲突的解决</a></li>
-        
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%874View%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">Android之View篇4————View的工作原理</a></li>
-        
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%875%E8%87%AA%E5%AE%9A%E4%B9%89View/">Android之View篇5————自定义View</a></li>
-        
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%876%E4%BB%BF%E9%99%8C%E9%99%8C%E5%8D%A1%E7%89%87%E5%B7%A6%E5%8F%B3%E6%BB%91%E5%8A%A8%E9%80%89%E6%8B%A9%E5%B8%83%E5%B1%80/">Android之View篇6————仿陌陌卡片左右滑动选择控件</a></li>
-        
         <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%871%E5%88%9D%E8%AF%86View/">Android之View篇1————初识View</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%8211Retrofit%E7%9A%84%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">Android之网络请求11————Retrofit的源码分析</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%8210Retrofit%E7%9A%84%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8/">Android之网络请求10————Retrofit的进阶使用</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%829Retrofit%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/">Android之网络请求9————Retrofit的简单使用</a></li>
+        
+        <li><a href="/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%828OkHttp%E6%BA%90%E7%A0%815_%E7%BC%93%E5%AD%98%E7%9B%B8%E5%85%B3/">Android之网络请求8————OkHttp源码5:缓存相关</a></li>
         
     </ul>
 </div>
@@ -1281,7 +1281,7 @@ Intercept表示拦截，在ViewGroup进行分发是，会询问拦截器是否�
                 
                 <li><a href='http://blog.bingtan.online/tags/Android'>Android</a></li>
                 
-                <li><a href='http://blog.bingtan.online/tags/%E7%BD%91%E7%BB%9C'>网络</a></li>
+                <li><a href='http://blog.bingtan.online/tags/View'>View</a></li>
                 
             </ul>
             

@@ -1,9 +1,15 @@
-﻿# Android之IPC6————Binder3 Framework层分析
-@[toc]
+﻿---
+title: "Android之IPC6————Binder3 Framework层分析"
+date: 2019-05-06T22:40:54+08:00
+draft: false
+categories: ["Android","Android之IPC"]
+tags: ["Android","IPC"]
+---
+
 ### 一.概述
 在前两篇我们分析了Binder在Native层的实现，我们今天来看在Framework层，Binder相关的内容，这一篇也是以注册服务和获取服务来看Binder的流程。
 
-![image](https://imgconvert.csdnimg.cn/aHR0cDovL2dpdHl1YW4uY29tL2ltYWdlcy9iaW5kZXIvamF2YV9iaW5kZXIvamF2YV9iaW5kZXIuanBn?x-oss-process=image/format,png)
+![image](/image/Android_IPC/3_0.png)
 
 bidner在Framework层，采用JNI技术来调用native层的binder架构，从而为上层应用提供服务。
 >java JNI本意是Java native interface,是为了方便javad调用C,C++等本地代码所封装的异常接口。jni也是JVM规范中的一部份，因此可以将我们写的 JNI 程序在任何实现了 JNI 规范的 Java 虚拟机中运行。

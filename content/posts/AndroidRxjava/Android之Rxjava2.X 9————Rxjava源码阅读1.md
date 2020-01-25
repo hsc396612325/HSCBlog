@@ -1,4 +1,11 @@
-﻿# Android之Rxjava2.X 9————Rxjava源码阅读1
+﻿---
+title: "Android之Rxjava2.X 9————Rxjava源码阅读1"
+date: 2019-04-09T22:40:54+08:00
+draft: false
+categories: ["Android","Android之Rxjava"]
+tags: ["Android","Rxjava"]
+---
+
 ### 一.目录
 @[toc]
 ### 二.目的
@@ -46,7 +53,7 @@ Observable.create(
         });
 ```
 运行结果:
-![这里写图片描述](https://img-blog.csdn.net/20180817093950150)
+![这里写图片描述](/image/Android_Rxjava/10_0.png)
 
 #### 3.从create开始
 create方法：

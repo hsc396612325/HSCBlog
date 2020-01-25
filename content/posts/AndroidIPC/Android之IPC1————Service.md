@@ -1,5 +1,11 @@
-﻿# Android之IPC1————Service
-@[toc]
+﻿---
+title: "Android之IPC1————Service"
+date: 2019-05-01T22:40:54+08:00
+draft: false
+categories: ["Android","Android之IPC"]
+tags: ["Android","IPC"]
+---
+
 ### 一.Service的概述
 最近打算看看AndroidIPC相关的内容，并进行总结。所以就先从IPC中很常用的Service开始。
 
@@ -136,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 ```
 
 #### 3.运行结果
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20181031175141840.png)
+![在这里插入图片描述](/image/Android_IPC/4_0.png)
 ### 四.Service绑定服务概述
 
 [绑定Service官方文档](https://developer.android.com/guide/components/bound-services?hl=zh-cn)
@@ -351,10 +357,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 上面的代码中，通过 bindService和unbindService对Service进行绑定和解绑。通过ServiceConnection获得对应的Service对象，从而调用对应的公用方法。
 
 #### 4.运行结果
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20181031175219683.png
+![在这里插入图片描述](/image/Android_IPC/4_1.png
 
 通过Log可在，第一次点击绑定服务时，LocalService服务端的onCreate()、onBind方法会依次被调用，此时客户端的ServiceConnection#onServiceConnected()被调用并返回LocalBinder对象，接着调用LocalBinder#getService方法返回LocalService实例对象，此时客户端便持有了LocalService的实例对象，也就可以任意调用LocalService类中的声明公共方法了。解除绑定时，LocalService的onUnBind、onDestroy方法依次被回调。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20181031175325396.png)
+![在这里插入图片描述](/image/Android_IPC/4_2.png)
 ### 六.使用Messenger
 
 #### 1.使用场景
@@ -551,14 +557,14 @@ public class ActivityMessenger extends Activity implements View.OnClickListener 
 ```
 #### 4.运行结果
 客户端Log
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20181031175437314.png)
+![在这里插入图片描述](/image/Android_IPC/4_3.png)
 
 ServiceLog
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20181031175522500.png)
+![在这里插入图片描述](/image/Android_IPC/4_4.png)
 
 
 下图就是其通信过程
-![image](https://img-blog.csdn.net/20161004221152656)
+![image](/image/Android_IPC/4_5.png)
 
 ### 七.使用AIDL
 
@@ -706,8 +712,8 @@ public class ForegroundActivity extends AppCompatActivity implements View.OnClic
 ```
 
 #### 2.运行结果
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2018103117581373.jpg)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20181031175846776.jpg)
+![在这里插入图片描述](/image/Android_IPC/4_6.png)
+![在这里插入图片描述](/image/Android_IPC/4_7.png)
 ### 九.Servicr的生命周期
 
 #### 1.生命周期的回调

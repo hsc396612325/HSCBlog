@@ -10,7 +10,7 @@ tags: ["Android","网络"]
 Retreofit是什么，根据其官方文档的介绍，他就是一个适用于 Android 和 Java 的类型安全的 HTTP 客户端。特别说明Retrofit网络请求本质是有OkHttp完成的，而Retrofit仅负责网络请求接口的封装。
 
 
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/aHR0cDovL3VwbG9hZC1pbWFnZXMuamlhbnNodS5pby91cGxvYWRfaW1hZ2VzLzk0NDM2NS1hMzEwOWFkMDQ0NmIwNTQwLnBuZw?x-oss-process=image/format,png)
+![在这里插入图片描述](/image/Android_jsjwl/1_0.png)
 ### 二.Retrofit的简单使用
 Retrofit的简单使用我们先从请求百度URL开始
 **步骤1：**
@@ -71,16 +71,16 @@ public interface BaiduInterface {
 ```
 
 请求结果:
-![在这里插入图片描述](https://img-blog.csdn.net/20180926213646477)
+![在这里插入图片描述](/image/Android_jsjwl/1_1.png)
 ### 三.Retrofit的注解
 上面我们简单使用了Retrofit请求了百度的。对Retrofit的使用有了简单的了解，在上面的代码中，出现了@GET和@URL，可以看出Retrofit大量使用了注解，对请求进行了封装，我们继续来看Retrofit中使用的注解。
 
 #### 1.概述
 在Retrofit中，注解的使用都在定义的接口中，分为3类:即网络请求方法，标记类，网络请求参数。
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/aHR0cDovL3VwbG9hZC1pbWFnZXMuamlhbnNodS5pby91cGxvYWRfaW1hZ2VzLzk0NDM2NS1lZTc0N2QxZTMzMWVkNWE0LnBuZw?x-oss-process=image/format,png)
+![在这里插入图片描述](/image/Android_jsjwl/1_1.png)
 #### 2.网络请求方法
 网络请求方法如下:
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/aHR0cDovL3VwbG9hZC1pbWFnZXMuamlhbnNodS5pby91cGxvYWRfaW1hZ2VzLzk0NDM2NS1lOTczNzliOGUwOTQyNDU5LnBuZw?x-oss-process=image/format,png)
+![在这里插入图片描述](/image/Android_jsjwl/1_2.png)
 可以看出来这些都是Http的方法，我们一般常用的就是GET和POST
 
 具体说明:
@@ -130,7 +130,7 @@ Retrofit retrofit = new Retrofit.Builder()
 ```
 网络请求的完整 Url =在创建Retrofit实例时通过.baseUrl()设置 +网络请求接口的注解设置（下面称 “path“ ） 
 具体整合规则
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/aHR0cDovL3VwbG9hZC1pbWFnZXMuamlhbnNodS5pby91cGxvYWRfaW1hZ2VzLzk0NDM2NS0zZGM0MjAxNzAzODMwMmQzLnBuZw?x-oss-process=image/format,png)
+![在这里插入图片描述](/image/Android_jsjwl/1_3.png)
 
 path的URL还可以使用替换块
 ```java
@@ -146,7 +146,7 @@ public interface RetrofitInterface {
 }
 ```
 #### 3.标记类
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/aHR0cDovL3VwbG9hZC1pbWFnZXMuamlhbnNodS5pby91cGxvYWRfaW1hZ2VzLzk0NDM2NS1hNmYxZmM5OTdjMjNhMmUwLnBuZw?x-oss-process=image/format,png)
+![在这里插入图片描述](/image/Android_jsjwl/1_4.png)
 **a.FormUrlEncoded**
 * 作用:表示发送form-encoded的数据
 * 注意:每个键值对都需要用@Filed来注解键名，随后的对象需要提供值。
@@ -191,7 +191,7 @@ public interface ApiService {
 }
 ```
 #### 4.网络请求参数
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/aHR0cDovL3VwbG9hZC1pbWFnZXMuamlhbnNodS5pby91cGxvYWRfaW1hZ2VzLzk0NDM2NS1jNTQ3ZjIzNDRlZWY2MzBiLnBuZw?x-oss-process=image/format,png)
+![在这里插入图片描述](/image/Android_jsjwl/1_5.png)
 
 **a.@Header & @Headers**
 * 作用:添加请求头
@@ -372,9 +372,9 @@ Retrofit支持多种网络请求适配器方式：guava、Java8和rxjava.
 以豆瓣电影上映接口的请求为例:
 [API接口](https://github.com/jokermonn/-Api/blob/master/DoubanMovie.md#photo)
 请求URL:
-![在这里插入图片描述](https://img-blog.csdn.net/20180927115344570)
+![在这里插入图片描述](/image/Android_jsjwl/1_7.png)
 返回的JSON数据（详细内容可查看链接）:
-![在这里插入图片描述](https://img-blog.csdn.net/20180927115534608)
+![在这里插入图片描述](/image/Android_jsjwl/1_8.png)
 具体实现:
 #### 1.步骤a：添加Retrofit库的依赖
 添加Retrofit和GSON的依赖
@@ -468,7 +468,7 @@ public interface RetrofitInterface {
         });
 ```
 #### 5.运行结果
-![在这里插入图片描述](https://img-blog.csdn.net/20180927200245359?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![在这里插入图片描述](/image/Android_jsjwl/1_9.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
 ### 六.Retrofit和Rxjava的结合
 还是以上面的接口为例:关于Rxjava更多详细的内容可以参看我之前的博客[Android之Rxjava2.X 1————Rxjava概述](https://blog.csdn.net/qq_38499859/article/details/81611870)
@@ -590,7 +590,7 @@ public interface RetrofitInterface {
 ```
 #### 5.运行结果
 
-https://www.jianshu.com/p/0fda3132cf98![在这里插入图片描述](https://img-blog.csdn.net/20180927210633538?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+https://www.jianshu.com/p/0fda3132cf98![在这里插入图片描述](/image/Android_jsjwl/1_10.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
 ### 七.参考资料
 [这是一份很详细的 Retrofit 2.0 使用教程](https://blog.csdn.net/carson_ho/article/details/73732076#t34)

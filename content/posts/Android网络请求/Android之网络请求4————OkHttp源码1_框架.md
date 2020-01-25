@@ -19,7 +19,7 @@ tags: ["Android","网络"]
 
 关于OKHttp的使用可以看前面的文章
 ### 二.总体框架
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cDovL2F0YTItaW1nLmNuLWhhbmd6aG91LmltZy1wdWIuYWxpeXVuLWluYy5jb20vZjZlMmFjMzA0ZWUyMjg5MWVjYTRhZDEyMTg2MDIwNDQucG5n?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_jsjwl/2_0.png)
 
 上图是OkHttp的总体架构，大致可以分为以下几层：
 

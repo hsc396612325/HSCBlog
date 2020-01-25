@@ -111,7 +111,7 @@
         <div class="post-content">
             <h3 id="一retrofit的介绍">一.Retrofit的介绍</h3>
 <p>Retreofit是什么，根据其官方文档的介绍，他就是一个适用于 Android 和 Java 的类型安全的 HTTP 客户端。特别说明Retrofit网络请求本质是有OkHttp完成的，而Retrofit仅负责网络请求接口的封装。</p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL3VwbG9hZC1pbWFnZXMuamlhbnNodS5pby91cGxvYWRfaW1hZ2VzLzk0NDM2NS1hMzEwOWFkMDQ0NmIwNTQwLnBuZw?x-oss-process=image/format,png" alt="在这里插入图片描述"></p>
+<p><img src="/image/Android_jsjwl/1_0.png" alt="在这里插入图片描述"></p>
 <h3 id="二retrofit的简单使用">二.Retrofit的简单使用</h3>
 <p>Retrofit的简单使用我们先从请求百度URL开始
 <strong>步骤1：</strong>
@@ -223,15 +223,15 @@
 </code></pre></td></tr></table>
 </div>
 </div><p>请求结果:
-<img src="https://img-blog.csdn.net/20180926213646477" alt="在这里插入图片描述"></p>
+<img src="/image/Android_jsjwl/1_1.png" alt="在这里插入图片描述"></p>
 <h3 id="三retrofit的注解">三.Retrofit的注解</h3>
 <p>上面我们简单使用了Retrofit请求了百度的。对Retrofit的使用有了简单的了解，在上面的代码中，出现了@GET和@URL，可以看出Retrofit大量使用了注解，对请求进行了封装，我们继续来看Retrofit中使用的注解。</p>
 <h4 id="1概述">1.概述</h4>
 <p>在Retrofit中，注解的使用都在定义的接口中，分为3类:即网络请求方法，标记类，网络请求参数。
-<img src="https://imgconvert.csdnimg.cn/aHR0cDovL3VwbG9hZC1pbWFnZXMuamlhbnNodS5pby91cGxvYWRfaW1hZ2VzLzk0NDM2NS1lZTc0N2QxZTMzMWVkNWE0LnBuZw?x-oss-process=image/format,png" alt="在这里插入图片描述"></p>
+<img src="/image/Android_jsjwl/1_1.png" alt="在这里插入图片描述"></p>
 <h4 id="2网络请求方法">2.网络请求方法</h4>
 <p>网络请求方法如下:
-<img src="https://imgconvert.csdnimg.cn/aHR0cDovL3VwbG9hZC1pbWFnZXMuamlhbnNodS5pby91cGxvYWRfaW1hZ2VzLzk0NDM2NS1lOTczNzliOGUwOTQyNDU5LnBuZw?x-oss-process=image/format,png" alt="在这里插入图片描述">
+<img src="/image/Android_jsjwl/1_2.png" alt="在这里插入图片描述">
 可以看出来这些都是Http的方法，我们一般常用的就是GET和POST</p>
 <p>具体说明:
 <strong>a. @GET、@POST、@PUT、@DELETE、@HEAD</strong>
@@ -320,7 +320,7 @@ Call<span style="color:#000;font-weight:bold">&lt;</span>Translation<span style=
 </div>
 </div><p>网络请求的完整 Url =在创建Retrofit实例时通过.baseUrl()设置 +网络请求接口的注解设置（下面称 “path“ ）
 具体整合规则
-<img src="https://imgconvert.csdnimg.cn/aHR0cDovL3VwbG9hZC1pbWFnZXMuamlhbnNodS5pby91cGxvYWRfaW1hZ2VzLzk0NDM2NS0zZGM0MjAxNzAzODMwMmQzLnBuZw?x-oss-process=image/format,png" alt="在这里插入图片描述"></p>
+<img src="/image/Android_jsjwl/1_3.png" alt="在这里插入图片描述"></p>
 <p>path的URL还可以使用替换块</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -348,7 +348,7 @@ Call<span style="color:#000;font-weight:bold">&lt;</span>List<span style="color:
 </code></pre></td></tr></table>
 </div>
 </div><h4 id="3标记类">3.标记类</h4>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL3VwbG9hZC1pbWFnZXMuamlhbnNodS5pby91cGxvYWRfaW1hZ2VzLzk0NDM2NS1hNmYxZmM5OTdjMjNhMmUwLnBuZw?x-oss-process=image/format,png" alt="在这里插入图片描述">
+<p><img src="/image/Android_jsjwl/1_4.png" alt="在这里插入图片描述">
 <strong>a.FormUrlEncoded</strong></p>
 <ul>
 <li>作用:表示发送form-encoded的数据</li>
@@ -436,7 +436,7 @@ Call<span style="color:#000;font-weight:bold">&lt;</span>List<span style="color:
 </code></pre></td></tr></table>
 </div>
 </div><h4 id="4网络请求参数">4.网络请求参数</h4>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL3VwbG9hZC1pbWFnZXMuamlhbnNodS5pby91cGxvYWRfaW1hZ2VzLzk0NDM2NS1jNTQ3ZjIzNDRlZWY2MzBiLnBuZw?x-oss-process=image/format,png" alt="在这里插入图片描述"></p>
+<p><img src="/image/Android_jsjwl/1_5.png" alt="在这里插入图片描述"></p>
 <p><strong>a.@Header &amp; @Headers</strong></p>
 <ul>
 <li>作用:添加请求头
@@ -749,9 +749,9 @@ Call<span style="color:#000;font-weight:bold">&lt;</span>List<span style="color:
 <p>以豆瓣电影上映接口的请求为例:
 <a href="https://github.com/jokermonn/-Api/blob/master/DoubanMovie.md#photo">API接口</a>
 请求URL:
-<img src="https://img-blog.csdn.net/20180927115344570" alt="在这里插入图片描述">
+<img src="/image/Android_jsjwl/1_7.png" alt="在这里插入图片描述">
 返回的JSON数据（详细内容可查看链接）:
-<img src="https://img-blog.csdn.net/20180927115534608" alt="在这里插入图片描述">
+<img src="/image/Android_jsjwl/1_8.png" alt="在这里插入图片描述">
 具体实现:</p>
 <h4 id="1步骤a添加retrofit库的依赖">1.步骤a：添加Retrofit库的依赖</h4>
 <p>添加Retrofit和GSON的依赖</p>
@@ -937,7 +937,7 @@ Call<span style="color:#000;font-weight:bold">&lt;</span>List<span style="color:
 </code></pre></td></tr></table>
 </div>
 </div><h4 id="5运行结果">5.运行结果</h4>
-<p><img src="https://img-blog.csdn.net/20180927200245359?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"></p>
+<p><img src="/image/Android_jsjwl/1_9.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="在这里插入图片描述"></p>
 <h3 id="六retrofit和rxjava的结合">六.Retrofit和Rxjava的结合</h3>
 <p>还是以上面的接口为例:关于Rxjava更多详细的内容可以参看我之前的博客<a href="https://blog.csdn.net/qq_38499859/article/details/81611870">Android之Rxjava2.X 1————Rxjava概述</a></p>
 <p>API接口同上</p>
@@ -1167,7 +1167,7 @@ Call<span style="color:#000;font-weight:bold">&lt;</span>List<span style="color:
 </code></pre></td></tr></table>
 </div>
 </div><h4 id="5运行结果-1">5.运行结果</h4>
-<p><a href="https://www.jianshu.com/p/0fda3132cf98!%5B">https://www.jianshu.com/p/0fda3132cf98![</a>在这里插入图片描述](<a href="https://img-blog.csdn.net/20180927210633538?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">https://img-blog.csdn.net/20180927210633538?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70</a>)</p>
+<p><a href="https://www.jianshu.com/p/0fda3132cf98!%5B">https://www.jianshu.com/p/0fda3132cf98![</a>在这里插入图片描述](/image/Android_jsjwl/1_10.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)</p>
 <h3 id="七参考资料">七.参考资料</h3>
 <p><a href="https://blog.csdn.net/carson_ho/article/details/73732076#t34">这是一份很详细的 Retrofit 2.0 使用教程</a>
 <a href="https://www.jianshu.com/p/0fda3132cf98">网络加载框架 - Retrofit</a>

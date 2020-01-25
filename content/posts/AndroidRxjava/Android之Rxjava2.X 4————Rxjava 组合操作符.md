@@ -1,11 +1,18 @@
-﻿# Android之Rxjava2.X 4————Rxjava 创建操作符
+﻿---
+title: "Android之Rxjava2.X 4————Rxjava 创建操作符"
+date: 2019-04-04T22:40:54+08:00
+draft: false
+categories: ["Android","Android之Rxjava"]
+tags: ["Android","Rxjava"]
+---
+
 ### 一.目录
 @[toc]
 ### 二.概述
 #### 1.作用
 创建 被观察者（ Observable） 对象 & 发送事件。
 #### 2. 类型
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtYTdiMzMyNTZjOWYwN2ZhYy5wbmc?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_Rxjava/1_0.png)
 
 ### 三.组合多个被观察者
 #### 1.concat()/concatArray()
@@ -13,7 +20,7 @@
 * 两者区别:组合被观察者的数量，即concat（）组合被观察者数量≤4个，而concatArray（）则可＞4个
 
 原理图：
-![这里写图片描述](https://img-blog.csdn.net/20180606225650261?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L21peGluNzE2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_Rxjava/1_1.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L21peGluNzE2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
 具体使用
 ```java
@@ -44,14 +51,14 @@
         });
     }
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180814163705925)
+![这里写图片描述](/image/Android_Rxjava/1_2.png)
 #### 2.merge()/mergeArray()
 * 作用:组合多个被观察者一起发送数据，合并后 按时间线并行执行
 * merge()/mergeArray()的区别：组合被观察者的数量，即merge（）组合被观察者数量≤4个，而mergeArray（）则可＞4个
 * 和concat（）操作符的区别:同样是组合多个被观察者一起发送数据，但concat（）操作符合并后是按发送顺序串行执行
 
 原理图：
-![这里写图片描述](https://img-blog.csdn.net/20180606224523408?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L21peGluNzE2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_Rxjava/1_3.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L21peGluNzE2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 具体使用：
 ```java
 
@@ -80,7 +87,7 @@
             }
         });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180814164536557)
+![这里写图片描述](/image/Android_Rxjava/1_4.png)
 #### 3.concatDelayError（） / mergeDelayError（）
 作用:在mergeArray()和concatArray()两个方法中，如果其中一个Observable发送了一个Error事件，那么就会停止发送事件，如果想onError()事件延迟到所有Observable都发送完事件后再执行，就可以使用mergeArrayDelayError()和concatArrayDelayError() 
 
@@ -121,7 +128,7 @@
                     }
                 });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180814165354126)
+![这里写图片描述](/image/Android_Rxjava/1_5.png)
 
 使用concatDelayError（）
 ```java
@@ -160,13 +167,13 @@ Observable.concatArrayDelayError(
                     }
                 });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180814165506910)
+![这里写图片描述](/image/Android_Rxjava/1_6.png)
 ### 四.合并多个事件
 #### 1.zip（）
 * 作用：用来合并两个Observable发射的事件，根据BiFunction函数生成一个新的值发射出去。当其中一个Observable发送数据结束或者出现异常后，另一个Observable也将停止发送数据。也就是说正常的情况下数据长度会与两个Observable中最少事件的数量一样。 
 * 原理图
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-3SC5XLe1-1579435962670)(https://mcxiaoke.gitbooks.io/rxdocs/content/images/operators/zip.c.png)]
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL3ppcC5vLnBuZw?x-oss-process=image/format,png)
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-3SC5XLe1-1579435962670)(/image/Android_Rxjava/1_7.png)]
+![这里写图片描述](/image/Android_Rxjava/1_8.png)
 
 具体使用：
 ```java
@@ -202,14 +209,14 @@ Observable.concatArrayDelayError(
                     }
                 });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180814171602166)
+![这里写图片描述](/image/Android_Rxjava/1_9.png)
 #### 2.combineLatest（）
 * 作用：当两个Observables中的任何一个发送了数据后，将先发送了数据的Observables 的最新（最后）一个数据 与 另外一个Observable发送的每个数据结合，最终基于该函数的结果发送数据
 * 与Zip（）的区别：Zip（） = 按个数合并，即1对1合并；CombineLatest（） = 按时间合并，即在同一个时间点上合并
 
 原理图：
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-RWsty10W-1579435962671)(https://mcxiaoke.gitbooks.io/rxdocs/content/images/operators/combineLatest.c.png)]
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL2NvbWJpbmVMYXRlc3QucG5n?x-oss-process=image/format,png)
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-RWsty10W-1579435962671)(/image/Android_Rxjava/1_10.png)]
+![这里写图片描述](/image/Android_Rxjava/1_11.png)
 
 具体使用
 ```java
@@ -245,7 +252,7 @@ Observable.combineLatest(
                     }
                 });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180814173728460)
+![这里写图片描述](/image/Android_Rxjava/1_12.png)
 #### 3.combineLatestDelayError（）
 * 作用类似于concatDelayError（） / mergeDelayError（） ,见上文
 #### 4.reduce（）
@@ -266,7 +273,7 @@ Observable.combineLatest(
             }
         });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180814175027950)
+![这里写图片描述](/image/Android_Rxjava/1_13.png)
 #### 5.collect（）
 * 作用：将被观察者Observable发送的数据事件收集到一个数据结构里
 
@@ -290,12 +297,12 @@ Observable.combineLatest(
             }
         });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180814175548358?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_Rxjava/1_14.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 ### 五.发送事件前追加发送事件
 #### 1.startWith（） / startWithArray（）
 * 作用：在一个被观察者发送事件前，追加发送一些数据 / 一个新的被观察者
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-1dvy3wrq-1579435962672)(https://mcxiaoke.gitbooks.io/rxdocs/content/images/operators/startWith.c.png)]
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL3N0YXJ0V2l0aC5wbmc?x-oss-process=image/format,png)
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-1dvy3wrq-1579435962672)(/image/Android_Rxjava/1_15.png)]
+![这里写图片描述](/image/Android_Rxjava/1_16.png)
 具体使用：
 ```java
 Observable.just(1, 2, 3)
@@ -346,7 +353,7 @@ Observable.just(1, 2, 3)
                     }
                 });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180814180657393)
+![这里写图片描述](/image/Android_Rxjava/1_17.png)
 ### 六.统计发送事件的数量
 #### 1.count（）
 * 作用：统计被观察者发送事件的数量
@@ -363,7 +370,7 @@ Observable.just(1, 2, 3)
                     }
                 });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180814191208607）
+![这里写图片描述](/image/Android_Rxjava/1_18.png）
 
 ### 七.参考资料
 [ReactiveX文档中文翻译](https://mcxiaoke.gitbooks.io/rxdocs/content/topics/Getting-Started.html)

@@ -1,4 +1,11 @@
-﻿# Android之Rxjava2.X 1————Rxjava概述
+﻿---
+title: "Android之Rxjava2.X 1————Rxjava概述"
+date: 2019-04-01T22:40:54+08:00
+draft: false
+categories: ["Android","Android之Rxjava"]
+tags: ["Android","Rxjava"]
+---
+
 ### 一.目录
 @[toc]
 ### 二.前言
@@ -29,6 +36,7 @@ ReactiveX是Reactive Extensions的缩写，一般简写为Rx，Rx是一个编程
 Rxjava的原理基于一种扩展的观察者模型，其实这个模式在android很常见，比如说button的setOnClickListener，就是一个典型的观察者模式，控件button是被观察者（Observable），它产生一个事件(点击)，被观察者OnClickListener接收到，做出相应的处理，而setOnClickListener就是订阅者，它将两者连接起来
 
 Rxjava中扩展的观察者模式
+
 | 角色 | 作用 | 类别 |
 | ------------- |:-------------:| -----:|
 |被观察者（Observable）  | 产生事件| 控件 |
@@ -38,7 +46,7 @@ Rxjava中扩展的观察者模式
 
 #### 2.Rxjava的观察者模式流程
 RxJava原理可总结为：被观察者 （Observable） 通过 订阅（Subscribe） 按顺序发送事件 给观察者 （Observer）， 观察者（Observer） 按顺序接收事件 & 作出对应的响应动作。具体如下图：
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtOThlYzkyZGYwYTRkN2UwYi5wbmc?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_Rxjava/9_0.png)
 
 ### 六.Rxjava的基本使用
 #### 1. 分步骤实现
@@ -209,7 +217,7 @@ observable.subscribe(observer);
             }
         });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180813163038390)
+![这里写图片描述](/image/Android_Rxjava/9_1.png)
 更简洁的写法
 ```java
 Observable.just(1,2,3).subscribe(new Consumer<Integer>() {
@@ -220,7 +228,7 @@ Observable.just(1,2,3).subscribe(new Consumer<Integer>() {
         });
 ```
 
-![这里写图片描述](https://img-blog.csdn.net/20180813163518954)
+![这里写图片描述](/image/Android_Rxjava/9_2.png)
 
 ### 七.Rxjava操作符简述
 

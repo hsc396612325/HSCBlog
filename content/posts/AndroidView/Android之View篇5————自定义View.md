@@ -1,9 +1,9 @@
 ﻿---
 title: "Android之View篇5————自定义View"
-date: 2019-03-02T22:40:54+08:00
+date: 2019-03-05T22:40:54+08:00
 draft: false
-categories: ["Android","Android之网络请求"]
-tags: ["Android","网络"]
+categories: ["Android","Android之View"]
+tags: ["Android","View"]
 ---
 
 ### 一.目录
@@ -101,7 +101,7 @@ public class CircleView extends View {
 </LinearLayout>
 ```
 **c.效果图**
-![这里写图片描述](https://img-blog.csdn.net/20180801113102813?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_View/2_0.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 #### 2.支持padding和wrap_content
 **a.支持padding属性**
 ```
@@ -141,7 +141,7 @@ public class CircleView extends View {
     }
 ```
 **c.效果图**
-![这里写图片描述](https://img-blog.csdn.net/20180801113026266?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_View/2_1.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 #### 3.提供自定义属性
 **a.在valuse目录下创建自定义属性的XML，比如attrs.xml。文件内容如下：**
 ```
@@ -183,7 +183,7 @@ public class CircleView extends View {
 </LinearLayout>
 ```
 **d.效果图**
-![这里写图片描述](https://img-blog.csdn.net/20180801113756541?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_View/2_2.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 #### 4.完整代码
 ```
 public class CircleView extends View {

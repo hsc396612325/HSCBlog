@@ -1,6 +1,11 @@
-﻿# Android之IPC2————AIDL
+﻿---
+title: "Android之IPC2————AIDL"
+date: 2019-05-02T22:40:54+08:00
+draft: false
+categories: ["Android","Android之IPC"]
+tags: ["Android","IPC"]
+---
 
-@[toc]
 ### 一.AIDL概述
 
 在上一篇博客中，我们讨论Service绑定时，所用的三种方法，即扩展的binder类，Messenger类，还有AIDL，上一章博客中当时我们只是简单的介绍了一下。在这里我们就详细的来看一看。
@@ -356,10 +361,10 @@ public class AIDLActivity extends AppCompatActivity {
 
 #### 5.运行结果
 客户端
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20181101225020582.png)
+![在这里插入图片描述](/image/Android_IPC/5_0.png)
 
 服务端
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20181101225039473.png)
+![在这里插入图片描述](/image/Android_IPC/5_1.png)
 
 
 ### 三.AIDL生成Binder类分析
@@ -677,7 +682,7 @@ public interface BookManager extends android.os.IInterface {
 #### 6.示意图
 通过上面的分析，我们大致明白的AIDL的过程，我们可以发现我们完全可以不使用AIDL文件提供的Binder文件，可以实际实现Binder。下图就是AIDL生成的Binder的工作过程
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20181103195717670.png)
+![在这里插入图片描述](/image/Android_IPC/5_2.png)
 
 ### 四.参考资料
 android艺术开发探索

@@ -252,7 +252,7 @@ Response response <span style="color:#000;font-weight:bold">=</span> client<span
 </code></pre></td></tr></table>
 </div>
 </div><p>运行结果：
-<img src="https://img-blog.csdn.net/20180829161824705" alt="这里写图片描述"></p>
+<img src="/image/Android_jsjwl/0_0.png" alt="这里写图片描述"></p>
 <p>注意事项：</p>
 <ul>
 <li>Response.code是http响应行中的code，如果访问成功则返回200，这个不是服务器中设置的，而是http协议中自带的，res中的code才是服务器设置的。</li>
@@ -376,7 +376,7 @@ Response response <span style="color:#000;font-weight:bold">=</span> client<span
 </code></pre></td></tr></table>
 </div>
 </div><p>运行结果：
-<img src="https://img-blog.csdn.net/20180829170516743" alt="这里写图片描述"></p>
+<img src="/image/Android_jsjwl/0_1.png" alt="这里写图片描述"></p>
 <h4 id="2-post方式提交流">2. POST方式提交流</h4>
 <p>以流的方式POST提交请求体，请求体的内容由流写入产生，这个例子是流直接写入OKio的BufferedSink. 你的程序可能会使用OutputStream,你可以使用BUfferedSink.outputStream()来获取，OkHttp的低层对流和字节的操作都是基于Okio库，Okio库也是Square开发的另一个IO库，填补I/O和NIO的空缺目的提供简单便于使用的接口来操作I/O</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
@@ -488,7 +488,7 @@ Response response <span style="color:#000;font-weight:bold">=</span> client<span
 </code></pre></td></tr></table>
 </div>
 </div><p>运行结果：
-<img src="https://img-blog.csdn.net/20180829173307734" alt="这里写图片描述"></p>
+<img src="/image/Android_jsjwl/0_2.png" alt="这里写图片描述"></p>
 <h4 id="3post方式提交文件">3.POST方式提交文件</h4>
 <p>以文件为请求体是比较简单的</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
@@ -569,7 +569,7 @@ Response response <span style="color:#000;font-weight:bold">=</span> client<span
     <span style="color:#000;font-weight:bold">}</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/2018090113104616" alt="这里写图片描述"></p>
+</div><p><img src="/image/Android_jsjwl/0_3.png" alt="这里写图片描述"></p>
 <h4 id="4post方式提交表单">4.Post方式提交表单</h4>
 <p>使用FormEncodingBuilder来构建和HTML<!-- raw HTML omitted -->标签相同效果的请求体. 键值对将使用一种HTML兼容形式的URL编码来进行编码.</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
@@ -634,7 +634,7 @@ Response response <span style="color:#000;font-weight:bold">=</span> client<span
     <span style="color:#000;font-weight:bold">}</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/20180901135958447" alt="这里写图片描述"></p>
+</div><p><img src="/image/Android_jsjwl/0_4.png" alt="这里写图片描述"></p>
 <h4 id="5post方式提交分块请求">5.Post方式提交分块请求</h4>
 <p>MultipartBody.Builder可以构建复杂的请求体,与HTML文件上传形式兼容，多块请求体中每块请求都是一个请求体，可以定义自己的请求头，这些请求头可以用来描述这块请求，例如它的Content-Disposition. 如果Content-Length和Content-Type可用的话, 他们会被自动添加到请求头中</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
@@ -775,9 +775,9 @@ Response response <span style="color:#000;font-weight:bold">=</span> client<span
 </code></pre></td></tr></table>
 </div>
 </div><p>第一次访问的结果：
-<img src="https://img-blog.csdn.net/20180901164700241" alt="这里写图片描述"></p>
+<img src="/image/Android_jsjwl/0_5.png" alt="这里写图片描述"></p>
 <p>第二次访问结果
-<img src="https://img-blog.csdn.net/20180901164735272" alt="这里写图片描述">
+<img src="/image/Android_jsjwl/0_6.png" alt="这里写图片描述">
 第一次访问的时候，Response的消息是NetworkResponse消息，此时CacheResponse的值为Null.而第二次访问的时候Response是CahceResponse，而此时NetworkResponse为空。也就说明了上面的示例代码能够进行网络请求的缓存。</p>
 <h4 id="2构造request时配置缓存策略">2.构造Request时配置缓存策略</h4>
 <p>在构造Request的时候，我们可以配置CacheControl，配置有两种方式，一种是构造CacheControl，还有一种是直接使用CacheControl中的常量，我们来分别看一下：</p>
@@ -1011,7 +1011,7 @@ Response response <span style="color:#000;font-weight:bold">=</span> client<span
 
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/20180901145027399" alt="这里写图片描述"></p>
+</div><p><img src="/image/Android_jsjwl/0_7.png" alt="这里写图片描述"></p>
 <h4 id="2取消一个call">2.取消一个Call</h4>
 <p>使用Call.cancel可以理解停止一个正在执行的call，如果一个线程正在请求或者读响应，引发IOException，当没有必要的时候,这个api可以节约网络资源，例如当用户离开一个应用时，不管是同步还是异步都可以取消</p>
 <p>你可以通过tags来同时取消多个请求. 当你构建一请求时, 使用RequestBuilder.tag(tag)来分配一个标签, 之后你就可以用OkHttpClient.cancel(tag)来取消所有带有这个tag的call.</p>
@@ -1086,7 +1086,7 @@ Response response <span style="color:#000;font-weight:bold">=</span> client<span
 </code></pre></td></tr></table>
 </div>
 </div><p>取消成功
-<img src="https://img-blog.csdn.net/20180901175128220" alt="这里写图片描述"></p>
+<img src="/image/Android_jsjwl/0_8.png" alt="这里写图片描述"></p>
 <h4 id="3超时">3.超时</h4>
 <p>没有响应时使用超时结束call. 没有响应的原因可能是客户点链接问题、服务器可用性问题或者这之间的其他东西. OkHttp支持连接超时, 读取超时和写入超时.</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
@@ -1145,7 +1145,7 @@ Response response <span style="color:#000;font-weight:bold">=</span> client<span
     <span style="color:#000;font-weight:bold">}</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/20180901180453526" alt="这里写图片描述"></p>
+</div><p><img src="/image/Android_jsjwl/0_9.png" alt="这里写图片描述"></p>
 <h4 id="4处理验证">4.处理验证</h4>
 <p>这部分和HTTP AUTH有关:
 HTTP AUTH是一种基础的用户验证，原理是将用户名:密码base64加密后放在http的请求头部Authorization 发给服务器 .</p>
@@ -1240,7 +1240,7 @@ HTTP AUTH是一种基础的用户验证，原理是将用户名:密码base64加�
     <span style="color:#000;font-weight:bold">}</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/20180901204511311" alt="这里写图片描述"></p>
+</div><p><img src="/image/Android_jsjwl/0_10.png" alt="这里写图片描述"></p>
 <p>当认证无法工作时, 为了避免多次重试, 你可以返回空来放弃认证. 例如, 当exact credentials已经尝试过, 你可能会直接想跳过认证, 可以这样做:</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">

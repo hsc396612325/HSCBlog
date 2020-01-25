@@ -1,9 +1,9 @@
 ﻿---
 title: "Android之View篇3————View滑动冲突的解决"
-date: 2019-03-02T22:40:54+08:00
+date: 2019-03-03T22:40:54+08:00
 draft: false
-categories: ["Android","Android之网络请求"]
-tags: ["Android","网络"]
+categories: ["Android","Android之View"]
+tags: ["Android","View"]
 ---
 
 ### 一. 目录
@@ -18,7 +18,7 @@ tags: ["Android","网络"]
 * 场景1——外部滑动方向和内部滑动方向不一致
 * 场景2——外部滑动方向和内部滑动方向一致
 * 场景3——上面两种情况的嵌套
-![这里写图片描述](https://img-blog.csdn.net/2018060422093063?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_View/5_0.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
 场景1:主要是将ViewPager和Fragment配合使用的情况，所组成的页面滑动效果，在这种效果中，可以通过左右滑动来切换画面，而每个页面内部往往又是一个listView，这种情况下本来是有滑动冲突的，但viewPager内部处理了这种滑动冲突，但如果我们采用的是ScrollView时，就必须手动处理滑动冲突。
 

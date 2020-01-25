@@ -93,7 +93,7 @@ public void getDatasync(){
     }
 ```
 运行结果：
-![这里写图片描述](https://img-blog.csdn.net/20180829161824705)
+![这里写图片描述](/image/Android_jsjwl/0_0.png)
 
 注意事项：
 
@@ -164,7 +164,7 @@ POST请求和GET一样，都有同步和异步两种方法，其区别和GET一�
         
 ```
 运行结果：
-![这里写图片描述](https://img-blog.csdn.net/20180829170516743)
+![这里写图片描述](/image/Android_jsjwl/0_1.png)
 
 #### 2. POST方式提交流
 以流的方式POST提交请求体，请求体的内容由流写入产生，这个例子是流直接写入OKio的BufferedSink. 你的程序可能会使用OutputStream,你可以使用BUfferedSink.outputStream()来获取，OkHttp的低层对流和字节的操作都是基于Okio库，Okio库也是Square开发的另一个IO库，填补I/O和NIO的空缺目的提供简单便于使用的接口来操作I/O
@@ -222,7 +222,7 @@ POST请求和GET一样，都有同步和异步两种方法，其区别和GET一�
     }
 ```
 运行结果：
-![这里写图片描述](https://img-blog.csdn.net/20180829173307734)
+![这里写图片描述](/image/Android_jsjwl/0_2.png)
 
 #### 3.POST方式提交文件
 以文件为请求体是比较简单的
@@ -264,7 +264,7 @@ POST请求和GET一样，都有同步和异步两种方法，其区别和GET一�
         });
     }
 ```
-![这里写图片描述](https://img-blog.csdn.net/2018090113104616)
+![这里写图片描述](/image/Android_jsjwl/0_3.png)
 
 #### 4.Post方式提交表单
 使用FormEncodingBuilder来构建和HTML<form>标签相同效果的请求体. 键值对将使用一种HTML兼容形式的URL编码来进行编码.
@@ -298,7 +298,7 @@ public void getDataAsync() {
         });
     }
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180901135958447)
+![这里写图片描述](/image/Android_jsjwl/0_4.png)
 
 #### 5.Post方式提交分块请求
 MultipartBody.Builder可以构建复杂的请求体,与HTML文件上传形式兼容，多块请求体中每块请求都是一个请求体，可以定义自己的请求头，这些请求头可以用来描述这块请求，例如它的Content-Disposition. 如果Content-Length和Content-Type可用的话, 他们会被自动添加到请求头中
@@ -376,10 +376,10 @@ public void getDataAsync() {
 
 ```
 第一次访问的结果：
-![这里写图片描述](https://img-blog.csdn.net/20180901164700241)
+![这里写图片描述](/image/Android_jsjwl/0_5.png)
 
 第二次访问结果
-![这里写图片描述](https://img-blog.csdn.net/20180901164735272)
+![这里写图片描述](/image/Android_jsjwl/0_6.png)
 第一次访问的时候，Response的消息是NetworkResponse消息，此时CacheResponse的值为Null.而第二次访问的时候Response是CahceResponse，而此时NetworkResponse为空。也就说明了上面的示例代码能够进行网络请求的缓存。
 
 #### 2.构造Request时配置缓存策略
@@ -508,7 +508,7 @@ public void getDataAsync() {
 
 ```
 
-![这里写图片描述](https://img-blog.csdn.net/20180901145027399)
+![这里写图片描述](/image/Android_jsjwl/0_7.png)
 
 #### 2.取消一个Call
 使用Call.cancel可以理解停止一个正在执行的call，如果一个线程正在请求或者读响应，引发IOException，当没有必要的时候,这个api可以节约网络资源，例如当用户离开一个应用时，不管是同步还是异步都可以取消
@@ -549,7 +549,7 @@ public void getDataAsync()throws Exception  {
     }
 ```
 取消成功
-![这里写图片描述](https://img-blog.csdn.net/20180901175128220)
+![这里写图片描述](/image/Android_jsjwl/0_8.png)
 
 #### 3.超时
 没有响应时使用超时结束call. 没有响应的原因可能是客户点链接问题、服务器可用性问题或者这之间的其他东西. OkHttp支持连接超时, 读取超时和写入超时.
@@ -580,7 +580,7 @@ public void getDataAsync()throws Exception  {
         });
     }
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180901180453526)
+![这里写图片描述](/image/Android_jsjwl/0_9.png)
 #### 4.处理验证
 这部分和HTTP AUTH有关:
 HTTP AUTH是一种基础的用户验证，原理是将用户名:密码base64加密后放在http的请求头部Authorization 发给服务器 .
@@ -642,7 +642,7 @@ OkHttp会自动重试未验证的请求，当响应的是401 Not Authorized时�
         });
     }
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180901204511311)
+![这里写图片描述](/image/Android_jsjwl/0_10.png)
 
 当认证无法工作时, 为了避免多次重试, 你可以返回空来放弃认证. 例如, 当exact credentials已经尝试过, 你可能会直接想跳过认证, 可以这样做:
 ```java

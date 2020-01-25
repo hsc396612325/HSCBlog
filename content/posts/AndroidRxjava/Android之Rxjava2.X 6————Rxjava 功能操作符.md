@@ -1,4 +1,11 @@
-﻿# Android之Rxjava2.X 6————Rxjava 功能操作符
+﻿---
+title: "Android之Rxjava2.X 6————Rxjava 功能操作符"
+date: 2019-04-06T22:40:54+08:00
+draft: false
+categories: ["Android","Android之Rxjava"]
+tags: ["Android","Rxjava"]
+---
+
 ### 一.目录
 @[toc]
 ### 二.概述
@@ -7,7 +14,7 @@
 
 #### 2.类型
 RxJava 2 中，常见的功能性操作符 主要有：
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtZmYzZGYyYjQyOTY4ODMzZC5wbmc?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_Rxjava/5_0.png)
 
 ### 三.线程调度
 
@@ -45,7 +52,7 @@ RxJava 2 中，常见的功能性操作符 主要有：
                 });
 
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180815104258912)
+![这里写图片描述](/image/Android_Rxjava/5_1.png)
 #### 2.observerOn()
 作用: 指定观察者的线程，每指定一次就会生效一次。 
 具体使用
@@ -81,7 +88,7 @@ RxJava 2 中，常见的功能性操作符 主要有：
                     }
                 });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180815104501494)
+![这里写图片描述](/image/Android_Rxjava/5_2.png)
 
 更多内容推荐博客：[Android RxJava：细说 线程控制（切换 / 调度 ）（含Retrofit实例讲解）](https://www.jianshu.com/p/5225b2baaecd)
 ### 四.延迟操作
@@ -110,7 +117,7 @@ delay(long delay,TimeUnit unit,mScheduler scheduler)
 delay(long delay,TimeUnit unit,mScheduler scheduler,boolean delayError): 指定延迟多长时间并添加调度器，错误通知可以设置是否延迟
 ```
 原理图:
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL2RlbGF5LnBuZw?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_Rxjava/5_3.png)
 
 具体使用·：
 ```java
@@ -138,16 +145,16 @@ delay(long delay,TimeUnit unit,mScheduler scheduler,boolean delayError): 指定�
                     }
                 });
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180815090622925)
+![这里写图片描述](/image/Android_Rxjava/5_4.png)
 ### 五.在事件的生命周期中操作
 需求场景:在事件发送 & 接收的整个生命周期过程中进行操作
 #### 1.do（）
 * 作用：在某个事件的生命周期中调用
 * 类型:
 
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-0cvd3zzB-1579435995940)(https://upload-images.jianshu.io/upload_images/944365-3f411ad304df78d5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/700)]
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-0cvd3zzB-1579435995940)(/image/Android_Rxjava/5_5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/700)]
 原理图:
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL2RvT25FYWNoLnBuZw?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_Rxjava/5_6.png)
 
 具体使用:
 ```java
@@ -232,7 +239,7 @@ delay(long delay,TimeUnit unit,mScheduler scheduler,boolean delayError): 指定�
                 });
 
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180815091915132)
+![这里写图片描述](/image/Android_Rxjava/5_7.png)
 ### 六.错误处理
 需求场景:发送事件过程中，遇到错误时的处理机制
 #### 1.onErrorReturn（）
@@ -275,7 +282,7 @@ Observable.create(new ObservableOnSubscribe<Integer>() {
         });
 ```
 
-![这里写图片描述](https://img-blog.csdn.net/2018081509264976)
+![这里写图片描述](/image/Android_Rxjava/5_8.png)
 #### 2.onErrorResumeNext（）/onExceptionResumeNext（）
 * 作用:遇到错误时，发送1个新的Observable
 * 注意：onExceptionResumeNext（）拦截的错误 = Exception,onErrorResumeNext（）拦截的错误 = Throwable
@@ -321,7 +328,7 @@ Observable.create(new ObservableOnSubscribe<Integer>() {
         });
 
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180815093655721)
+![这里写图片描述](/image/Android_Rxjava/5_9.png)
 
 #### 3.retry（）
 * 作用：重试，即当出现错误时，让被观察者（Observable）重新发射数据
@@ -383,7 +390,7 @@ Observable.create(new ObservableOnSubscribe<Integer>() {
         });
 ```
 
-![这里写图片描述](https://img-blog.csdn.net/20180815094643444)
+![这里写图片描述](/image/Android_Rxjava/5_10.png)
 #### 4.retryUntil（）
 * 作用：出现错误后，判断是否需要重新发送数据，作用类似于retry（Predicate predicate）
 * 具体使用类似于retry（Predicate predicate），唯一区别：返回 true 则不重新发送数据事件。
@@ -445,7 +452,7 @@ Observable.create(new ObservableOnSubscribe<Integer>() {
 
     }
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180815101120781)
+![这里写图片描述](/image/Android_Rxjava/5_11.png)
 ### 七.重复发生操作
 需求场景：重复不断地发送被观察者事件
 #### 1.repeat（）
@@ -478,7 +485,7 @@ Observable.create(new ObservableOnSubscribe<Integer>() {
                 });
 
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180815101806919)
+![这里写图片描述](/image/Android_Rxjava/5_12.png)
 #### 2.repeatWhen（）
 作用：有条件地、重复发送 被观察者事件
 原理：将原始 Observable 停止发送事件的标识（Complete（） / Error（））转换成1个 Object 类型数据传递给1个新被观察者（Observable），以此决定是否重新订阅 & 发送原来的 Observable
@@ -533,8 +540,8 @@ Observable.just(1, 2, 3, 4)
                 });
 
 ```
-![这里写图片描述](https://img-blog.csdn.net/20180815102341701)
-![这里写图片描述](https://img-blog.csdn.net/20180815102434202 )
+![这里写图片描述](/image/Android_Rxjava/5_13.png)
+![这里写图片描述](/image/Android_Rxjava/5_14.png )
 ### 八.参考资料
 [Rxjava中文文档](https://mcxiaoke.gitbooks.io/rxdocs/content/operators/Materialize.html)
 [Android RxJava：功能性操作符 全面讲解 ](https://www.jianshu.com/p/b0c3669affdb)

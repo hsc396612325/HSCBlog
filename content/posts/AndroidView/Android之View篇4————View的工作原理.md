@@ -1,9 +1,9 @@
 ﻿---
 title: "Android之View篇4————View的工作原理"
-date: 2019-03-02T22:40:54+08:00
+date: 2019-03-04T22:40:54+08:00
 draft: false
-categories: ["Android","Android之网络请求"]
-tags: ["Android","网络"]
+categories: ["Android","Android之View"]
+tags: ["Android","View"]
 ---
 
 ### 一. 目录
@@ -11,14 +11,14 @@ tags: ["Android","网络"]
 ### 二. 初识DecorView和ViewRoot
 #### 1. DecorView
 DecorView是整个Window界面的最顶层View。DecorView只有一个子元素为LinearLayout。代表整个Window界面，包含通知栏，标题栏，内容显示栏三块区域。LinearLayout里有两个FrameLayout子元素。如图：
-![这里写图片描述](https://img-blog.csdn.net/20160808132027415?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center)
+![这里写图片描述](/image/Android_View/4_0.png?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center)
 
 所以在Activity中，设定View是设定给cintent的。获得content的方法 ViewGroup = （ViewGroup）findViewById（R.id.content）。如何得到设定的View，content.getChildAt(0)
 #### 2. ViewRoot
 ViewRoot对应的是ViewRootImpl类，它是连接WindowManager和DecorView的纽带，View的三大流程都是通过ViewRoot来完成。在ActivityThread中，当Activity对象被创建时，会将DecorView添加到Window，同时会创建ViewRootImpl对象，并将ViewRootImpl对象和DecorView对象。
 #### 3. View的工作流程概述
 view的绘制是从ViewRoot的performTraversals方法开始的，它经历过measure，layout和draw三个过程才最终将一个View绘制出来。其中measure用来测量View的宽和高，layout用来确定View在父容器的放置位置，而Draw则负责将View绘制在屏幕上。大致流程如下：
-![这里写图片描述](https://img-blog.csdn.net/2018061015384765?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+![这里写图片描述](/image/Android_View/4_1.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
 ### 三. MeasureSpec
 #### 1.  MeasureSpec源码
@@ -190,7 +190,7 @@ getRootMeasureSpec源码
 
 ```
  将上述代码转化为图表：
- ![这里写图片描述](https://img-blog.csdn.net/20180610171921234?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+ ![这里写图片描述](/image/Android_View/4_2.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
 ### 四. Measure过程
 measure确定Veiw的测量宽/高
@@ -626,7 +626,7 @@ setChildFrame（）
 ```
 
 两者区别
-![这里写图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtNmIyN2I5ODM1ZDkyN2UwNC5wbmc?x-oss-process=image/format,png)
+![这里写图片描述](/image/Android_View/4_3.png)
 
 当重写view的layout()强行设置是。两者结果可能不同
 ```
