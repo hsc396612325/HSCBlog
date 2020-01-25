@@ -6,13 +6,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title> | 冰炭不投day的博客</title>
-    <meta property="og:title" content=" - 冰炭不投day的博客">
+    <title>Android之Rxjava2.X 8————Rxjava 背压策略 | 冰炭不投day的博客</title>
+    <meta property="og:title" content="Android之Rxjava2.X 8————Rxjava 背压策略 - 冰炭不投day的博客">
     <meta property="og:type" content="article">
         
+    <meta property="article:published_time" content='2019-04-08T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2019-04-08T22:40:54&#43;08:00'>
         
     <meta name="Keywords" content="Android 冰炭不投day">
-    <meta name="description" content="">
+    <meta name="description" content="Android之Rxjava2.X 8————Rxjava 背压策略">
         
     <meta name="author" content="冰炭不投day">
     <meta property="og:url" content="http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-8Rxjava-%E8%83%8C%E5%8E%8B%E7%AD%96%E7%95%A5/">
@@ -80,11 +84,20 @@
     
     <article class="post">
         <header>
-            <h1 class="post-title"></h1>
+            <h1 class="post-title">Android之Rxjava2.X 8————Rxjava 背压策略</h1>
         </header>
         <date class="post-meta meta-date">
-            1年1月1日
+            2019年4月8日
         </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android'>Android</a></span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8BRxjava'>Android之Rxjava</a></span>
+            
+        </div>
         
         
         <div class="post-meta">
@@ -96,8 +109,7 @@
         
         
         <div class="post-content">
-            <h1 id="android之rxjava2x-8rxjava-背压策略">Android之Rxjava2.X 8————Rxjava 背压策略</h1>
-<h3 id="一目录">一.目录</h3>
+            <h3 id="一目录">一.目录</h3>
 <p>@[toc]
 <strong>注:本文大部分参考<a href="https://www.jianshu.com/p/ceb48ed8719d">Android RxJava ：图文详解 背压策略</a></strong></p>
 <h3 id="二背压的引入">二.背压的引入</h3>
@@ -152,7 +164,7 @@
         <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/20180816111442735" alt="这里写图片描述">
+</div><p><img src="/image/Android_Rxjava/11_0.png" alt="这里写图片描述">
 而背压策略就是为了解决上述的问题，而引入的</p>
 <h3 id="三背压的概述">三.背压的概述</h3>
 <h4 id="1背压定义">1.背压定义</h4>
@@ -166,7 +178,7 @@
 <li>对于被观察者:反馈控制，即被观察者根据观察者的接受能力，从而控制发送事件的速度</li>
 <li>对于缓存区：对超出缓存区大小的事件进行丢弃，保留，报错。</li>
 </ul>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtZDM3Yjg5Yjg2YWVhMTA0ZC5wbmc?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<p><img src="/image/Android_Rxjava/11_1.png" alt="这里写图片描述"></p>
 <h3 id="四背压的实现flowable">四.背压的实现Flowable</h3>
 <h4 id="1flowable-介绍">1.Flowable 介绍</h4>
 <p>在Rxjava2.0中，被观察者(Observable)的一种新实现，但和Observable不同之处，在于Flowable实现了非阻塞式背压策略。</p>
@@ -262,14 +274,14 @@
         <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/2018081615155320" alt="这里写图片描述"></p>
+</div><p><img src="/image/Android_Rxjava/11_2.png" alt="这里写图片描述"></p>
 <h3 id="五背压的使用">五.背压的使用</h3>
 <h4 id="1-控制观察者接受事件的速度">1. 控制观察者接受事件的速度</h4>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtYzAxNmI3MWEwODAyNjViMC5wbmc?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<p><img src="/image/Android_Rxjava/11_3.png" alt="这里写图片描述"></p>
 <h5 id="11-异步订阅情况">1.1 异步订阅情况</h5>
 <ul>
 <li>简介：
-<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtYzAxNmI3MWEwODAyNjViMC5wbmc?x-oss-process=image/format,png" alt="这里写图片描述"></li>
+<img src="/image/Android_Rxjava/11_3.png" alt="这里写图片描述"></li>
 <li>具体使用</li>
 </ul>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
@@ -364,7 +376,7 @@
                 <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/20180816153834482" alt="这里写图片描述"></p>
+</div><p><img src="/image/Android_Rxjava/11_5.png" alt="这里写图片描述"></p>
 <ul>
 <li>特别注意：对与异步订阅情况，如果观察者没有设置Subscription.request(long n),即说明观察者不接受事件，但此时</li>
 </ul>
@@ -589,7 +601,7 @@
                 <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/20180816161004697?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+</div><p><img src="/image/Android_Rxjava/11_6.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
 <h5 id="12-同步订阅情况">1.2 同步订阅情况</h5>
 <p>同步订阅 &amp; 异步订阅 的区别在于：</p>
 <ul>
@@ -677,7 +689,7 @@
         <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/20180816161828233" alt="这里写图片描述">
+</div><p><img src="/image/Android_Rxjava/11_7.png" alt="这里写图片描述">
 示意图</p>
 <p>所以，实际上并不会出现被观察者发送事件速度 &gt; 观察者接收事件速度的情况。可是，却会出现被观察者发送事件数量 &gt; 观察者接收事件数量的问题。</p>
 <p>代码演示：被观察者发送事件数量 &gt; 观察者接收事件数量</p>
@@ -761,12 +773,12 @@
         <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/20180816162105794?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+</div><p><img src="/image/Android_Rxjava/11_8.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
 <ul>
 <li>有1个特殊情况需要注意:如果观察者没有设置Subscription.request(long n),此时被观察者开始发送事件，那么被观察者不会收到被观察者的任何事件，并且抛出MissingBackpreeureException异常</li>
 </ul>
 <h4 id="2-控制-被观察者发送事件-的速度">2. 控制 被观察者发送事件 的速度</h4>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtZjE4YTQwYjU5N2M2OGM4Zi5wbmc?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<p><img src="/image/Android_Rxjava/11_9.png" alt="这里写图片描述"></p>
 <ul>
 <li>FlowableEmitter类的requested()介绍</li>
 </ul>
@@ -794,7 +806,7 @@
 </div>
 </div><p>每个线程中的requested（）的返回值 = 该线程中的request（a）的a值</p>
 <p>原理图：
-<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtODhlMWYzYzY0MWViNTRlMy5wbmc?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<img src="/image/Android_Rxjava/11_10.png" alt="这里写图片描述"></p>
 <h5 id="21-同步订阅情况">2.1 同步订阅情况</h5>
 <p>即在同步订阅情况中，被观察者 通过 FlowableEmitter.requested()获得了观察者自身接收事件能力，从而根据该信息控制事件发送速度，从而达到了观察者反向控制被观察者的效果</p>
 <p>具体使用
@@ -889,7 +901,7 @@
         <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/20180816164147567" alt="这里写图片描述">
+</div><p><img src="/image/Android_Rxjava/11_11.png" alt="这里写图片描述">
 使用特性：</p>
 <ul>
 <li>可叠加性： 观查者可连续接收事件，被观察者会进行叠加一起发送</li>
@@ -980,10 +992,10 @@
                 <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/20180816171934817" alt="这里写图片描述"></p>
+</div><p><img src="/image/Android_Rxjava/11_12.png" alt="这里写图片描述"></p>
 <p><strong>而在异步订阅关系中，反向控制的原理是：通过RxJava内部固定调用被观察者线程中的request(n) 从而 反向控制被观察者的发送事件速度</strong></p>
 <p>关于RxJava内部调用request(n)（n = 128、96、0）的逻辑如下：
-<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtZjYzMTRhYmE2MGMwODQ1NS5wbmc?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<img src="/image/Android_Rxjava/11_13.png" alt="这里写图片描述"></p>
 <p>代码演示</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -1115,15 +1127,15 @@
                 <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/20180816172709116" alt="这里写图片描述">
+</div><p><img src="/image/Android_Rxjava/11_14.png" alt="这里写图片描述">
 点击两次按钮后
-<img src="https://img-blog.csdn.net/20180816172742683" alt="这里写图片描述"></p>
+<img src="/image/Android_Rxjava/11_15.png" alt="这里写图片描述"></p>
 <h4 id="3采用背压策略模式">3.采用背压策略模式</h4>
 <h5 id="31-背压模式介绍">3.1 背压模式介绍：</h5>
 <p>在Flowable的使用中，会被要求传入背压模式参数。
 其作用是:当缓存区大小存满、被观察者仍然继续发送下1个事件时，该如何处理的策略方式</p>
 <h5 id="32-背压模式类型">3.2 背压模式类型</h5>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtNDdiNTVlZGVjMjk5ZmFlYS5wbmc?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<p><img src="/image/Android_Rxjava/11_16.png" alt="这里写图片描述"></p>
 <p><strong>模式1：BackpressureStrategy.ERROR</strong>
 处理方法：直接抛出异常
 代码演示</p>
@@ -1213,22 +1225,22 @@
                 <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/20180816173852330" alt="这里写图片描述"></p>
+</div><p><img src="/image/Android_Rxjava/11_17.png" alt="这里写图片描述"></p>
 <p><strong>模式2：BackpressureStrategy.MISSING</strong>
 处理方法：友好提示：缓存区满了
 代码同上 不过把BackpressureStrategy.ERROR&ndash;&gt;BackpressureStrategy.MISSING</p>
-<p><img src="https://img-blog.csdn.net/20180816174242526" alt="这里写图片描述"></p>
+<p><img src="/image/Android_Rxjava/11_18.png" alt="这里写图片描述"></p>
 <p><strong>模式3：BackpressureStrategy.BUFFER</strong>
 处理方法：将缓存区大小设置成无限大
 代码同上 不过把BackpressureStrategy.ERROR&ndash;&gt;BackpressureStrategy.BUFFER
-<img src="https://img-blog.csdn.net/20180816175342498" alt="这里写图片描述"></p>
+<img src="/image/Android_Rxjava/11_19.png" alt="这里写图片描述"></p>
 <p><strong>模式4： BackpressureStrategy.DROP</strong>
 处理方法：超过缓存区大小（128）的事件丢弃
 代码同上 不过把BackpressureStrategy.ERROR&ndash;&gt;BackpressureStrategy.DROP
-<img src="https://img-blog.csdn.net/20180816192300922" alt="这里写图片描述">
+<img src="/image/Android_Rxjava/11_20.png" alt="这里写图片描述">
 <strong>模式5：BackpressureStrategy.LATEST</strong>
 处理方法：只保存最新（最后）事件，超过缓存区大小（128）的事件丢弃（即如果发送了150个事件，缓存区里会保存129个事件（第1-第128 + 第150事件））
-<img src="https://img-blog.csdn.net/20180816192420748?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<img src="/image/Android_Rxjava/11_21.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
 <h3 id="六参考资料">六.参考资料</h3>
 <p><a href="https://www.jianshu.com/p/ceb48ed8719d">Android RxJava ：图文详解 背压策略</a>
 <a href="https://www.jianshu.com/p/2c4799fa91a4">关于RxJava最友好的文章——背压（Backpressure）</a>
@@ -1268,15 +1280,15 @@
     <h2>See Also</h2>
     <ul class="listing">
         
-        <li><a href="/posts/%E6%96%87%E7%AB%A0%E5%AF%BC%E8%88%AA/">文章导航</a></li>
+        <li><a href="/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-7Rxjava-%E6%9D%A1%E4%BB%B6%E6%93%8D%E4%BD%9C%E7%AC%A6/">Android之Rxjava2.X 7————Rxjava 条件操作符</a></li>
         
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%872View%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%88%86%E5%8F%91/">Android之View篇2————View的事件分发</a></li>
+        <li><a href="/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-6Rxjava-%E5%8A%9F%E8%83%BD%E6%93%8D%E4%BD%9C%E7%AC%A6/">Android之Rxjava2.X 6————Rxjava 功能操作符</a></li>
         
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%873View%E6%BB%91%E5%8A%A8%E5%86%B2%E7%AA%81%E7%9A%84%E8%A7%A3%E5%86%B3/">Android之View篇3————View滑动冲突的解决</a></li>
+        <li><a href="/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-5Rxjava-%E8%BF%87%E6%BB%A4%E6%93%8D%E4%BD%9C%E7%AC%A6/">Android之Rxjava2.X 5————Rxjava 过滤操作符</a></li>
         
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%874View%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">Android之View篇4————View的工作原理</a></li>
+        <li><a href="/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-4Rxjava-%E7%BB%84%E5%90%88%E6%93%8D%E4%BD%9C%E7%AC%A6/">Android之Rxjava2.X 4————Rxjava 创建操作符</a></li>
         
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%875%E8%87%AA%E5%AE%9A%E4%B9%89View/">Android之View篇5————自定义View</a></li>
+        <li><a href="/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-3Rxjava-%E5%8F%98%E6%8D%A2%E6%93%8D%E4%BD%9C%E7%AC%A6/">Android之Rxjava2.X 3————Rxjava 变换操作符</a></li>
         
     </ul>
 </div>
@@ -1284,7 +1296,13 @@
 
         <div class="post-meta meta-tags">
             
-            没有标签
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/Android'>Android</a></li>
+                
+                <li><a href='http://blog.bingtan.online/tags/Rxjava'>Rxjava</a></li>
+                
+            </ul>
             
         </div>
     </article>

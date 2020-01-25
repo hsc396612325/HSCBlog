@@ -124,7 +124,7 @@
 </ul>
 <h3 id="二http协议的响应步骤">二.http协议的响应步骤</h3>
 <p>http的响应步骤分为7步，大致内容如下：
-<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy8yMDkyNjk0LTJlNDI1NDc3OTE4OGEzNGMucG5n?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<img src="/image/Android_jsjwl/9_0.png" alt="这里写图片描述"></p>
 <h4 id="1-建立tcp连接">1. 建立TCP连接</h4>
 <p>在HTTP工作开始之前, Web浏览器首先要通过网络与Web服务器建立连接, 该连接是通过TCP来完成的, 该协议与IP协议共同构建Internet, 即著名的TCP/IP协议族, 因此Internet又被称作是TCP/IP网络.</p>
 <p>HTTP是比TCP更高层次的应用层协议，根据规则，有低层协议建立之后才能进行更高层协议的连接, 因此, 首先要建立TCP连接, 一般TCP连接的端口号是80.</p>
@@ -266,7 +266,7 @@ Hello HTTP!
 <p><strong>a.keepalive连接</strong>
 允许HTTP设备在事务处理结束之后将TCP连接保持在打开的状态，一遍未来的HTTP请求重用现在的连接，直到客户端或服务器端决定将其关闭为止。</p>
 <p>在HTTP1.0中使用长连接需要添加请求头 Connection: Keep-Alive，而在HTTP 1.1 所有的连接默认都是长连接，除非特殊声明不支持（ HTTP请求报文首部加上Connection: close ）
-<img src="https://imgconvert.csdnimg.cn/aHR0cDovL2F0YTItaW1nLmNuLWhhbmd6aG91LmltZy1wdWIuYWxpeXVuLWluYy5jb20vMGE3ZTIwY2JmYTczMmZjNjYxZTg4ZWI2NzBhYTRhYTkucG5n?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<img src="/image/Android_jsjwl/9_1.png" alt="这里写图片描述"></p>
 <p><strong>b.chunked编码传输</strong>
 该编码将实体分块传送并逐块标明长度,直到长度为0块表示传输结束, 这在实体长度未知时特别有用(比如由数据库动态产生的数据)</p>
 <p><strong>c.字节请求范围</strong>

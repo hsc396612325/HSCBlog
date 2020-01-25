@@ -6,13 +6,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title> | 冰炭不投day的博客</title>
-    <meta property="og:title" content=" - 冰炭不投day的博客">
+    <title>Android之Rxjava2.X 2————Rxjava 创建操作符 | 冰炭不投day的博客</title>
+    <meta property="og:title" content="Android之Rxjava2.X 2————Rxjava 创建操作符 - 冰炭不投day的博客">
     <meta property="og:type" content="article">
         
+    <meta property="article:published_time" content='2019-04-02T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2019-04-02T22:40:54&#43;08:00'>
         
     <meta name="Keywords" content="Android 冰炭不投day">
-    <meta name="description" content="">
+    <meta name="description" content="Android之Rxjava2.X 2————Rxjava 创建操作符">
         
     <meta name="author" content="冰炭不投day">
     <meta property="og:url" content="http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-2Rxjava-%E5%88%9B%E5%BB%BA%E6%93%8D%E4%BD%9C%E7%AC%A6/">
@@ -80,11 +84,20 @@
     
     <article class="post">
         <header>
-            <h1 class="post-title"></h1>
+            <h1 class="post-title">Android之Rxjava2.X 2————Rxjava 创建操作符</h1>
         </header>
         <date class="post-meta meta-date">
-            1年1月1日
+            2019年4月2日
         </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android'>Android</a></span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8BRxjava'>Android之Rxjava</a></span>
+            
+        </div>
         
         
         <div class="post-meta">
@@ -96,19 +109,18 @@
         
         
         <div class="post-content">
-            <h1 id="android之rxjava2x-2rxjava-创建操作符">Android之Rxjava2.X 2————Rxjava 创建操作符</h1>
-<h3 id="一目录">一.目录</h3>
+            <h3 id="一目录">一.目录</h3>
 <p>@[toc]</p>
 <h3 id="二概述">二.概述</h3>
 <h4 id="1作用">1.作用</h4>
 <p>创建 被观察者（ Observable） 对象 &amp; 发送事件。</p>
 <h4 id="2-类型">2. 类型</h4>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtYjAyYWRiNDYwNzUzMjliMC5wbmc?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<p><img src="/image/Android_Rxjava/4_0.png" alt="这里写图片描述"></p>
 <h3 id="三基本创建">三.基本创建</h3>
 <p>需求场景: 完整的创建被观察者对象</p>
 <h4 id="1-create">1. create（）</h4>
 <p>你可以使用Create操作符创建一个完整的Observable，可以传递onNext，onError和onCompleted等事件。
-<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL2NyZWF0ZS5jLnBuZw?x-oss-process=image/format,png" alt="这里写图片描述">
+<img src="/image/Android_Rxjava/4_1.png" alt="这里写图片描述">
 代码示例：</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -173,7 +185,7 @@
 </code></pre></td></tr></table>
 </div>
 </div><p>运行结果
-<img src="https://img-blog.csdn.net/20180813172532425" alt="这里写图片描述"></p>
+<img src="/image/Android_Rxjava/4_2.png" alt="这里写图片描述"></p>
 <p>注意:当观察者发送一个Complete/Error事件后，被观察者在，Complrte/Error事件将会继续发送，但观察者收到Complete/Error事件后，不会继续接收任何事件。被观察者可以不发生Complete/Erroe事件</p>
 <h3 id="四快速创建">四.快速创建</h3>
 <p>需求场景：快速的创建被观察者对象</p>
@@ -183,7 +195,7 @@
 <li>发送事件的特点：直接发送传入的事件</li>
 <li>注意1:just最多只能发送9个参数</li>
 <li>注意2：如果你传递null给Just，它会返回一个发射null值的Observable
-<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL2p1c3QucG5n?x-oss-process=image/format,png" alt="这里写图片描述">
+<img src="/image/Android_Rxjava/4_3.png" alt="这里写图片描述">
 代码示例</li>
 </ul>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
@@ -236,7 +248,7 @@
                <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/2018081320191198" alt="这里写图片描述"></p>
+</div><p><img src="/image/Android_Rxjava/4_4.png" alt="这里写图片描述"></p>
 <h4 id="2fromarray">2.fromArray（）</h4>
 <ul>
 <li>作用：快速创建一个被观察者对象</li>
@@ -245,7 +257,7 @@
 <li>应用场景:被观察者对象（Observable） &amp; 发送10个以上事件（数组形式),数组遍历</li>
 </ul>
 <p>图中的From包括fromArray（）以及下面的fromIterable（）
-<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL2Zyb20uYy5wbmc?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<img src="/image/Android_Rxjava/4_5.png" alt="这里写图片描述"></p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
@@ -298,7 +310,7 @@
                <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/20180813203203119" alt="这里写图片描述"></p>
+</div><p><img src="/image/Android_Rxjava/4_6.png" alt="这里写图片描述"></p>
 <h4 id="3fromiterable">3.fromIterable（）</h4>
 <ul>
 <li>作用:快速创建1个被观察者对象（Observable）</li>
@@ -365,7 +377,7 @@
     <span style="color:#000;font-weight:bold">}</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/20180813203848779" alt="这里写图片描述"></p>
+</div><p><img src="/image/Android_Rxjava/4_7.png" alt="这里写图片描述"></p>
 <h4 id="4其他">4.其他</h4>
 <p>下列方法一般用于测试使用
 empty():仅发送Complete事件，直接通知完成
@@ -511,9 +523,9 @@ Observable<span style="color:#000;font-weight:bold">.</span><span style="color:#
                <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/2018081320460146" alt="这里写图片描述"></p>
-<p><img src="https://img-blog.csdn.net/20180813204946557" alt="这里写图片描述"></p>
-<p><img src="https://img-blog.csdn.net/20180813205122569" alt="这里写图片描述"></p>
+</div><p><img src="/image/Android_Rxjava/4_8.png" alt="这里写图片描述"></p>
+<p><img src="/image/Android_Rxjava/4_9.png" alt="这里写图片描述"></p>
+<p><img src="/image/Android_Rxjava/4_10.png" alt="这里写图片描述"></p>
 <h3 id="五-延迟创建">五. 延迟创建</h3>
 <p>需求场景：</p>
 <ul>
@@ -525,7 +537,7 @@ Observable<span style="color:#000;font-weight:bold">.</span><span style="color:#
 <li>作用:defer（）操作符会一直等待直到有观察者订阅它，然后它使用Observable工厂方法生成一个Observable。在某些情况下，等待直到最后一分钟（就是知道订阅发生时）才生成Observable可以确保Observable包含最新的数据。</li>
 <li>使用场景：动态创建被观察者对象（Observable） &amp; 获取最新的Observable对象数据</li>
 </ul>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL2RlZmVyLnBuZw?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<p><img src="/image/Android_Rxjava/4_11.png" alt="这里写图片描述"></p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
@@ -600,12 +612,12 @@ Observable<span style="color:#000;font-weight:bold">.</span><span style="color:#
                 <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/20180813211830829" alt="这里写图片描述"></p>
+</div><p><img src="/image/Android_Rxjava/4_12.png" alt="这里写图片描述"></p>
 <h4 id="2timer">2.timer（）</h4>
 <ul>
 <li>作用:创建一个Observable，它在一个给定的延迟后发射一个特殊的值。</li>
 <li>应用:延迟指定事件，发送一个0，一般用于检测
-<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL3RpbWVyLnBuZw?x-oss-process=image/format,png" alt="这里写图片描述"></li>
+<img src="/image/Android_Rxjava/4_13.png" alt="这里写图片描述"></li>
 </ul>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -657,13 +669,13 @@ Observable<span style="color:#000;font-weight:bold">.</span><span style="color:#
         <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/20180813212414407" alt="这里写图片描述"></p>
+</div><p><img src="/image/Android_Rxjava/4_14.png" alt="这里写图片描述"></p>
 <h4 id="3interval">3.interval（）</h4>
 <ul>
 <li>作用 : 按固定的时间间隔发射一个无限递增的整数序列。</li>
 <li>interval(long,TimeUnit,Scheduler))</li>
 <li>参数说明： 参数1 = 第1次延迟时间，参数2 = 间隔时间数字，参数3 = 时间单位；
-<img src="https://img-blog.csdn.net/20180813213614682" alt="这里写图片描述"></li>
+<img src="/image/Android_Rxjava/4_15.png" alt="这里写图片描述"></li>
 </ul>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -717,7 +729,7 @@ Observable<span style="color:#000;font-weight:bold">.</span><span style="color:#
                 <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/20180813213121499" alt="这里写图片描述"></p>
+</div><p><img src="/image/Android_Rxjava/4_16.png" alt="这里写图片描述"></p>
 <h4 id="4intervalrange">4.intervalRange（）</h4>
 <ul>
 <li>作用:发送事件的特点：每隔指定时间 就发送 事件，可指定发送的数据（从0开始、无限递增1的的整数）的数量</li>
@@ -790,11 +802,11 @@ Observable<span style="color:#000;font-weight:bold">.</span><span style="color:#
 
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/2018081321393671" alt="这里写图片描述"></p>
+</div><p><img src="/image/Android_Rxjava/4_17.png" alt="这里写图片描述"></p>
 <h4 id="5range-rangelong">5.range（） /rangeLong（）</h4>
 <p>range（） 作用：连续发送 1个事件序列，可指定范围,作用类似于intervalRange（），但区别在于：无延迟发送事件</p>
 <p>rangeLong（）类似于range（），区别在于该方法支持数据类型 = Long
-<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tY3hpYW9rZS5naXRib29rcy5pby9yeGRvY3MvY29udGVudC9pbWFnZXMvb3BlcmF0b3JzL3JhbmdlLnBuZw?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<img src="/image/Android_Rxjava/4_18.png" alt="这里写图片描述"></p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
@@ -857,9 +869,9 @@ Observable<span style="color:#000;font-weight:bold">.</span><span style="color:#
 
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://img-blog.csdn.net/20180813215515119" alt="这里写图片描述"></p>
+</div><p><img src="/image/Android_Rxjava/4_19.png" alt="这里写图片描述"></p>
 <h3 id="六-总结">六. 总结</h3>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy85NDQzNjUtZDM2YzZlZDMxOTU2NWFjYy5wbmc?x-oss-process=image/format,png" alt="这里写图片描述"></p>
+<p><img src="/image/Android_Rxjava/4_20.png" alt="这里写图片描述"></p>
 <h3 id="七参考资料">七.参考资料</h3>
 <p><a href="https://mcxiaoke.gitbooks.io/rxdocs/content/topics/Getting-Started.html">ReactiveX文档中文翻译</a>
 <a href="https://www.jianshu.com/p/a406b94f3188">Android Rxjava：这是一篇 清晰 &amp; 易懂的Rxjava 入门教程 </a>
@@ -901,15 +913,15 @@ Observable<span style="color:#000;font-weight:bold">.</span><span style="color:#
     <h2>See Also</h2>
     <ul class="listing">
         
-        <li><a href="/posts/%E6%96%87%E7%AB%A0%E5%AF%BC%E8%88%AA/">文章导航</a></li>
+        <li><a href="/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-1Rxjava%E6%A6%82%E8%BF%B0/">Android之Rxjava2.X 1————Rxjava概述</a></li>
         
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%872View%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%88%86%E5%8F%91/">Android之View篇2————View的事件分发</a></li>
+        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%876%E4%BB%BF%E9%99%8C%E9%99%8C%E5%8D%A1%E7%89%87%E5%B7%A6%E5%8F%B3%E6%BB%91%E5%8A%A8%E9%80%89%E6%8B%A9%E5%B8%83%E5%B1%80/">Android之View篇6————仿陌陌卡片左右滑动选择控件</a></li>
         
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%873View%E6%BB%91%E5%8A%A8%E5%86%B2%E7%AA%81%E7%9A%84%E8%A7%A3%E5%86%B3/">Android之View篇3————View滑动冲突的解决</a></li>
+        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%875%E8%87%AA%E5%AE%9A%E4%B9%89View/">Android之View篇5————自定义View</a></li>
         
         <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%874View%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">Android之View篇4————View的工作原理</a></li>
         
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%875%E8%87%AA%E5%AE%9A%E4%B9%89View/">Android之View篇5————自定义View</a></li>
+        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%873View%E6%BB%91%E5%8A%A8%E5%86%B2%E7%AA%81%E7%9A%84%E8%A7%A3%E5%86%B3/">Android之View篇3————View滑动冲突的解决</a></li>
         
     </ul>
 </div>
@@ -917,7 +929,13 @@ Observable<span style="color:#000;font-weight:bold">.</span><span style="color:#
 
         <div class="post-meta meta-tags">
             
-            没有标签
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/Android'>Android</a></li>
+                
+                <li><a href='http://blog.bingtan.online/tags/Rxjava'>Rxjava</a></li>
+                
+            </ul>
             
         </div>
     </article>

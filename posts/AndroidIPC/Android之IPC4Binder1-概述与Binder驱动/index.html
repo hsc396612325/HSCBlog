@@ -1,0 +1,1056 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Android之IPC4————Binder1 概述与Bander驱动 | 冰炭不投day的博客</title>
+    <meta property="og:title" content="Android之IPC4————Binder1 概述与Bander驱动 - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2019-05-04T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2019-05-04T22:40:54&#43;08:00'>
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="Android之IPC4————Binder1 概述与Bander驱动">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC4Binder1-%E6%A6%82%E8%BF%B0%E4%B8%8EBinder%E9%A9%B1%E5%8A%A8/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">Android之IPC4————Binder1 概述与Bander驱动</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2019年5月4日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android'>Android</a></span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8BIPC'>Android之IPC</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h3 id="一概述">一.概述</h3>
+<p>最近才看AndroidIPC中，Binder一直是绕不过的坎，他是AndroidIPC很重要的一种方式，在Android系统中也有着举足轻重的作用。在之前的博客里，特别是AIDL中，我们只是说了AIDL实际上是实现的binder的接口。也在文章的最后简单说了一下，binder是如何进行数据通信的。但是由于Binder的封装，我还是没有发现，binder是如何做的跨进程通信的。</p>
+<p>在这段时间里，我也是翻看了许多资料，也查看了许多博客。但是，多数博客，要不然讲的只是Frameworks层，要不然只是云里雾里长篇大论，要不然是很简单的描述了一下大体框架。</p>
+<p>不过，后来发现一位大神的博客，跟着他的思考路看源码，从Driver层看到native层，再从native看到Frameworks层，看的脑袋很晕，但是收获也很大。所以想将看的过程记录下来，做一个学习笔记。</p>
+<p><a href="http://gityuan.com/2015/10/31/binder-prepare/">Binder系列—开篇</a></p>
+<h3 id="二储备知识">二.储备知识</h3>
+<p>在正式讲之前，先简单介绍一些基础知识</p>
+<h4 id="1进程空间的划分">1.进程空间的划分</h4>
+<p><img src="/image/Android_IPC/2_0.png" alt="进程空间">
+每个Android的进程中，都只能运行在自己进程所拥有的虚拟地址空间，对应一个4GB的虚拟地址空间，其中3GB是用户空间，1GB是内核空间。当然两者的大小时可以进程跳转的。</p>
+<p>用户空间：不同进程之间无法共享<br>
+内核空间: 不同进程之间可以共享</p>
+<h4 id="2进程隔离和跨进程通信">2.进程隔离和跨进程通信</h4>
+<p>进程隔离： 为了保证安全性和独立性，一个进程不能直接操作和访问另一个进程<br>
+进程间通信： 不同进程之间传递数据</p>
+<h4 id="3android的框架">3.Android的框架</h4>
+<p>让我们来看一看，Android的整体框架
+<img src="/image/Android_IPC/2_1.png" alt="android框架"></p>
+<p>从下往上依次为：</p>
+<ul>
+<li>内核层:Linux内核和各类硬件设备的驱动，BInderIPC驱动也就是在这一层</li>
+<li>硬件抽象层：封装内核层的硬件驱动，提供系统服务层统一的硬件接口</li>
+<li>系统层:提供核心服务，并且提供可供「应用程序框架层」调用的接口</li>
+<li>BinderIPC层：作为系统服务层与应用程序框架的IPC桥梁，互相传递接口调用的数据，实现跨进层的停下</li>
+<li>应用程序框架层：这一层可以理解为 Android SDK，提供四大组件，View 绘制体系等平时开发中用到的基础部件</li>
+</ul>
+<p>在上面的层次里，内核层与硬件抽象层均使用C/C++实现，系统服务是以Java实现，硬件层抽象编译为so文件，以jni的形式提供给系统服务层使用，系统服务层中的服务随系统的启动而启动，这些服务提供给手机诸如，短信接收，电话的接听，Activity的管理等等功能。每一个服务都运行在一个独立进程的Dalvik虚拟机中，那么问题来了，开发者的app运行在一个新的进程空间，如果调用系统服务层中的接口呢？答案就是ipc，而Android中大多数的ipc都是通过Binder实现的。</p>
+<h3 id="三binder概述">三.Binder概述</h3>
+<h4 id="1binder是什么">1.Binder是什么</h4>
+<p>Binder中文意思为粘合剂，意思是粘合了两个不同的进程</p>
+<p>而在不同的语境下，Binder有不同的含义。</p>
+<ul>
+<li>从机制，模型来说,Binder是指Android中实现Ipc的一种方式。</li>
+<li>从模型的结构中来说,Binder来说是一种虚拟的物理层设备，即Binder驱动。</li>
+<li>从代码的角度来说，Binder是一个类，实现类IBInder接口。</li>
+</ul>
+<h4 id="2binder的优势">2.Binder的优势</h4>
+<p>Android是基于linux的操作系统，而操作系统中已经有了多种IPC机制，为什么还要Binder机制?</p>
+<p>看看Linux中现有的IPC机制：</p>
+<ul>
+<li>管道:在创建是分配一个page大小的内存，缓存区比较有限</li>
+<li>消息队列:信息复制两次，有额外的CPU消耗，不适合频繁或者信息量大的通信</li>
+<li>共享内存:无需复制，共享缓冲区直接付附加到进程虚拟地址空间，速度快；但进程间的同步问题操作系统无法实现，必须各进程利用同步工具解决；</li>
+<li>socket：作为更通用的接口，传输效率低，主要用于不通机器或跨网络的通信；</li>
+</ul>
+<p>多个角度说明为什么使用Binder：</p>
+<ul>
+<li>从性能上来说：Binder数据拷贝只需要一次，而管道，消息内存，Socket都需要两次，共享内存不需要。从性能上来说，Binder性能仅次于共享内存。</li>
+<li>从稳定性来说，Binder基于c/s架构，架构清晰，稳定性较好</li>
+<li>从安全性来说，Binder中，客户端和服务端通信时，会根据UID/PID进行一次安全检查</li>
+<li>从语言来说，linux中的机制都是基于c，也就是说面向过程。而android是基于Java,binder也正好是符合面向对象的思想。</li>
+</ul>
+<h4 id="3binder原理">3.Binder原理</h4>
+<p>binder通信采用C/S架构，从组件的角度来说，Binder分为Client，Service，ServiceManager，binder驱动。构架图如下：
+<img src="/image/Android_IPC/2_2.png" alt="binder"></p>
+<p>图中处理客户端和服务端外，还有两个角色，即ServiceManager和BInder驱动。下面分别简单介绍一下。</p>
+<ul>
+<li>ServiceManager:此处的Service并非指framework层的，而是指Native层的。它是整个Binder通信机制的大管家。它的作用就是给服务端提供注册服务，给客户端提供获取服务的功能。</li>
+<li>Binder驱动，binder驱动是一种虚拟字符设备，没有直接操作硬件。它的作用是连接服务端进程，客户端进程，ServiceManager的桥梁。它提供了4个方法。驱动设备的初始化(binder_init)，打开 (binder_open)，映射(binder_mmap)，数据操作(binder_ioctl)</li>
+</ul>
+<p>图中出现了IPC时需要的三步，即：</p>
+<ul>
+<li>注册服务:Server进程要先注册Service到ServiceManager。该过程：Server是客户端，ServiceManager是服务端。</li>
+<li>获取服务:Client进程使用某个Service前，须先向ServiceManager中获取相应的Service。该过程：Client是客户端，ServiceManager是服务端。</li>
+<li>使用服务：Client根据得到的Service信息建立与Service所在的Server进程通信的通路，然后就可以直接与Service交互。该过程：client是客户端，server是服务端。</li>
+</ul>
+<p>图中Client，Service，ServiceManager之间交互是虚线表示，但他们都处于不同的进程，所以他们之间并不是真正的交互，而是通过与Binder驱动进行交互，从而实现IPC通信方式。</p>
+<h4 id="4binder框架">4.Binder框架</h4>
+<p>上面的图主要是native层Binder的框架，下面的图是Binder在android中整体框架
+<img src="/image/Android_IPC/2_3.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>图中红色部分表示整个framwork层binder框架相关组件</li>
+<li>蓝色组件表示Native层Binder架构相关组件；</li>
+<li>上层framework层的Binder逻辑是建立在Native层架构基础之上的，核心逻辑都是交予Native层方法来处理。</li>
+</ul>
+<p>Binder涉及的类
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-k5ZmyuPj-1579438039538)(http://gityuan.com/images/binder/java_binder_framework.jpg)]</p>
+<h4 id="5-cs模式">5. C/S模式</h4>
+<p>BpBinder(客户端)和BBinder(服务端)都是Android中Binder通信相关的代表，它们都从IBinder类中派生而来，关系图如下：</p>
+<p><img src="/image/Android_IPC/2_4.png" alt="image"></p>
+<ul>
+<li>客户端：BpBinder.transact()来发送事物请求</li>
+<li>服务端：BBinder.onTransact()会接收到相应事务。</li>
+</ul>
+<h3 id="四binder驱动">四.Binder驱动</h3>
+<h4 id="1概述">1.概述</h4>
+<p>Binder驱动是Android专用的，但底层的驱动框架和Linux驱动一样，binder驱动在以misc设备进行注册，作为虚拟字符设备，没有直接操作硬件，只是对设备内存的处理。主要操作有：</p>
+<ul>
+<li>通过init()创建/dev/binder设备节点</li>
+<li>通过open()获取Binder1驱动文件描述符</li>
+<li>通过mmap()在内核上分配一块内存，用于存放数据</li>
+<li>通过ioctl()将IPC数据作为参数传递给binder驱动</li>
+</ul>
+<h4 id="2系统调用">2.系统调用</h4>
+<p>用户态程序调用Kernel层驱动是需要陷入内核态，进行系统调用(syscall),比如调用Binder驱动方法调用链为：open-&gt; __open() -&gt; binder_open()。 open()为用户空间的方法，__open()便是系统调用中相应的处理方法，通过查找，对应调用到内核binder驱动的binder_open()方法，至于其他的从用户态陷入内核态的流程也基本一致。</p>
+<p>简单来说，当用户空间调用open()方法，最终会调用binder驱动的binder_open()方法，mmap()/ioctl都是如此。</p>
+<h4 id="3binder_open">3.binder_open</h4>
+<p>binder_init的主要工作就是注册misc设备。并没有什么可说的，我们就直接从第二个方法来看。</p>
+<p>binder_open()作用是打开binder驱动，并进行如下过程：</p>
+<ul>
+<li>创建binder_proc，将当前进程的信息保存保存在binder_porc对象总，该对象管理IPC所需的各种信息并具有其他结构体的根结构体，在把binder_proc对象保存到文件指针filp，以及把binder_proc加入到全局链表binder_procs。</li>
+<li>binder_proc结构体中包含了进程节点，binder实体/引用/线程所组成红黑树的根节点，内存信息，线程信息等等</li>
+</ul>
+<h4 id="3-binder_mmap">3. binder_mmap</h4>
+<p>主要功能：首先在内核虚拟地址空间中，申请一块与用户虚拟内存大小相同的内存。在申请一个page大小的物理内存，再讲同一块物理内存分别映射到内核虚拟地址空间个用户虚拟内存空间，从而实现了用户空间的Buffer和内核空间的Buffer同步操作的功能。最后创建一块Binder_buffer对象，并放入当前binder_proc的proc-&gt;buffers链表。</p>
+<p><img src="/image/Android_IPC/2_5.png" alt="内存机制"></p>
+<p>上图就是，使用mmap后的内存机制，虚拟进程地址空间(vm_area_struct))和虚拟内核地址空间(vm_struct)都映射到同一块物理内存空间。当客户端和服务端发送数据是，客户端先从自己的进程空间吧ipc通信数据复制到内核空间，而Server端作为数据接受端与内核共享数据，所以不需要在拷贝数据，而是通过内存地址的偏移量，即可获得内存地址。整个过程只发送一次内存复制。</p>
+<p>比较关注的一个点就在，在这其中，空闲的内存块和已用的内存块都是用红黑树记录的。</p>
+<h4 id="4binder_ioctl">4.binder_ioctl</h4>
+<p>binder_ioctl()函数负责在两个进程间收发IPC数据和IPC reply数据</p>
+<blockquote>
+<p>ioctl(文件描述符，ioctl命令，数据类型)</p>
+</blockquote>
+<ul>
+<li>文件描述符：是通过open()方法打开的binder内核后的返回层。</li>
+<li>ioctl命令</li>
+</ul>
+<p>header 1 | header 2</p>
+<p>row 1 col 1 | row 1 col 2
+row 2 col 1 | row 2 col 2</p>
+<table>
+<thead>
+<tr>
+<th>ioctl命令</th>
+<th>数据类型</th>
+<th>操作</th>
+<th>使用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BINDER_WRITE_READ</td>
+<td>struct binder_write_read</td>
+<td>收发Binder IPC数据</td>
+<td>binder读写交互场景</td>
+</tr>
+<tr>
+<td>BINDER_SET_MAX_THREADS</td>
+<td>__u32</td>
+<td>设置Binder线程最大个数</td>
+<td>初始化ProcessState对象，初始化ProcessState对象</td>
+</tr>
+<tr>
+<td>BINDER_SET_CONTEXT_MGR</td>
+<td>__s32</td>
+<td>设置Service Manager节点</td>
+<td>servicemanager进程成为上下文管理</td>
+</tr>
+<tr>
+<td>BINDER_THREAD_EXIT</td>
+<td>__s32</td>
+<td>释放Binder线程</td>
+<td></td>
+</tr>
+<tr>
+<td>BINDER_VERSION</td>
+<td>struct binder_version</td>
+<td>获取Binder版本信息</td>
+<td>初始化ProcessState</td>
+</tr>
+<tr>
+<td>BINDER_SET_IDLE_TIMEOUT</td>
+<td>__s64</td>
+<td>没有使用</td>
+<td></td>
+</tr>
+<tr>
+<td>BINDER_SET_IDLE_PRIORITY</td>
+<td>__s32</td>
+<td>没有使用</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>这一块，简单介绍了binder内核，包括binder内核提供的四个方法和binder是什么。更详细的内容，深入到源码层的分析可以查看文章：<a href="http://gityuan.com/2015/11/01/binder-driver/">Binder系列1—Binder Driver初探</a></p>
+<h3 id="五启动servicemanager">五.启动ServiceManager</h3>
+<p>接下来来看binder机制另一个很重要的角色，ServiceManager是客户端和服务端沟通的桥梁。首先看看ServiceManager的启动。</p>
+<p>ServiceManager是通过init进程通过解析init.rc文件，而创建的，所对应的可执行程序/system/bin/servicemanager，所对应的源文件是service_manager.c，进程名为/system/bin/servicemanager。</p>
+<h4 id="1启动过程">1.启动过程</h4>
+<p>启动Service Manager的入口函数是service_manager.c中的main()方法，代码如下：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">int</span> argc, <span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span><span style="color:#000;font-weight:bold">*</span>argv) {
+    <span style="color:#000;font-weight:bold">struct</span> binder_state <span style="color:#000;font-weight:bold">*</span>bs;
+    <span style="color:#998;font-style:italic">//打开binder驱动，申请128k字节大小的内存空间 
+</span><span style="color:#998;font-style:italic"></span>    bs <span style="color:#000;font-weight:bold">=</span> binder_open(<span style="color:#099">128</span><span style="color:#000;font-weight:bold">*</span><span style="color:#099">1024</span>);
+    ...
+
+    <span style="color:#998;font-style:italic">//成为上下文管理者 
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">if</span> (binder_become_context_manager(bs)) {
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;
+    }
+
+    selinux_enabled <span style="color:#000;font-weight:bold">=</span> is_selinux_enabled(); <span style="color:#998;font-style:italic">//selinux权限是否使能
+</span><span style="color:#998;font-style:italic"></span>    sehandle <span style="color:#000;font-weight:bold">=</span> selinux_android_service_context_handle();
+    selinux_status_open(<span style="color:#0086b3">true</span>);
+
+    <span style="color:#000;font-weight:bold">if</span> (selinux_enabled <span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#099">0</span>) {
+        <span style="color:#000;font-weight:bold">if</span> (sehandle <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#0086b3">NULL</span>) {  
+            abort(); <span style="color:#998;font-style:italic">//无法获取sehandle
+</span><span style="color:#998;font-style:italic"></span>        }
+        <span style="color:#000;font-weight:bold">if</span> (getcon(<span style="color:#000;font-weight:bold">&amp;</span>service_manager_context) <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>) {
+            abort(); <span style="color:#998;font-style:italic">//无法获取service_manager上下文
+</span><span style="color:#998;font-style:italic"></span>        }
+    }
+    ...
+
+    <span style="color:#998;font-style:italic">//进入无限循环，处理client端发来的请求 
+</span><span style="color:#998;font-style:italic"></span>    binder_loop(bs, svcmgr_handler);
+    <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>由上面的代码可以看到，启动过程主要涉及以下几个阶段：</p>
+<ul>
+<li>打开binder驱动 binder_open</li>
+<li>注册成为binder服务的大管家：binder_become_context_manager；</li>
+<li>进入死循环，处理client端发来的请求：binder_loop</li>
+</ul>
+<p>我们一点点来看</p>
+<h4 id="2打开binder驱动">2.打开binder驱动</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">struct</span> binder_state <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">binder_open</span>(size_t mapsize)
+{
+    <span style="color:#000;font-weight:bold">struct</span> binder_state <span style="color:#000;font-weight:bold">*</span>bs;<span style="color:#a61717;background-color:#e3d2d2">【</span><span style="color:#a61717;background-color:#e3d2d2">见</span><span style="color:#a61717;background-color:#e3d2d2">小</span><span style="color:#a61717;background-color:#e3d2d2">节</span><span style="color:#099">2.2</span><span style="color:#099">.1</span><span style="color:#a61717;background-color:#e3d2d2">】</span>
+    <span style="color:#000;font-weight:bold">struct</span> binder_version vers;
+
+    bs <span style="color:#000;font-weight:bold">=</span> malloc(<span style="color:#000;font-weight:bold">sizeof</span>(<span style="color:#000;font-weight:bold">*</span>bs));
+    <span style="color:#000;font-weight:bold">if</span> (<span style="color:#000;font-weight:bold">!</span>bs) {
+        errno <span style="color:#000;font-weight:bold">=</span> ENOMEM;
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
+    }
+
+    <span style="color:#998;font-style:italic">//通过系统调用陷入内核，打开Binder设备驱动
+</span><span style="color:#998;font-style:italic"></span>    bs<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>fd <span style="color:#000;font-weight:bold">=</span> open(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">/dev/binder</span><span style="color:#d14">&#34;</span>, O_RDWR);
+    <span style="color:#000;font-weight:bold">if</span> (bs<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>fd <span style="color:#000;font-weight:bold">&lt;</span> <span style="color:#099">0</span>) {
+        <span style="color:#000;font-weight:bold">goto</span> fail_open; <span style="color:#998;font-style:italic">// 无法打开binder设备
+</span><span style="color:#998;font-style:italic"></span>    }
+
+     <span style="color:#998;font-style:italic">//通过系统调用，ioctl获取binder版本信息
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">if</span> ((ioctl(bs<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>fd, BINDER_VERSION, <span style="color:#000;font-weight:bold">&amp;</span>vers) <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>) <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span>
+        (vers.protocol_version <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> BINDER_CURRENT_PROTOCOL_VERSION)) {
+        <span style="color:#000;font-weight:bold">goto</span> fail_open; <span style="color:#998;font-style:italic">//内核空间与用户空间的binder不是同一版本
+</span><span style="color:#998;font-style:italic"></span>    }
+
+    bs<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>mapsize <span style="color:#000;font-weight:bold">=</span> mapsize;
+    <span style="color:#998;font-style:italic">//通过系统调用，mmap内存映射，mmap必须是page的整数倍
+</span><span style="color:#998;font-style:italic"></span>    bs<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>mapped <span style="color:#000;font-weight:bold">=</span> mmap(<span style="color:#0086b3">NULL</span>, mapsize, PROT_READ, MAP_PRIVATE, bs<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>fd, <span style="color:#099">0</span>);
+    <span style="color:#000;font-weight:bold">if</span> (bs<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>mapped <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> MAP_FAILED) {
+        <span style="color:#000;font-weight:bold">goto</span> fail_map; <span style="color:#998;font-style:italic">// binder设备内存无法映射
+</span><span style="color:#998;font-style:italic"></span>    }
+
+    <span style="color:#000;font-weight:bold">return</span> bs;
+
+<span style="color:#900;font-weight:bold">fail_map</span>:
+    close(bs<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>fd);
+<span style="color:#900;font-weight:bold">fail_open</span>:
+    free(bs);
+    <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>打开binder驱动的先关操作：</p>
+<p>先调用open()打开binder设备，open即上一节所说的binder内核提供的方法之一，最终会调用binder内核中的binder_open()，其方法作用间上一节.</p>
+<p>之后调用mmap()方法进行内存映射。</p>
+<h4 id="3注册成为binder服务的大管家">3.注册成为binder服务的大管家</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">binder_become_context_manager</span><span style="color:#000;font-weight:bold">(</span>struct binder_state <span style="color:#000;font-weight:bold">*</span>bs<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#998;font-style:italic">//通过ioctl，传递BINDER_SET_CONTEXT_MGR指令【见小节2.3.1】
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">return</span> ioctl<span style="color:#000;font-weight:bold">(</span>bs<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>fd<span style="color:#000;font-weight:bold">,</span> BINDER_SET_CONTEXT_MGR<span style="color:#000;font-weight:bold">,</span> 0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>在这里面用过调用ioctl方法，发送 BINDER_SET_CONTEXT_MGR，最终经过系统调用，进入binder驱动层的binder_ioctl()方法.</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">binder_ioctl_set_ctx_mgr</span>(<span style="color:#000;font-weight:bold">struct</span> file <span style="color:#000;font-weight:bold">*</span>filp)
+{
+    <span style="color:#458;font-weight:bold">int</span> ret <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
+    <span style="color:#000;font-weight:bold">struct</span> binder_proc <span style="color:#000;font-weight:bold">*</span>proc <span style="color:#000;font-weight:bold">=</span> filp<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>private_data;
+    kuid_t curr_euid <span style="color:#000;font-weight:bold">=</span> current_euid();
+
+    <span style="color:#998;font-style:italic">//保证只创建一次mgr_node对象
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">if</span> (binder_context_mgr_node <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#0086b3">NULL</span>) {
+        ret <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">-</span>EBUSY; 
+        <span style="color:#000;font-weight:bold">goto</span> out;
+    }
+
+    <span style="color:#000;font-weight:bold">if</span> (uid_valid(binder_context_mgr_uid)) {
+        ...
+    } <span style="color:#000;font-weight:bold">else</span> {
+        <span style="color:#998;font-style:italic">//设置当前线程euid作为Service Manager的uid
+</span><span style="color:#998;font-style:italic"></span>        binder_context_mgr_uid <span style="color:#000;font-weight:bold">=</span> curr_euid;
+    }
+
+    <span style="color:#998;font-style:italic">//创建ServiceManager实体
+</span><span style="color:#998;font-style:italic"></span>    binder_context_mgr_node <span style="color:#000;font-weight:bold">=</span> binder_new_node(proc, <span style="color:#099">0</span>, <span style="color:#099">0</span>);
+    ...
+    binder_context_mgr_node<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>local_weak_refs<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;
+    binder_context_mgr_node<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>local_strong_refs<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;
+    binder_context_mgr_node<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>has_strong_ref <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>;
+    binder_context_mgr_node<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>has_weak_ref <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>;
+<span style="color:#900;font-weight:bold">out</span>:
+    <span style="color:#000;font-weight:bold">return</span> ret;
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>创建一个ServiceManager实体</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">struct</span> binder_node <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">binder_new_node</span>(<span style="color:#000;font-weight:bold">struct</span> binder_proc <span style="color:#000;font-weight:bold">*</span>proc,
+                       binder_uintptr_t ptr,
+                       binder_uintptr_t cookie)
+{
+    <span style="color:#000;font-weight:bold">struct</span> rb_node <span style="color:#000;font-weight:bold">*</span><span style="color:#000;font-weight:bold">*</span>p <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">&amp;</span>proc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>nodes.rb_node;
+    <span style="color:#000;font-weight:bold">struct</span> rb_node <span style="color:#000;font-weight:bold">*</span>parent <span style="color:#000;font-weight:bold">=</span> <span style="color:#0086b3">NULL</span>;
+    <span style="color:#000;font-weight:bold">struct</span> binder_node <span style="color:#000;font-weight:bold">*</span>node;
+    <span style="color:#998;font-style:italic">//首次进来为空
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">while</span> (<span style="color:#000;font-weight:bold">*</span>p) {
+        parent <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">*</span>p;
+        node <span style="color:#000;font-weight:bold">=</span> rb_entry(parent, <span style="color:#000;font-weight:bold">struct</span> binder_node, rb_node);
+
+        <span style="color:#000;font-weight:bold">if</span> (ptr <span style="color:#000;font-weight:bold">&lt;</span> node<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>ptr)
+            p <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">&amp;</span>(<span style="color:#000;font-weight:bold">*</span>p)<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rb_left;
+        <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> (ptr <span style="color:#000;font-weight:bold">&gt;</span> node<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>ptr)
+            p <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">&amp;</span>(<span style="color:#000;font-weight:bold">*</span>p)<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rb_right;
+        <span style="color:#000;font-weight:bold">else</span>
+            <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
+    }
+
+    <span style="color:#998;font-style:italic">//给新创建的binder_node 分配内核空间
+</span><span style="color:#998;font-style:italic"></span>    node <span style="color:#000;font-weight:bold">=</span> kzalloc(<span style="color:#000;font-weight:bold">sizeof</span>(<span style="color:#000;font-weight:bold">*</span>node), GFP_KERNEL);
+    <span style="color:#000;font-weight:bold">if</span> (node <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#0086b3">NULL</span>)
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
+    binder_stats_created(BINDER_STAT_NODE);
+    
+ 
+    rb_link_node(<span style="color:#000;font-weight:bold">&amp;</span>node<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rb_node, parent, p);
+    rb_insert_color(<span style="color:#000;font-weight:bold">&amp;</span>node<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rb_node, <span style="color:#000;font-weight:bold">&amp;</span>proc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>nodes);
+    node<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>debug_id <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>binder_last_id;
+    
+    node<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>proc <span style="color:#000;font-weight:bold">=</span> proc; <span style="color:#998;font-style:italic">//将open操作中创建的的proc赋值
+</span><span style="color:#998;font-style:italic"></span>    node<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>ptr <span style="color:#000;font-weight:bold">=</span> ptr; <span style="color:#998;font-style:italic">//指向用户空间binder_node的指针
+</span><span style="color:#998;font-style:italic"></span>    node<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>cookie <span style="color:#000;font-weight:bold">=</span> cookie;
+    node<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>work.type <span style="color:#000;font-weight:bold">=</span> BINDER_WORK_NODE; <span style="color:#998;font-style:italic">//设置binder_work的type
+</span><span style="color:#998;font-style:italic"></span>    INIT_LIST_HEAD(<span style="color:#000;font-weight:bold">&amp;</span>node<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>work.entry);
+    INIT_LIST_HEAD(<span style="color:#000;font-weight:bold">&amp;</span>node<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>async_todo);
+    <span style="color:#000;font-weight:bold">return</span> node;
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>在这里面，在binder中创建ServiceManager实体()。并在创建是，将open操作中创建的proc，存入ServiceManager的proc中。</p>
+<h4 id="4进入死循环中">4.进入死循环中</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">binder_loop</span>(<span style="color:#000;font-weight:bold">struct</span> binder_state <span style="color:#000;font-weight:bold">*</span>bs, binder_handler func) {
+    <span style="color:#458;font-weight:bold">int</span> res;
+    <span style="color:#000;font-weight:bold">struct</span> binder_write_read bwr;
+    uint32_t readbuf[<span style="color:#099">32</span>];
+
+    bwr.write_size <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
+    bwr.write_consumed <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
+    bwr.write_buffer <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
+
+    readbuf[<span style="color:#099">0</span>] <span style="color:#000;font-weight:bold">=</span> BC_ENTER_LOOPER;
+    <span style="color:#998;font-style:italic">//将BC_ENTER_LOOPER命令发送给binder驱动，让Service Manager进入循环 
+</span><span style="color:#998;font-style:italic"></span>    binder_write(bs, readbuf, <span style="color:#000;font-weight:bold">sizeof</span>(uint32_t));
+
+    <span style="color:#000;font-weight:bold">for</span> (;;) {
+        bwr.read_size <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">sizeof</span>(readbuf);
+        bwr.read_consumed <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
+        bwr.read_buffer <span style="color:#000;font-weight:bold">=</span> (uintptr_t) readbuf;
+
+        <span style="color:#998;font-style:italic">//通过ioctl向binder驱动发起读写请求
+</span><span style="color:#998;font-style:italic"></span>        res <span style="color:#000;font-weight:bold">=</span> ioctl(bs<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>fd, BINDER_WRITE_READ, <span style="color:#000;font-weight:bold">&amp;</span>bwr); <span style="color:#998;font-style:italic">//进入循环，不断地binder读写过程
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">if</span> (res <span style="color:#000;font-weight:bold">&lt;</span> <span style="color:#099">0</span>) {
+            <span style="color:#000;font-weight:bold">break</span>;
+        }
+
+        <span style="color:#998;font-style:italic">// 解析binder信息 
+</span><span style="color:#998;font-style:italic"></span>        res <span style="color:#000;font-weight:bold">=</span> binder_parse(bs, <span style="color:#099">0</span>, (uintptr_t) readbuf, bwr.read_consumed, func);
+        <span style="color:#000;font-weight:bold">if</span> (res <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>) {
+            <span style="color:#000;font-weight:bold">break</span>;
+        }
+        <span style="color:#000;font-weight:bold">if</span> (res <span style="color:#000;font-weight:bold">&lt;</span> <span style="color:#099">0</span>) {
+            <span style="color:#000;font-weight:bold">break</span>;
+        }
+    }
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>解析Binder信息</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">...
+<span style="color:#998;font-style:italic">//初始化reply
+</span><span style="color:#998;font-style:italic"></span>     bio_init(<span style="color:#000;font-weight:bold">&amp;</span>reply, rdata, <span style="color:#000;font-weight:bold">sizeof</span>(rdata), <span style="color:#099">4</span>);
+     
+<span style="color:#998;font-style:italic">//从txn解析binder_io
+</span><span style="color:#998;font-style:italic"></span>      bio_init_from_txn(<span style="color:#000;font-weight:bold">&amp;</span>msg, txn);
+      
+<span style="color:#998;font-style:italic">//调用Service_manager中的svcmgr_handler，进行它的工作
+</span><span style="color:#998;font-style:italic"></span>res <span style="color:#000;font-weight:bold">=</span> func(bs, txn, <span style="color:#000;font-weight:bold">&amp;</span>msg, <span style="color:#000;font-weight:bold">&amp;</span>reply);
+
+binder_send_reply(bs, <span style="color:#000;font-weight:bold">&amp;</span>reply, txn<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>data.ptr.buffer, res);
+...
+</code></pre></td></tr></table>
+</div>
+</div><p>根据binder驱动返回的信息进行相应的操作</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">svcmgr_handler</span>(<span style="color:#000;font-weight:bold">struct</span> binder_state <span style="color:#000;font-weight:bold">*</span>bs,
+                   <span style="color:#000;font-weight:bold">struct</span> binder_transaction_data <span style="color:#000;font-weight:bold">*</span>txn,
+                   <span style="color:#000;font-weight:bold">struct</span> binder_io <span style="color:#000;font-weight:bold">*</span>msg,
+                   <span style="color:#000;font-weight:bold">struct</span> binder_io <span style="color:#000;font-weight:bold">*</span>reply)
+{
+ .....
+
+    <span style="color:#000;font-weight:bold">switch</span>(txn<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>code) {
+    <span style="color:#000;font-weight:bold">case</span> <span style="color:#900;font-weight:bold">SVC_MGR_GET_SERVICE</span>:
+    <span style="color:#000;font-weight:bold">case</span> <span style="color:#900;font-weight:bold">SVC_MGR_CHECK_SERVICE</span>: <span style="color:#998;font-style:italic">//查找
+</span><span style="color:#998;font-style:italic"></span>        s <span style="color:#000;font-weight:bold">=</span> bio_get_string16(msg, <span style="color:#000;font-weight:bold">&amp;</span>len); <span style="color:#998;font-style:italic">//服务名
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">//根据名称查找相应服务 
+</span><span style="color:#998;font-style:italic"></span>        handle <span style="color:#000;font-weight:bold">=</span> do_find_service(bs, s, len, txn<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>sender_euid, txn<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>sender_pid);
+        <span style="color:#998;font-style:italic">//【见小节3.1.2】
+</span><span style="color:#998;font-style:italic"></span>        bio_put_ref(reply, handle);
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
+
+    <span style="color:#000;font-weight:bold">case</span> <span style="color:#900;font-weight:bold">SVC_MGR_ADD_SERVICE</span>: <span style="color:#998;font-style:italic">//注册
+</span><span style="color:#998;font-style:italic"></span>        s <span style="color:#000;font-weight:bold">=</span> bio_get_string16(msg, <span style="color:#000;font-weight:bold">&amp;</span>len); <span style="color:#998;font-style:italic">//服务名
+</span><span style="color:#998;font-style:italic"></span>        handle <span style="color:#000;font-weight:bold">=</span> bio_get_ref(msg); <span style="color:#998;font-style:italic">//handle
+</span><span style="color:#998;font-style:italic"></span>        allow_isolated <span style="color:#000;font-weight:bold">=</span> bio_get_uint32(msg) <span style="color:#000;font-weight:bold">?</span> <span style="color:#099">1</span> <span style="color:#000;font-weight:bold">:</span> <span style="color:#099">0</span>;
+         <span style="color:#998;font-style:italic">//注册指定服务 
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">if</span> (do_add_service(bs, s, len, handle, txn<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>sender_euid,
+            allow_isolated, txn<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>sender_pid))
+            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;
+        <span style="color:#000;font-weight:bold">break</span>;
+
+    <span style="color:#000;font-weight:bold">case</span> <span style="color:#900;font-weight:bold">SVC_MGR_LIST_SERVICES</span>: {  
+        uint32_t n <span style="color:#000;font-weight:bold">=</span> bio_get_uint32(msg);
+
+        <span style="color:#000;font-weight:bold">if</span> (<span style="color:#000;font-weight:bold">!</span>svc_can_list(txn<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>sender_pid)) {
+            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;
+        }
+        si <span style="color:#000;font-weight:bold">=</span> svclist;
+        <span style="color:#000;font-weight:bold">while</span> ((n<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">-</span> <span style="color:#000;font-weight:bold">&gt;</span> <span style="color:#099">0</span>) <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> si)
+            si <span style="color:#000;font-weight:bold">=</span> si<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+        <span style="color:#000;font-weight:bold">if</span> (si) {
+            bio_put_string16(reply, si<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>name);
+            <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
+        }
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;
+    }
+    <span style="color:#000;font-weight:bold">default</span><span style="color:#000;font-weight:bold">:</span>
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;
+    }
+
+    bio_put_uint32(reply, <span style="color:#099">0</span>);
+    <span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>总结：在这个循环里，ServiceManager通过ioctl向binder驱动发起读写请求,根据请求返回的数据，去进行相应的注册服务和查询服务。</p>
+<h3 id="六总结">六.总结</h3>
+<p>本篇文章中，先简单介绍了一些操作系统中关于跨进程通信的基础知识，之后介绍了binder的优势以及binder的框架。</p>
+<p>然后介绍了binder内核，主要介绍了binder内核提供的4个方法</p>
+<ul>
+<li>init()注册misc设备</li>
+<li>open()打开binder驱动。并创建binder_proc,并保存在全局链表中</li>
+<li>mmap()在内存中分配一块内存，用于存放数据，实现是采用的是内存映射机制，将内核和Service映射在同一块物理地址中</li>
+<li>ioctl()负责在两个进程间传递转发ipc数据和回复数据</li>
+</ul>
+<p>之后介绍了ServiceManager的启动，ServiceManager是通过init进程加载init.rc文件而创建的，创建步骤如下：</p>
+<ul>
+<li>首先调用open()打开binder驱动，并调用mmap()申请128k字节大小的内存空间。</li>
+<li>之后使用ioctl发送BINDER_SET_CONTEXT_MGR，成为Service的管家，在这里会在binder内核中创建一个ServiceManager实体，该实体是内核全局变量，并把open操作中创建的proc，放入该实体中。</li>
+<li>最后会启动一个死循环，在这个循环中，ServiceManager通过ioctl不断从binder内核中读写数据，并根据信息进行相应的操作，即注册服务，获取服务。</li>
+</ul>
+<p>之后的文章：</p>
+<ul>
+<li>BinderNative层分析</li>
+<li>Binderframework层的分析</li>
+<li>Binder通信过程</li>
+<li>Binder线程池</li>
+<li>Binder的使用</li>
+<li>Binder总结</li>
+</ul>
+<h3 id="七参考资料">七.参考资料</h3>
+<p><a href="http://gityuan.com/2015/10/31/binder-prepare/">Binder系列—开篇</a><br>
+<a href="http://gityuan.com/2015/">Binder系列3—启动ServiceManager</a><br>
+<a href="https://blog.csdn.net/carson_ho/article/details/73560642">Android跨进程通信：图文详解 Binder机制 原理</a><br>
+<a href="https://www.jianshu.com/p/bdef9e3178c9">轻松理解 Android Binder，只需要读这一篇</a></p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC4Binder1-%E6%A6%82%E8%BF%B0%E4%B8%8EBinder%E9%A9%B1%E5%8A%A8/">http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC4Binder1-%E6%A6%82%E8%BF%B0%E4%B8%8EBinder%E9%A9%B1%E5%8A%A8/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/AndroidIPC/Android%E4%B9%8BIPC3%E5%BA%8F%E5%88%97%E5%8C%96/">Android之IPC3————序列化</a></li>
+        
+        <li><a href="/posts/AndroidIPC/Android%E4%B9%8BIPC2AIDL/">Android之IPC2————AIDL</a></li>
+        
+        <li><a href="/posts/AndroidIPC/Android%E4%B9%8BIPC1Service/">Android之IPC1————Service</a></li>
+        
+        <li><a href="/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-11Rxjava%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB3/">Android之Rxjava2.X 11————Rxjava源码阅读3</a></li>
+        
+        <li><a href="/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-10Rxjava%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB2/">Android之Rxjava2.X 10————Rxjava源码阅读2 </a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/Android'>Android</a></li>
+                
+                <li><a href='http://blog.bingtan.online/tags/IPC'>IPC</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "https://github.com/hsc396612325/HSCBlog/tree/gh-pages"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一概述">一.概述</a></li>
+    <li><a href="#二储备知识">二.储备知识</a>
+      <ul>
+        <li><a href="#1进程空间的划分">1.进程空间的划分</a></li>
+        <li><a href="#2进程隔离和跨进程通信">2.进程隔离和跨进程通信</a></li>
+        <li><a href="#3android的框架">3.Android的框架</a></li>
+      </ul>
+    </li>
+    <li><a href="#三binder概述">三.Binder概述</a>
+      <ul>
+        <li><a href="#1binder是什么">1.Binder是什么</a></li>
+        <li><a href="#2binder的优势">2.Binder的优势</a></li>
+        <li><a href="#3binder原理">3.Binder原理</a></li>
+        <li><a href="#4binder框架">4.Binder框架</a></li>
+        <li><a href="#5-cs模式">5. C/S模式</a></li>
+      </ul>
+    </li>
+    <li><a href="#四binder驱动">四.Binder驱动</a>
+      <ul>
+        <li><a href="#1概述">1.概述</a></li>
+        <li><a href="#2系统调用">2.系统调用</a></li>
+        <li><a href="#3binder_open">3.binder_open</a></li>
+        <li><a href="#3-binder_mmap">3. binder_mmap</a></li>
+        <li><a href="#4binder_ioctl">4.binder_ioctl</a></li>
+      </ul>
+    </li>
+    <li><a href="#五启动servicemanager">五.启动ServiceManager</a>
+      <ul>
+        <li><a href="#1启动过程">1.启动过程</a></li>
+        <li><a href="#2打开binder驱动">2.打开binder驱动</a></li>
+        <li><a href="#3注册成为binder服务的大管家">3.注册成为binder服务的大管家</a></li>
+        <li><a href="#4进入死循环中">4.进入死循环中</a></li>
+      </ul>
+    </li>
+    <li><a href="#六总结">六.总结</a></li>
+    <li><a href="#七参考资料">七.参考资料</a></li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

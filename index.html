@@ -97,11 +97,11 @@
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%872View%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%88%86%E5%8F%91/" title="Android之View篇2————View的事件分发">Android之View篇2————View的事件分发</a>
+                <a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC6Binder3-Framework%E5%B1%82%E5%88%86%E6%9E%90/" title="Android之IPC6————Binder3 Framework层分析">Android之IPC6————Binder3 Framework层分析</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
-            2019年3月2日
+            2019年5月6日
         </date>
         
         <div class="post-meta">
@@ -109,24 +109,24 @@
             
             <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android'>Android</a></span>
             
-            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82'>Android之网络请求</a></span>
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8BIPC'>Android之IPC</a></span>
             
         </div>
         
         <div class="post-content">
-            一.目录 @[toc] 二.事件分发的基础认识 1. 事件分发是什么 事件分发就是对MotionEvent事件进行分发的过程，即当一个MotionEvent产生后，系统需要把这个事件传递(处理)给一个具体的View，这个过程就是分发过程。 2. 事件分发的简单过程 当一个点击事件产生后，一般顺序事件先传递到A……
+            一.概述 在前两篇我们分析了Binder在Native层的实现，我们今天来看在Framework层，Binder相关的内容，这一篇也是以注册服务和获取服务来看Binder的流程。 bidner在Framework层，采用JNI技术来调用native层的binder架构，从而为上层应用……
         </div>
-        <p class="readmore"><a href="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%872View%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%88%86%E5%8F%91/">阅读全文</a></p>
+        <p class="readmore"><a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC6Binder3-Framework%E5%B1%82%E5%88%86%E6%9E%90/">阅读全文</a></p>
     </article>
     
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%873View%E6%BB%91%E5%8A%A8%E5%86%B2%E7%AA%81%E7%9A%84%E8%A7%A3%E5%86%B3/" title="Android之View篇3————View滑动冲突的解决">Android之View篇3————View滑动冲突的解决</a>
+                <a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC5Binder2-Native%E5%B1%82%E5%88%86%E6%9E%90/" title="Android之IPC5————Binder2 Native层分析">Android之IPC5————Binder2 Native层分析</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
-            2019年3月2日
+            2019年5月5日
         </date>
         
         <div class="post-meta">
@@ -134,24 +134,24 @@
             
             <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android'>Android</a></span>
             
-            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82'>Android之网络请求</a></span>
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8BIPC'>Android之IPC</a></span>
             
         </div>
         
         <div class="post-content">
-            一. 目录 @[toc] 二. 前言 滑动冲突也算是在开发中经常遇到的问题，在去年做Everyday时，就碰到过这个问题，当时在百度中找到了问题的解决方法，只不过一直处于不知其所以然。今天我就想系统的整理下关于滑动冲突的解决。 阅读本篇前，建议阅读我的前一篇博客,View的事件分发机制。滑动冲突的解决……
+            一.前言 在上一篇里，我们介绍了binder机制的简单介绍，以及binder内核，ServiceManager的启动。 在上一篇也简单提过，ServiceManager的作用，即注册服务，和获取服务。 在这一篇中，我们中 主要分析native层，主要分析其注册服务和获取服务的过程，大致流……
         </div>
-        <p class="readmore"><a href="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%873View%E6%BB%91%E5%8A%A8%E5%86%B2%E7%AA%81%E7%9A%84%E8%A7%A3%E5%86%B3/">阅读全文</a></p>
+        <p class="readmore"><a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC5Binder2-Native%E5%B1%82%E5%88%86%E6%9E%90/">阅读全文</a></p>
     </article>
     
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%874View%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/" title="Android之View篇4————View的工作原理">Android之View篇4————View的工作原理</a>
+                <a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC4Binder1-%E6%A6%82%E8%BF%B0%E4%B8%8EBinder%E9%A9%B1%E5%8A%A8/" title="Android之IPC4————Binder1 概述与Bander驱动">Android之IPC4————Binder1 概述与Bander驱动</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
-            2019年3月2日
+            2019年5月4日
         </date>
         
         <div class="post-meta">
@@ -159,24 +159,24 @@
             
             <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android'>Android</a></span>
             
-            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82'>Android之网络请求</a></span>
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8BIPC'>Android之IPC</a></span>
             
         </div>
         
         <div class="post-content">
-            一. 目录 @[toc] 二. 初识DecorView和ViewRoot 1. DecorView DecorView是整个Window界面的最顶层View。DecorView只有一个子元素为LinearLayout。代表整个Window界面，包含通知栏，标题栏，内容显示栏三块区域。LinearLayout里有两个Fra……
+            一.概述 最近才看AndroidIPC中，Binder一直是绕不过的坎，他是AndroidIPC很重要的一种方式，在Android系统中也有着举足轻重的作用。在之前的博客里，特别是AIDL中，我们只是说了AIDL实际上是实现的binder的接口。也在文章的最后简单说了一下，bind……
         </div>
-        <p class="readmore"><a href="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%874View%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">阅读全文</a></p>
+        <p class="readmore"><a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC4Binder1-%E6%A6%82%E8%BF%B0%E4%B8%8EBinder%E9%A9%B1%E5%8A%A8/">阅读全文</a></p>
     </article>
     
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%875%E8%87%AA%E5%AE%9A%E4%B9%89View/" title="Android之View篇5————自定义View">Android之View篇5————自定义View</a>
+                <a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC3%E5%BA%8F%E5%88%97%E5%8C%96/" title="Android之IPC3————序列化">Android之IPC3————序列化</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
-            2019年3月2日
+            2019年5月3日
         </date>
         
         <div class="post-meta">
@@ -184,24 +184,24 @@
             
             <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android'>Android</a></span>
             
-            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82'>Android之网络请求</a></span>
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8BIPC'>Android之IPC</a></span>
             
         </div>
         
         <div class="post-content">
-            一.目录 @[toc] 二.自定义View的分类 1.继承View重写onDraw方法 主要用来实现一些不规则的效果，这种效果不方便用布局组合的方式达到，通常需要静态或者动态的显示一些不规则的图形，这种需要绘制的需要自己支持wrap_content,并支持padding。 2.继承ViewGroup……
+            一.前言 说起序列化，大家应该都不会陌生，在Android中的应用也比较多，特别是在Activity直接传递对象时。就需要使用序列化，我一般是使用Serialization对对象进行序列化，然后进行传递。而在上篇文章中，在使用AIDL时，对跨进程传递的对象也进行了序列化，当时我们使……
         </div>
-        <p class="readmore"><a href="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%875%E8%87%AA%E5%AE%9A%E4%B9%89View/">阅读全文</a></p>
+        <p class="readmore"><a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC3%E5%BA%8F%E5%88%97%E5%8C%96/">阅读全文</a></p>
     </article>
     
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%876%E4%BB%BF%E9%99%8C%E9%99%8C%E5%8D%A1%E7%89%87%E5%B7%A6%E5%8F%B3%E6%BB%91%E5%8A%A8%E9%80%89%E6%8B%A9%E5%B8%83%E5%B1%80/" title="Android之View篇6————仿陌陌卡片左右滑动选择控件">Android之View篇6————仿陌陌卡片左右滑动选择控件</a>
+                <a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC2AIDL/" title="Android之IPC2————AIDL">Android之IPC2————AIDL</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
-            2019年3月2日
+            2019年5月2日
         </date>
         
         <div class="post-meta">
@@ -209,24 +209,24 @@
             
             <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android'>Android</a></span>
             
-            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82'>Android之网络请求</a></span>
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8BIPC'>Android之IPC</a></span>
             
         </div>
         
         <div class="post-content">
-            一.目录 @[toc] 二.效果图 三.业务需求梳理 卡片随着手指的移动进行移动 卡片在移动过程中，随着距离的加大，卡片绕z轴旋转 判断手指的移动方向，显示选择/删除图标，同时图标随距离的增大，透明度增加 手指离开卡片后，根据移动的距离，判断卡片是否移出屏幕，从左边移动还是右边移动 显示的卡片移出完后，增……
+            一.AIDL概述 在上一篇博客中，我们讨论Service绑定时，所用的三种方法，即扩展的binder类，Messenger类，还有AIDL，上一章博客中当时我们只是简单的介绍了一下。在这里我们就详细的来看一看。 1.AIDL是什么 AIDL即Android接口定义语言，是IDL语言的一……
         </div>
-        <p class="readmore"><a href="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%876%E4%BB%BF%E9%99%8C%E9%99%8C%E5%8D%A1%E7%89%87%E5%B7%A6%E5%8F%B3%E6%BB%91%E5%8A%A8%E9%80%89%E6%8B%A9%E5%B8%83%E5%B1%80/">阅读全文</a></p>
+        <p class="readmore"><a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC2AIDL/">阅读全文</a></p>
     </article>
     
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%871%E5%88%9D%E8%AF%86View/" title="Android之View篇1————初识View">Android之View篇1————初识View</a>
+                <a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC1Service/" title="Android之IPC1————Service">Android之IPC1————Service</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
-            2019年3月1日
+            2019年5月1日
         </date>
         
         <div class="post-meta">
@@ -234,24 +234,24 @@
             
             <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android'>Android</a></span>
             
-            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82'>Android之网络请求</a></span>
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8BIPC'>Android之IPC</a></span>
             
         </div>
         
         <div class="post-content">
-            一. 目录 @[toc] 二. View的基础知识 1.什么是View View是所有Android中所有控件的基类，是界面层次上的一种抽象 2.View的位置参数 3.MotionEvent MotionEvent是指触屏事件(Touch事件)的相关细节（触摸发生的时间，位置）包装而成，典型的事件有以下几类: 事件类型 具体动作 ACTION 按……
+            一.Service的概述 最近打算看看AndroidIPC相关的内容，并进行总结。所以就先从IPC中很常用的Service开始。 Service作为Android四大组件之一，但并不想Activity一样，有很多的接触，对于我来言，大概只有在使用通知时用过它。接下来简单看一下Serv……
         </div>
-        <p class="readmore"><a href="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%871%E5%88%9D%E8%AF%86View/">阅读全文</a></p>
+        <p class="readmore"><a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC1Service/">阅读全文</a></p>
     </article>
     
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://blog.bingtan.online/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%8211Retrofit%E7%9A%84%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" title="Android之网络请求11————Retrofit的源码分析">Android之网络请求11————Retrofit的源码分析</a>
+                <a href="http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-11Rxjava%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB3/" title="Android之Rxjava2.X 11————Rxjava源码阅读3">Android之Rxjava2.X 11————Rxjava源码阅读3</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
-            2019年2月11日
+            2019年4月11日
         </date>
         
         <div class="post-meta">
@@ -259,24 +259,24 @@
             
             <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android'>Android</a></span>
             
-            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82'>Android之网络请求</a></span>
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8BRxjava'>Android之Rxjava</a></span>
             
         </div>
         
         <div class="post-content">
-            一.前言 前两篇文章主要分析了Retrofit的应用，这一篇主要分析的源码。在分析源码的时候，发现了一篇很好的博客，以及一个讲解视频，这里分享给大家 Retrofit分析-漂亮的解耦套路(视频版) Android：手把手带你 深入读懂 Retrofit 2.0 源码 二.Retrofit的大致流程分析 一般网络请求……
+            一.目录 @[toc] 二.目的 这次分析源码有如下目的： 知道被观察者(Observable)是如何将数据发送出去的 知道观察者(Observer)是如何接收数据的 何时将源头和终点关联起来的 知道操作符值怎么实现的 知道线程调度如何实现的 背压Flowable是如何实现的 1~5点之前文章都分析，本文主要……
         </div>
-        <p class="readmore"><a href="http://blog.bingtan.online/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%8211Retrofit%E7%9A%84%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">阅读全文</a></p>
+        <p class="readmore"><a href="http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-11Rxjava%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB3/">阅读全文</a></p>
     </article>
     
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://blog.bingtan.online/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%8210Retrofit%E7%9A%84%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8/" title="Android之网络请求10————Retrofit的进阶使用">Android之网络请求10————Retrofit的进阶使用</a>
+                <a href="http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-10Rxjava%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB2/" title="Android之Rxjava2.X 10————Rxjava源码阅读2 ">Android之Rxjava2.X 10————Rxjava源码阅读2 </a>
             </h1>
         </header>
         <date class="post-meta meta-date">
-            2019年2月10日
+            2019年4月10日
         </date>
         
         <div class="post-meta">
@@ -284,24 +284,24 @@
             
             <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android'>Android</a></span>
             
-            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82'>Android之网络请求</a></span>
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8BRxjava'>Android之Rxjava</a></span>
             
         </div>
         
         <div class="post-content">
-            一.前言 上一节中我们对Retrofit进行了介绍，包括他的简单使用和注解。这一篇我们学习他的进阶使用，包括文件图片Json字符串的上传，以及大文件的断点下载，还有和Rxjava的混合使用 准备工作： 添加依赖 设置权限 二.Retrfit文件上传 1.创建描述网络请求的接口 1 2 3 4 5 6 public interface……
+            一. 目录 @[toc] 二. 目的 如上篇文章所说，这次看源码有如下目的： 知道被观察者(Observable)是如何将数据发送出去的 知道观察者(Observer)是如何接收数据的 何时将源头和终点关联起来的 何时将源头和终点关联起来的 知道线程调度如何实现的 背压Flowable是如何实现的 上篇文章中，分……
         </div>
-        <p class="readmore"><a href="http://blog.bingtan.online/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%8210Retrofit%E7%9A%84%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8/">阅读全文</a></p>
+        <p class="readmore"><a href="http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-10Rxjava%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB2/">阅读全文</a></p>
     </article>
     
     <article class="post">
         <header>
             <h1 class="post-title">
-                <a href="http://blog.bingtan.online/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%829Retrofit%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/" title="Android之网络请求9————Retrofit的简单使用">Android之网络请求9————Retrofit的简单使用</a>
+                <a href="http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-9Rxjava%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB1/" title="Android之Rxjava2.X 9————Rxjava源码阅读1">Android之Rxjava2.X 9————Rxjava源码阅读1</a>
             </h1>
         </header>
         <date class="post-meta meta-date">
-            2019年2月9日
+            2019年4月9日
         </date>
         
         <div class="post-meta">
@@ -309,14 +309,14 @@
             
             <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android'>Android</a></span>
             
-            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82'>Android之网络请求</a></span>
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8BRxjava'>Android之Rxjava</a></span>
             
         </div>
         
         <div class="post-content">
-            一.Retrofit的介绍 Retreofit是什么，根据其官方文档的介绍，他就是一个适用于 Android 和 Java 的类型安全的 HTTP 客户端。特别说明Retrofit网络请求本质是有OkHttp完成的，而Retrofit仅负责网络请求接口的封装。 二.Retrofit的简单使用 Retrofit的简单使用我……
+            一.目录 @[toc] 二.目的 这次分析源码有如下目的： 知道被观察者(Observable)是如何将数据发送出去的 知道观察者(Observer)是如何接收数据的 何时将源头和终点关联起来的 知道操作符值怎么实现的 知道线程调度如何实现的 背压Flowable是如何实现的 本文的目的是1，2，3点。下一篇……
         </div>
-        <p class="readmore"><a href="http://blog.bingtan.online/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%829Retrofit%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/">阅读全文</a></p>
+        <p class="readmore"><a href="http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-9Rxjava%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB1/">阅读全文</a></p>
     </article>
     
     
@@ -383,39 +383,39 @@
     </li>
     
     <li>
-        <a href="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%872View%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%88%86%E5%8F%91/" title="Android之View篇2————View的事件分发">Android之View篇2————View的事件分发</a>
+        <a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC6Binder3-Framework%E5%B1%82%E5%88%86%E6%9E%90/" title="Android之IPC6————Binder3 Framework层分析">Android之IPC6————Binder3 Framework层分析</a>
     </li>
     
     <li>
-        <a href="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%873View%E6%BB%91%E5%8A%A8%E5%86%B2%E7%AA%81%E7%9A%84%E8%A7%A3%E5%86%B3/" title="Android之View篇3————View滑动冲突的解决">Android之View篇3————View滑动冲突的解决</a>
+        <a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC5Binder2-Native%E5%B1%82%E5%88%86%E6%9E%90/" title="Android之IPC5————Binder2 Native层分析">Android之IPC5————Binder2 Native层分析</a>
     </li>
     
     <li>
-        <a href="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%874View%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/" title="Android之View篇4————View的工作原理">Android之View篇4————View的工作原理</a>
+        <a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC4Binder1-%E6%A6%82%E8%BF%B0%E4%B8%8EBinder%E9%A9%B1%E5%8A%A8/" title="Android之IPC4————Binder1 概述与Bander驱动">Android之IPC4————Binder1 概述与Bander驱动</a>
     </li>
     
     <li>
-        <a href="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%875%E8%87%AA%E5%AE%9A%E4%B9%89View/" title="Android之View篇5————自定义View">Android之View篇5————自定义View</a>
+        <a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC3%E5%BA%8F%E5%88%97%E5%8C%96/" title="Android之IPC3————序列化">Android之IPC3————序列化</a>
     </li>
     
     <li>
-        <a href="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%876%E4%BB%BF%E9%99%8C%E9%99%8C%E5%8D%A1%E7%89%87%E5%B7%A6%E5%8F%B3%E6%BB%91%E5%8A%A8%E9%80%89%E6%8B%A9%E5%B8%83%E5%B1%80/" title="Android之View篇6————仿陌陌卡片左右滑动选择控件">Android之View篇6————仿陌陌卡片左右滑动选择控件</a>
+        <a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC2AIDL/" title="Android之IPC2————AIDL">Android之IPC2————AIDL</a>
     </li>
     
     <li>
-        <a href="http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%871%E5%88%9D%E8%AF%86View/" title="Android之View篇1————初识View">Android之View篇1————初识View</a>
+        <a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC1Service/" title="Android之IPC1————Service">Android之IPC1————Service</a>
     </li>
     
     <li>
-        <a href="http://blog.bingtan.online/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%8211Retrofit%E7%9A%84%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" title="Android之网络请求11————Retrofit的源码分析">Android之网络请求11————Retrofit的源码分析</a>
+        <a href="http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-11Rxjava%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB3/" title="Android之Rxjava2.X 11————Rxjava源码阅读3">Android之Rxjava2.X 11————Rxjava源码阅读3</a>
     </li>
     
     <li>
-        <a href="http://blog.bingtan.online/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%8210Retrofit%E7%9A%84%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8/" title="Android之网络请求10————Retrofit的进阶使用">Android之网络请求10————Retrofit的进阶使用</a>
+        <a href="http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-10Rxjava%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB2/" title="Android之Rxjava2.X 10————Rxjava源码阅读2 ">Android之Rxjava2.X 10————Rxjava源码阅读2 </a>
     </li>
     
     <li>
-        <a href="http://blog.bingtan.online/posts/Android%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%829Retrofit%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/" title="Android之网络请求9————Retrofit的简单使用">Android之网络请求9————Retrofit的简单使用</a>
+        <a href="http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-9Rxjava%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB1/" title="Android之Rxjava2.X 9————Rxjava源码阅读1">Android之Rxjava2.X 9————Rxjava源码阅读1</a>
     </li>
     
 </ul>
@@ -431,9 +431,15 @@
         <h3 class="widget-title">分类</h3>
 <ul class="widget-list">
     
-    <li><a href="http://blog.bingtan.online/categories/Android/">Android (17)</a></li>
+    <li><a href="http://blog.bingtan.online/categories/Android/">Android (34)</a></li>
     
-    <li><a href="http://blog.bingtan.online/categories/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/">Android之网络请求 (17)</a></li>
+    <li><a href="http://blog.bingtan.online/categories/Android%E4%B9%8BIPC/">Android之IPC (6)</a></li>
+    
+    <li><a href="http://blog.bingtan.online/categories/Android%E4%B9%8BRxjava/">Android之Rxjava (11)</a></li>
+    
+    <li><a href="http://blog.bingtan.online/categories/Android%E4%B9%8BView/">Android之View (6)</a></li>
+    
+    <li><a href="http://blog.bingtan.online/categories/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/">Android之网络请求 (11)</a></li>
     
     <li><a href="http://blog.bingtan.online/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络 (6)</a></li>
     
@@ -447,6 +453,12 @@
 <div class="tagcloud">
     
     <a href="http://blog.bingtan.online/tags/Android/">Android</a>
+    
+    <a href="http://blog.bingtan.online/tags/IPC/">IPC</a>
+    
+    <a href="http://blog.bingtan.online/tags/Rxjava/">Rxjava</a>
+    
+    <a href="http://blog.bingtan.online/tags/View/">View</a>
     
     <a href="http://blog.bingtan.online/tags/%E7%BD%91%E7%BB%9C/">网络</a>
     

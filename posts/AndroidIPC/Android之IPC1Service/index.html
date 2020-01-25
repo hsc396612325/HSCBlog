@@ -6,13 +6,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title> | 冰炭不投day的博客</title>
-    <meta property="og:title" content=" - 冰炭不投day的博客">
+    <title>Android之IPC1————Service | 冰炭不投day的博客</title>
+    <meta property="og:title" content="Android之IPC1————Service - 冰炭不投day的博客">
     <meta property="og:type" content="article">
         
+    <meta property="article:published_time" content='2019-05-01T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2019-05-01T22:40:54&#43;08:00'>
         
     <meta name="Keywords" content="Android 冰炭不投day">
-    <meta name="description" content="">
+    <meta name="description" content="Android之IPC1————Service">
         
     <meta name="author" content="冰炭不投day">
     <meta property="og:url" content="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC1Service/">
@@ -80,11 +84,20 @@
     
     <article class="post">
         <header>
-            <h1 class="post-title"></h1>
+            <h1 class="post-title">Android之IPC1————Service</h1>
         </header>
         <date class="post-meta meta-date">
-            1年1月1日
+            2019年5月1日
         </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android'>Android</a></span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android%E4%B9%8BIPC'>Android之IPC</a></span>
+            
+        </div>
         
         
         <div class="post-meta">
@@ -96,9 +109,7 @@
         
         
         <div class="post-content">
-            <h1 id="android之ipc1service">Android之IPC1————Service</h1>
-<p>@[toc]</p>
-<h3 id="一service的概述">一.Service的概述</h3>
+            <h3 id="一service的概述">一.Service的概述</h3>
 <p>最近打算看看AndroidIPC相关的内容，并进行总结。所以就先从IPC中很常用的Service开始。</p>
 <p>Service作为Android四大组件之一，但并不想Activity一样，有很多的接触，对于我来言，大概只有在使用通知时用过它。接下来简单看一下Service的相关概念。</p>
 <p><a href="https://developer.android.com/reference/android/app/Service?hl=zh-cn">官方文档</a></p>
@@ -359,7 +370,7 @@
 </code></pre></td></tr></table>
 </div>
 </div><h4 id="3运行结果">3.运行结果</h4>
-<p><img src="https://img-blog.csdnimg.cn/20181031175141840.png" alt="在这里插入图片描述"></p>
+<p><img src="/image/Android_IPC/4_0.png" alt="在这里插入图片描述"></p>
 <h3 id="四service绑定服务概述">四.Service绑定服务概述</h3>
 <p><a href="https://developer.android.com/guide/components/bound-services?hl=zh-cn">绑定Service官方文档</a></p>
 <p>上面启动的Service只是启动状态，Activity只能启动或者停止Service，除此之外，并没有其他的关联。也就是说，两者之间无法通信。如果需要两者之间进行通信，则需要使Service进入绑定状态。当绑定后，我们就可以在Activity向Service（也就是服务端）发送请求，或者调用Service（服务端）的方法，甚至可以通过绑定服务进行执行ipc。</p>
@@ -719,9 +730,9 @@
 </div>
 </div><p>上面的代码中，通过 bindService和unbindService对Service进行绑定和解绑。通过ServiceConnection获得对应的Service对象，从而调用对应的公用方法。</p>
 <h4 id="4运行结果">4.运行结果</h4>
-<p>![在这里插入图片描述](<a href="https://img-blog.csdnimg.cn/20181031175219683.png">https://img-blog.csdnimg.cn/20181031175219683.png</a></p>
+<p>![在这里插入图片描述](/image/Android_IPC/4_1.png</p>
 <p>通过Log可在，第一次点击绑定服务时，LocalService服务端的onCreate()、onBind方法会依次被调用，此时客户端的ServiceConnection#onServiceConnected()被调用并返回LocalBinder对象，接着调用LocalBinder#getService方法返回LocalService实例对象，此时客户端便持有了LocalService的实例对象，也就可以任意调用LocalService类中的声明公共方法了。解除绑定时，LocalService的onUnBind、onDestroy方法依次被回调。
-<img src="https://img-blog.csdnimg.cn/20181031175325396.png" alt="在这里插入图片描述"></p>
+<img src="/image/Android_IPC/4_2.png" alt="在这里插入图片描述"></p>
 <h3 id="六使用messenger">六.使用Messenger</h3>
 <h4 id="1使用场景-1">1.使用场景</h4>
 <p>当Service需要进行跨进程通信（IPC）时，但是不需要执行多线程处理，此时就可以使用Messenger进行跨进程通信。</p>
@@ -1093,11 +1104,11 @@
 </div>
 </div><h4 id="4运行结果-1">4.运行结果</h4>
 <p>客户端Log
-<img src="https://img-blog.csdnimg.cn/20181031175437314.png" alt="在这里插入图片描述"></p>
+<img src="/image/Android_IPC/4_3.png" alt="在这里插入图片描述"></p>
 <p>ServiceLog
-<img src="https://img-blog.csdnimg.cn/20181031175522500.png" alt="在这里插入图片描述"></p>
+<img src="/image/Android_IPC/4_4.png" alt="在这里插入图片描述"></p>
 <p>下图就是其通信过程
-<img src="https://img-blog.csdn.net/20161004221152656" alt="image"></p>
+<img src="/image/Android_IPC/4_5.png" alt="image"></p>
 <h3 id="七使用aidl">七.使用AIDL</h3>
 <h4 id="1使用场景-2">1.使用场景</h4>
 <p>上面我们使用Messenger来进行进程间通信的方法，可以发现，Messenger是以串行的方法处理客户端发来的消息，如果大量的消息同时发送的服务端，服务端仍然只能一个个处理，同时我们有时要跨进程调用Service的方法，再这些情况下，Messenger不能胜任，此时就应该使用AIDL</p>
@@ -1363,8 +1374,8 @@
 </code></pre></td></tr></table>
 </div>
 </div><h4 id="2运行结果">2.运行结果</h4>
-<p><img src="https://img-blog.csdnimg.cn/2018103117581373.jpg" alt="在这里插入图片描述">
-<img src="https://img-blog.csdnimg.cn/20181031175846776.jpg" alt="在这里插入图片描述"></p>
+<p><img src="/image/Android_IPC/4_6.png" alt="在这里插入图片描述">
+<img src="/image/Android_IPC/4_7.png" alt="在这里插入图片描述"></p>
 <h3 id="九servicr的生命周期">九.Servicr的生命周期</h3>
 <h4 id="1生命周期的回调">1.生命周期的回调</h4>
 <p>与Activity类似,服务也有生命周期回调的方法。下面就是他每种生命周期方法</p>
@@ -1491,15 +1502,15 @@
     <h2>See Also</h2>
     <ul class="listing">
         
-        <li><a href="/posts/%E6%96%87%E7%AB%A0%E5%AF%BC%E8%88%AA/">文章导航</a></li>
+        <li><a href="/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-11Rxjava%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB3/">Android之Rxjava2.X 11————Rxjava源码阅读3</a></li>
         
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%872View%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%88%86%E5%8F%91/">Android之View篇2————View的事件分发</a></li>
+        <li><a href="/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-10Rxjava%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB2/">Android之Rxjava2.X 10————Rxjava源码阅读2 </a></li>
         
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%873View%E6%BB%91%E5%8A%A8%E5%86%B2%E7%AA%81%E7%9A%84%E8%A7%A3%E5%86%B3/">Android之View篇3————View滑动冲突的解决</a></li>
+        <li><a href="/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-9Rxjava%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB1/">Android之Rxjava2.X 9————Rxjava源码阅读1</a></li>
         
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%874View%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">Android之View篇4————View的工作原理</a></li>
+        <li><a href="/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-8Rxjava-%E8%83%8C%E5%8E%8B%E7%AD%96%E7%95%A5/">Android之Rxjava2.X 8————Rxjava 背压策略</a></li>
         
-        <li><a href="/posts/AndroidView/Android%E4%B9%8BView%E7%AF%875%E8%87%AA%E5%AE%9A%E4%B9%89View/">Android之View篇5————自定义View</a></li>
+        <li><a href="/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-7Rxjava-%E6%9D%A1%E4%BB%B6%E6%93%8D%E4%BD%9C%E7%AC%A6/">Android之Rxjava2.X 7————Rxjava 条件操作符</a></li>
         
     </ul>
 </div>
@@ -1507,7 +1518,13 @@
 
         <div class="post-meta meta-tags">
             
-            没有标签
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/Android'>Android</a></li>
+                
+                <li><a href='http://blog.bingtan.online/tags/IPC'>IPC</a></li>
+                
+            </ul>
             
         </div>
     </article>

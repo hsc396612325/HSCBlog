@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>View on 冰炭不投day的博客</title>
+    <link>http://blog.bingtan.online/tags/View/</link>
+    <description>Recent content in View on 冰炭不投day的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Wed, 06 Mar 2019 22:40:54 +0800</lastBuildDate>
+    
+	<atom:link href="http://blog.bingtan.online/tags/View/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Android之View篇6————仿陌陌卡片左右滑动选择控件</title>
+      <link>http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%876%E4%BB%BF%E9%99%8C%E9%99%8C%E5%8D%A1%E7%89%87%E5%B7%A6%E5%8F%B3%E6%BB%91%E5%8A%A8%E9%80%89%E6%8B%A9%E5%B8%83%E5%B1%80/</link>
+      <pubDate>Wed, 06 Mar 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%876%E4%BB%BF%E9%99%8C%E9%99%8C%E5%8D%A1%E7%89%87%E5%B7%A6%E5%8F%B3%E6%BB%91%E5%8A%A8%E9%80%89%E6%8B%A9%E5%B8%83%E5%B1%80/</guid>
+      <description>一.目录 @[toc] 二.效果图 三.业务需求梳理 卡片随着手指的移动进行移动 卡片在移动过程中，随着距离的加大，卡片绕z轴旋转 判断手指的移动方向，显示选择/删除图标，同时图标随距离的增大，透明度增加 手指离开卡片后，根据移动的距离，判断卡片是否移出屏幕，从左边移动还是右边移动 显示的卡片移出完后，增</description>
+    </item>
+    
+    <item>
+      <title>Android之View篇5————自定义View</title>
+      <link>http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%875%E8%87%AA%E5%AE%9A%E4%B9%89View/</link>
+      <pubDate>Tue, 05 Mar 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%875%E8%87%AA%E5%AE%9A%E4%B9%89View/</guid>
+      <description>一.目录 @[toc] 二.自定义View的分类 1.继承View重写onDraw方法 主要用来实现一些不规则的效果，这种效果不方便用布局组合的方式达到，通常需要静态或者动态的显示一些不规则的图形，这种需要绘制的需要自己支持wrap_content,并支持padding。 2.继承ViewGroup</description>
+    </item>
+    
+    <item>
+      <title>Android之View篇4————View的工作原理</title>
+      <link>http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%874View%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/</link>
+      <pubDate>Mon, 04 Mar 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%874View%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/</guid>
+      <description>一. 目录 @[toc] 二. 初识DecorView和ViewRoot 1. DecorView DecorView是整个Window界面的最顶层View。DecorView只有一个子元素为LinearLayout。代表整个Window界面，包含通知栏，标题栏，内容显示栏三块区域。LinearLayout里有两个Fra</description>
+    </item>
+    
+    <item>
+      <title>Android之View篇3————View滑动冲突的解决</title>
+      <link>http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%873View%E6%BB%91%E5%8A%A8%E5%86%B2%E7%AA%81%E7%9A%84%E8%A7%A3%E5%86%B3/</link>
+      <pubDate>Sun, 03 Mar 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%873View%E6%BB%91%E5%8A%A8%E5%86%B2%E7%AA%81%E7%9A%84%E8%A7%A3%E5%86%B3/</guid>
+      <description>一. 目录 @[toc] 二. 前言 滑动冲突也算是在开发中经常遇到的问题，在去年做Everyday时，就碰到过这个问题，当时在百度中找到了问题的解决方法，只不过一直处于不知其所以然。今天我就想系统的整理下关于滑动冲突的解决。 阅读本篇前，建议阅读我的前一篇博客,View的事件分发机制。滑动冲突的解决</description>
+    </item>
+    
+    <item>
+      <title>Android之View篇2————View的事件分发</title>
+      <link>http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%872View%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%88%86%E5%8F%91/</link>
+      <pubDate>Sat, 02 Mar 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%872View%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%88%86%E5%8F%91/</guid>
+      <description>一.目录 @[toc] 二.事件分发的基础认识 1. 事件分发是什么 事件分发就是对MotionEvent事件进行分发的过程，即当一个MotionEvent产生后，系统需要把这个事件传递(处理)给一个具体的View，这个过程就是分发过程。 2. 事件分发的简单过程 当一个点击事件产生后，一般顺序事件先传递到A</description>
+    </item>
+    
+    <item>
+      <title>Android之View篇1————初识View</title>
+      <link>http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%871%E5%88%9D%E8%AF%86View/</link>
+      <pubDate>Fri, 01 Mar 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/AndroidView/Android%E4%B9%8BView%E7%AF%871%E5%88%9D%E8%AF%86View/</guid>
+      <description>一. 目录 @[toc] 二. View的基础知识 1.什么是View View是所有Android中所有控件的基类，是界面层次上的一种抽象 2.View的位置参数 3.MotionEvent MotionEvent是指触屏事件(Touch事件)的相关细节（触摸发生的时间，位置）包装而成，典型的事件有以下几类: 事件类型 具体动作 ACTION 按</description>
+    </item>
+    
+  </channel>
+</rss>

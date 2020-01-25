@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Rxjava on 冰炭不投day的博客</title>
+    <link>http://blog.bingtan.online/tags/Rxjava/</link>
+    <description>Recent content in Rxjava on 冰炭不投day的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 11 Apr 2019 22:40:54 +0800</lastBuildDate>
+    
+	<atom:link href="http://blog.bingtan.online/tags/Rxjava/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Android之Rxjava2.X 11————Rxjava源码阅读3</title>
+      <link>http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-11Rxjava%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB3/</link>
+      <pubDate>Thu, 11 Apr 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-11Rxjava%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB3/</guid>
+      <description>一.目录 @[toc] 二.目的 这次分析源码有如下目的： 知道被观察者(Observable)是如何将数据发送出去的 知道观察者(Observer)是如何接收数据的 何时将源头和终点关联起来的 知道操作符值怎么实现的 知道线程调度如何实现的 背压Flowable是如何实现的 1~5点之前文章都分析，本文主要</description>
+    </item>
+    
+    <item>
+      <title>Android之Rxjava2.X 10————Rxjava源码阅读2 </title>
+      <link>http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-10Rxjava%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB2/</link>
+      <pubDate>Wed, 10 Apr 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-10Rxjava%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB2/</guid>
+      <description>一. 目录 @[toc] 二. 目的 如上篇文章所说，这次看源码有如下目的： 知道被观察者(Observable)是如何将数据发送出去的 知道观察者(Observer)是如何接收数据的 何时将源头和终点关联起来的 何时将源头和终点关联起来的 知道线程调度如何实现的 背压Flowable是如何实现的 上篇文章中，分</description>
+    </item>
+    
+    <item>
+      <title>Android之Rxjava2.X 9————Rxjava源码阅读1</title>
+      <link>http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-9Rxjava%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB1/</link>
+      <pubDate>Tue, 09 Apr 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-9Rxjava%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB1/</guid>
+      <description>一.目录 @[toc] 二.目的 这次分析源码有如下目的： 知道被观察者(Observable)是如何将数据发送出去的 知道观察者(Observer)是如何接收数据的 何时将源头和终点关联起来的 知道操作符值怎么实现的 知道线程调度如何实现的 背压Flowable是如何实现的 本文的目的是1，2，3点。下一篇</description>
+    </item>
+    
+    <item>
+      <title>Android之Rxjava2.X 8————Rxjava 背压策略</title>
+      <link>http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-8Rxjava-%E8%83%8C%E5%8E%8B%E7%AD%96%E7%95%A5/</link>
+      <pubDate>Mon, 08 Apr 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-8Rxjava-%E8%83%8C%E5%8E%8B%E7%AD%96%E7%95%A5/</guid>
+      <description>一.目录 @[toc] 注:本文大部分参考Android RxJava ：图文详解 背压策略 二.背压的引入 1.同步订阅 定义：观察者和被观察者处于同一线程里。 被观察者发送事件的特点：被观察者没发送一个事件，必须等到观察者接收并处理后，才能继续发送下一个事件。 2.异步订阅 定义：观察者和被观察者处于不同的线程中。 被</description>
+    </item>
+    
+    <item>
+      <title>Android之Rxjava2.X 7————Rxjava 条件操作符</title>
+      <link>http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-7Rxjava-%E6%9D%A1%E4%BB%B6%E6%93%8D%E4%BD%9C%E7%AC%A6/</link>
+      <pubDate>Sun, 07 Apr 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-7Rxjava-%E6%9D%A1%E4%BB%B6%E6%93%8D%E4%BD%9C%E7%AC%A6/</guid>
+      <description>一. 目录 @[toc] 二. 概述 1.作用 通过设置函数，判断被观察者（Observable）发送的事件是否符合条件 2.类型 三. 具体操作符详解 1.all（） 作用：判定是否Observable发射的所有数据都满足某个条件 具体使用： 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 private void rxJavaDemo10() { Observable.just(1, 2, 3, 4, 5). all(new Predicate&amp;lt;Integer&amp;gt;() { @Override public boolean test(Integer integer) throws Exception</description>
+    </item>
+    
+    <item>
+      <title>Android之Rxjava2.X 6————Rxjava 功能操作符</title>
+      <link>http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-6Rxjava-%E5%8A%9F%E8%83%BD%E6%93%8D%E4%BD%9C%E7%AC%A6/</link>
+      <pubDate>Sat, 06 Apr 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-6Rxjava-%E5%8A%9F%E8%83%BD%E6%93%8D%E4%BD%9C%E7%AC%A6/</guid>
+      <description>一.目录 @[toc] 二.概述 1.作用 辅助被观察者在发送事件是实现一些实时功能性的需求 2.类型 RxJava 2 中，常见的功能性操作符 主要有： 三.线程调度 1.subscribeOn() 作用：指定被观察者的线程，有一点需要注意就是如果多次调用此方法，只有第一次有效。 具体使用 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 Observable.create(new ObservableOnSubscribe&amp;lt;Integer&amp;gt;()</description>
+    </item>
+    
+    <item>
+      <title>Android之Rxjava2.X 5————Rxjava 过滤操作符</title>
+      <link>http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-5Rxjava-%E8%BF%87%E6%BB%A4%E6%93%8D%E4%BD%9C%E7%AC%A6/</link>
+      <pubDate>Fri, 05 Apr 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-5Rxjava-%E8%BF%87%E6%BB%A4%E6%93%8D%E4%BD%9C%E7%AC%A6/</guid>
+      <description>一. 目录 @[toc] 二. 概述 1.作用 过滤 / 筛选 被观察者（Observable）发送的事件 &amp;amp; 观察者 （Observer）接收的事件 2.类型 三. 根据指定事件条件过滤事件 1. filter() 作用：通过一定逻辑来过滤被观察者发送的事件，如果返回true则发送事件，否则不会发送 应用场景：筛选符合要求的事件 原理图： 具体</description>
+    </item>
+    
+    <item>
+      <title>Android之Rxjava2.X 4————Rxjava 创建操作符</title>
+      <link>http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-4Rxjava-%E7%BB%84%E5%90%88%E6%93%8D%E4%BD%9C%E7%AC%A6/</link>
+      <pubDate>Thu, 04 Apr 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-4Rxjava-%E7%BB%84%E5%90%88%E6%93%8D%E4%BD%9C%E7%AC%A6/</guid>
+      <description>一.目录 @[toc] 二.概述 1.作用 创建 被观察者（ Observable） 对象 &amp;amp; 发送事件。 2. 类型 三.组合多个被观察者 1.concat()/concatArray() 作用：组合多个被观察者一起发送数据，合并后 按发送顺序串行执行 两者区别:组合被观察者的数量，即concat（）组合被观察者数量≤4个，而concatArray（）则可＞4个 原理</description>
+    </item>
+    
+    <item>
+      <title>Android之Rxjava2.X 3————Rxjava 变换操作符</title>
+      <link>http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-3Rxjava-%E5%8F%98%E6%8D%A2%E6%93%8D%E4%BD%9C%E7%AC%A6/</link>
+      <pubDate>Wed, 03 Apr 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-3Rxjava-%E5%8F%98%E6%8D%A2%E6%93%8D%E4%BD%9C%E7%AC%A6/</guid>
+      <description>一. 目录 @[toc] 二.概述 1.作用 对事件序列中的事件 / 整个事件序列 进行加工处理（即变换），使得其转变成不同的事件 / 整个事件序列 2. 类型 常见的变化操作符如下 三.对应操作符的介绍 1.Map() 作用：对Observable发射的每一项数据应用一个函数，执行变换操作 应用场景：数据类型转化 [外链图片转存失败,源</description>
+    </item>
+    
+    <item>
+      <title>Android之Rxjava2.X 2————Rxjava 创建操作符</title>
+      <link>http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-2Rxjava-%E5%88%9B%E5%BB%BA%E6%93%8D%E4%BD%9C%E7%AC%A6/</link>
+      <pubDate>Tue, 02 Apr 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-2Rxjava-%E5%88%9B%E5%BB%BA%E6%93%8D%E4%BD%9C%E7%AC%A6/</guid>
+      <description>一.目录 @[toc] 二.概述 1.作用 创建 被观察者（ Observable） 对象 &amp;amp; 发送事件。 2. 类型 三.基本创建 需求场景: 完整的创建被观察者对象 1. create（） 你可以使用Create操作符创建一个完整的Observable，可以传递onNext，onError和onCompleted等事件。 代</description>
+    </item>
+    
+    <item>
+      <title>Android之Rxjava2.X 1————Rxjava概述</title>
+      <link>http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-1Rxjava%E6%A6%82%E8%BF%B0/</link>
+      <pubDate>Mon, 01 Apr 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-1Rxjava%E6%A6%82%E8%BF%B0/</guid>
+      <description>一.目录 @[toc] 二.前言 这个暑假看的最多内容也就是Rxjava相关的内容，虽然网上目前关于Rxjava的文章挺多的，但还是想自己总结一下，这个系列预计分为3个部分，概述，操作符，应用。文章内容会参考其他博主优秀的文章，也会在文末给出参考博文的地址。同时也参考了一下Rxjava的文档。 三</description>
+    </item>
+    
+  </channel>
+</rss>
