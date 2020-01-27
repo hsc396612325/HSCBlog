@@ -1,0 +1,992 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>数据结构15————二叉树的遍历和建立 | 冰炭不投day的博客</title>
+    <meta property="og:title" content="数据结构15————二叉树的遍历和建立 - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2018-05-15T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2018-05-15T22:40:54&#43;08:00'>
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="数据结构15————二叉树的遍历和建立">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8415%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%81%8D%E5%8E%86%E5%92%8C%E5%BB%BA%E7%AB%8B/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">数据结构15————二叉树的遍历和建立</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年5月15日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84'>“数据结构&#34;</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h3 id="一内容">一.内容</h3>
+<ol>
+<li>二叉树遍历的概念</li>
+<li>二叉树的遍历 使用递归实现</li>
+<li>二叉树的遍历 使用栈实现</li>
+<li>二叉树的建立</li>
+<li>二叉树遍历的应用</li>
+</ol>
+<p><strong>所有代码只是核心函数，完整代码见末尾链接</strong>
+<strong>注意本篇博客都是基于二叉链表的实现</strong></p>
+<h3 id="二二叉树遍历的概念">二.二叉树遍历的概念</h3>
+<p>如果我们要求次序的不重复的，遍历一颗树，并且限制从左到右习惯方式，一共有4种不同遍历方法。<br>
+<img src="/image/Data_structure/13_0.png" alt="这里写图片描述"></p>
+<h4 id="1层次遍历">1.层次遍历</h4>
+<p>按照二叉树的层，一层一层的访问。</p>
+<blockquote>
+<p>例:对于二叉树T而言，它的层次遍历序列为ABCDEFG</p>
+</blockquote>
+<h4 id="2前序遍历">2.前序遍历</h4>
+<p>对于一颗二叉树</p>
+<ul>
+<li>先访问根节点</li>
+<li>前序遍历左子树(按照前序遍历规则访问左子树,即先访问左子树的根，然后继续遍历它的左右子树,下同)</li>
+<li>前序遍历右子树</li>
+</ul>
+<blockquote>
+<p>例:对于二叉树T而言,它的前序遍历序列为ABDGCEF</p>
+</blockquote>
+<h4 id="3中序遍历">3.中序遍历</h4>
+<p>对于一颗二叉树</p>
+<ul>
+<li>中序遍历它的左子树</li>
+<li>访问它的根节点</li>
+<li>中序遍历它的右子树</li>
+</ul>
+<blockquote>
+<p>例:对于二叉树T而言,它的中序遍历序列为DGBAECF</p>
+</blockquote>
+<h4 id="4后序遍历">4.后序遍历</h4>
+<p>对于一颗二叉树</p>
+<ul>
+<li>后序遍历它的左子树</li>
+<li>后序遍历它的右子树</li>
+<li>访问根节点</li>
+</ul>
+<blockquote>
+<p>例:对于二叉树T而言,它的后序遍历序列为GDBEFCA</p>
+</blockquote>
+<h3 id="三二叉树的遍历-递归实现">三.二叉树的遍历 递归实现</h3>
+<p>其实根据上面的前中后序遍历规则，基本来说就可以确定递归的写法了，不过要增加一个递归出口。当前指针为NULL时，结束。</p>
+<h4 id="1前序遍历">1.前序遍历</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">PreOrder</span>(BiTree root){
+	<span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">static</span> count;
+	<span style="color:#000;font-weight:bold">if</span>(root<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>)
+		<span style="color:#000;font-weight:bold">return</span>;
+		
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%c</span><span style="color:#d14">&#34;</span>,root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>data);
+	PreOrder(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>lChild);
+	PreOrder(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rChild);
+}
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="2中序遍历">2.中序遍历</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">InOrder</span>(BiTree root){
+	<span style="color:#000;font-weight:bold">if</span>(root<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>)
+		<span style="color:#000;font-weight:bold">return</span>;
+		
+	InOrder(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>lChild);
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%c</span><span style="color:#d14">&#34;</span>,root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>data);
+	InOrder(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rChild);
+}
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="3后序遍历">3.后序遍历</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">PostOrder</span>(BiTree root){
+	<span style="color:#000;font-weight:bold">if</span>(root<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>)
+		<span style="color:#000;font-weight:bold">return</span>;
+		
+	PostOrder(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>lChild);
+	PostOrder(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rChild);
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%c</span><span style="color:#d14">&#34;</span>,root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>data);
+}
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="4层次遍历">4.层次遍历</h4>
+<p>对于层次遍历而言，不能使用递归来进行遍历。要使用队来进行。(类似于图的广度优先遍历)</p>
+<blockquote>
+<p>以树T为例<br>
+先将A入队 队内元素A  遍历序列为空<br>
+将队首A出队,访问,入队A的左右子树，队内元素BC,遍历序列A<br>
+将队首B出队,访问,入队B的左右子树，队内元素CD,遍历序列AB<br>
+将队首C出队,访问,入队C的左右子树，队内元素DEF,遍历序列ABC<br>
+将队首D出队,访问,入队D的左右子树, 队内元素EFG,遍历序列ABCD<br>
+将队首E出队,访问,入队E的左右子树, 队内元素FG,遍历序列ABCDE <br>
+将队首F出队,访问,入队F的左右子树, 队内元素G,遍历序列ABCDE<br>
+将队首G出队,访问,入队G的左右子树, 队内元素空,遍历序列ABCDEFG<br>
+队空，结束</p>
+</blockquote>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">levelOrder</span>(BiTree root){
+	BiTree p<span style="color:#000;font-weight:bold">=</span>root;
+	CSeQeue <span style="color:#000;font-weight:bold">*</span>S;
+	S<span style="color:#000;font-weight:bold">=</span>InitSeQueue();<span style="color:#998;font-style:italic">//创建队 
+</span><span style="color:#998;font-style:italic"></span>	InSeQueue(S,p);<span style="color:#998;font-style:italic">//入队 
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">while</span>(<span style="color:#000;font-weight:bold">!</span>EmptySeQueue(S)){
+		QutSeQueue(S,<span style="color:#000;font-weight:bold">&amp;</span>p);<span style="color:#998;font-style:italic">//出队 
+</span><span style="color:#998;font-style:italic"></span>		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%c</span><span style="color:#d14">&#34;</span>,p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>data);
+		<span style="color:#000;font-weight:bold">if</span>(p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>lChild<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>)
+			InSeQueue(S,p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>lChild);<span style="color:#998;font-style:italic">//入队 
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#000;font-weight:bold">if</span>(p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rChild<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>)
+			InSeQueue(S,p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rChild);<span style="color:#998;font-style:italic">//入队 
+</span><span style="color:#998;font-style:italic"></span>	}
+}
+
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="三二叉树的遍历-栈实现">三.二叉树的遍历 栈实现</h3>
+<h4 id="1前序遍历-1">1.前序遍历</h4>
+<p>对于前序遍历而言，使用栈来实现，和递归很像<br>
+规则,</p>
+<ul>
+<li>先访问根节点，然后将根节点入栈</li>
+<li>遍历左子树。遍历完之后，</li>
+<li>出栈,获得右子树指针,遍历它的右子树</li>
+</ul>
+<blockquote>
+<p>以树T为例:(可以自己根据代码走一遍)<br>
+访问A节点,入栈,栈内元素A，遍历序列A<br>
+访问A节点的左子树B,B入栈,栈内元素AB,遍历序列AB<br>
+访问B节点的左子树D,D入栈，栈内元素ABD,遍历序列ABD<br>
+访问D节点的左子树,左子树为空,左子树的访问完毕,出栈栈顶D，栈内元素AB,遍历序列为ABD<br>
+访问D节点的右子树G,G入栈,栈内元素ABG,遍历序列ABDG<br>
+访问G节点的左子树,左子树为空,出栈栈顶G,栈内元素AB,遍历序列ABDG<br>
+访问G节点的右子树,右子树为空,出栈栈顶B,栈顶元素A,遍历序列为ABDG<br>
+访问B节点的右子树,右子树为空,出栈栈顶A,栈内元素空,遍历序列ABDG<br>
+访问A节点的右子树C,C入栈,栈内元素C，遍历序列ABDGC<br>
+……
+最后当需要出栈是，栈为空，则表示遍历完成</p>
+</blockquote>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">PreOrder</span>(BiTree root){
+	BiTree p;
+	SeqStack <span style="color:#000;font-weight:bold">*</span>S;
+	S <span style="color:#000;font-weight:bold">=</span> InitStack();
+	p <span style="color:#000;font-weight:bold">=</span> root;
+	<span style="color:#000;font-weight:bold">while</span>(p<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span><span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span>StackEmpty(S)<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>){
+		
+		<span style="color:#000;font-weight:bold">while</span>(p<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>){     
+			printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%c</span><span style="color:#d14">&#34;</span>,p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>data); 
+			Push(S,p); <span style="color:#998;font-style:italic">//入栈 
+</span><span style="color:#998;font-style:italic"></span>			p<span style="color:#000;font-weight:bold">=</span>p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>lChild; <span style="color:#998;font-style:italic">//遍历左子树 
+</span><span style="color:#998;font-style:italic"></span>		}
+		<span style="color:#000;font-weight:bold">if</span>(StackEmpty(S)<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>){
+			Pop(S,<span style="color:#000;font-weight:bold">&amp;</span>p);<span style="color:#998;font-style:italic">//出栈 
+</span><span style="color:#998;font-style:italic"></span>			p<span style="color:#000;font-weight:bold">=</span>p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rChild; <span style="color:#998;font-style:italic">//遍历右子树 
+</span><span style="color:#998;font-style:italic"></span>		} 
+		
+	}	
+}
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="2中序遍历-1">2.中序遍历</h4>
+<p>和前序遍历类似。</p>
+<ul>
+<li>先入栈，遍历它的左子树 左子树遍历完之后</li>
+<li>出栈，访问根节点，</li>
+<li>遍历右子树</li>
+</ul>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">InOrder</span>(BiTree root){
+	BiTree p;
+	SeqStack <span style="color:#000;font-weight:bold">*</span>S;
+	S <span style="color:#000;font-weight:bold">=</span> InitStack();
+	p <span style="color:#000;font-weight:bold">=</span> root;
+	<span style="color:#000;font-weight:bold">while</span>(p<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span><span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span>StackEmpty(S)<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>){
+		
+		<span style="color:#000;font-weight:bold">while</span>(p<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>){     
+			Push(S,p); <span style="color:#998;font-style:italic">//入栈 
+</span><span style="color:#998;font-style:italic"></span>			p<span style="color:#000;font-weight:bold">=</span>p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>lChild; <span style="color:#998;font-style:italic">//遍历左子树 
+</span><span style="color:#998;font-style:italic"></span>		}
+		<span style="color:#000;font-weight:bold">if</span>(StackEmpty(S)<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>){
+			Pop(S,<span style="color:#000;font-weight:bold">&amp;</span>p);<span style="color:#998;font-style:italic">//出栈 
+</span><span style="color:#998;font-style:italic"></span>			printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%c</span><span style="color:#d14">&#34;</span>,p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>data); 
+			p<span style="color:#000;font-weight:bold">=</span>p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rChild; <span style="color:#998;font-style:italic">//遍历右子树 
+</span><span style="color:#998;font-style:italic"></span>		} 
+		
+	}	
+}
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="3后序遍历-1">3.后序遍历</h4>
+<p>和前序中序遍历不同,后序遍历稍微麻烦些,因为涉及到两次访问栈顶</p>
+<ul>
+<li>先入栈,，遍历左子树,左子树遍历完之后</li>
+<li>访问栈顶(不出栈) 得到右子树指针，遍历右子树,右子树遍历完之后</li>
+<li>出栈栈顶元素，访问根节点</li>
+</ul>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">PostOrder</span>(BiTree root){
+	BiTree p,q;
+	SeqStack <span style="color:#000;font-weight:bold">*</span>S;
+	S <span style="color:#000;font-weight:bold">=</span> InitStack();
+	q <span style="color:#000;font-weight:bold">=</span> <span style="color:#0086b3">NULL</span>;
+	p <span style="color:#000;font-weight:bold">=</span> root;
+	<span style="color:#000;font-weight:bold">while</span>(p<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span><span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span>StackEmpty(S)<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>){
+		<span style="color:#000;font-weight:bold">while</span>(p<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>){ <span style="color:#998;font-style:italic">//出循环时p左子树为空 
+</span><span style="color:#998;font-style:italic"></span>			Push(S,p); <span style="color:#998;font-style:italic">//入栈  
+</span><span style="color:#998;font-style:italic"></span>			p<span style="color:#000;font-weight:bold">=</span>p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>lChild; <span style="color:#998;font-style:italic">//遍历左子树 
+</span><span style="color:#998;font-style:italic"></span>		}
+		<span style="color:#000;font-weight:bold">if</span>(StackEmpty(S)<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>){
+			GetTop(S,<span style="color:#000;font-weight:bold">&amp;</span>p);
+			<span style="color:#000;font-weight:bold">if</span>(p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rChild<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span><span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span>p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rChild<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span>q){ <span style="color:#998;font-style:italic">//如果栈顶元素p右子树为空，或者上一步输出的是他的右子树 
+</span><span style="color:#998;font-style:italic"></span>				Pop(S,<span style="color:#000;font-weight:bold">&amp;</span>p);
+				printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%c</span><span style="color:#d14">&#34;</span>,p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>data);
+				q<span style="color:#000;font-weight:bold">=</span>p;
+				p<span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>; 
+			}<span style="color:#000;font-weight:bold">else</span>{ <span style="color:#998;font-style:italic">//如果上一步访问是栈顶元素的左子树 
+</span><span style="color:#998;font-style:italic"></span>				p<span style="color:#000;font-weight:bold">=</span>p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rChild;
+			}
+		}
+	
+	}
+	
+} 
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="四二叉树的建立">四.二叉树的建立</h3>
+<p>单独一个遍历序列是无法唯一确定一颗二叉树的，想要根据遍历序列确定一颗二叉树，只有两种方法，一种是根据扩展的遍历序列，一种是根据中序遍历序号和前序(中序)遍历序列。所以我们二叉树的创建就是根据这两种思路来进行的。 我们以扩展的先序遍历序列和先序+中序遍历序列为例创建二叉树</p>
+<h4 id="1根据扩展的先序序列创建二叉树">1.根据扩展的先序序列创建二叉树.</h4>
+<p><strong>a. 扩展的先序序列</strong>
+扩展的先序序列，就是将二叉树节点的左右空子树也用特殊符号表示出来。
+比如树T的扩展序列为ABD^G^^^CE^^F^^         <br>
+<strong>b. 代码</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">BiTree <span style="color:#900;font-weight:bold">CreatBiTree</span>(BiTree root){  <span style="color:#998;font-style:italic">//二叉树的建立(由扩展的先序序列建立的二叉树) 
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">int</span> count;
+	<span style="color:#458;font-weight:bold">char</span> ch<span style="color:#000;font-weight:bold">=</span>str[count];
+	count<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;
+	<span style="color:#000;font-weight:bold">if</span>(ch<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14"></span><span style="color:#d14">&#39;</span><span style="color:#d14">#</span><span style="color:#d14">&#39;</span>)
+		<span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
+		
+	root <span style="color:#000;font-weight:bold">=</span> (BiTNode <span style="color:#000;font-weight:bold">*</span>)malloc(<span style="color:#000;font-weight:bold">sizeof</span>(BiTNode));
+	root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>data <span style="color:#000;font-weight:bold">=</span> ch;
+	root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>lChild <span style="color:#000;font-weight:bold">=</span> CreatBiTree(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>lChild);<span style="color:#998;font-style:italic">//以当前节点的左指针为下一级二叉树的跟 
+</span><span style="color:#998;font-style:italic"></span>	root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rChild <span style="color:#000;font-weight:bold">=</span> CreatBiTree(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rChild);<span style="color:#998;font-style:italic">//以当前节点的右指针为下一级二叉树的跟	
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">return</span> root;
+}
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="2根据先序和中序序列创建二叉树">2.根据先序和中序序列创建二叉树</h4>
+<p>思路,根据先序序列确定根，根据中序序列确定根节点的左右子树。然后根据先序序列确定左右子树的根节点，根据中序序列确定左右子树的左右子树&hellip;.</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">BiTree <span style="color:#900;font-weight:bold">CreatBiTree</span>(<span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>frontArray,<span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>centreArray,<span style="color:#458;font-weight:bold">int</span> n){
+	BiTree root;
+	<span style="color:#458;font-weight:bold">char</span> lfArray[N],rfArray[N];
+	<span style="color:#458;font-weight:bold">char</span> lcArray[N],rcArray[N];
+	<span style="color:#458;font-weight:bold">int</span> ln,rn,i,j;
+	<span style="color:#458;font-weight:bold">char</span> ch;
+	<span style="color:#000;font-weight:bold">if</span>(n<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>)
+		<span style="color:#000;font-weight:bold">return</span> <span style="color:#0086b3">NULL</span>;
+		
+	ch <span style="color:#000;font-weight:bold">=</span> frontArray[<span style="color:#099">0</span>];
+	root <span style="color:#000;font-weight:bold">=</span> (BiTNode <span style="color:#000;font-weight:bold">*</span>)malloc(<span style="color:#000;font-weight:bold">sizeof</span>(BiTNode));
+	root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>data <span style="color:#000;font-weight:bold">=</span> ch;
+
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;centreArray[i]<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span>ch;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){        <span style="color:#998;font-style:italic">//左子树的后序 
+</span><span style="color:#998;font-style:italic"></span>		lcArray[i] <span style="color:#000;font-weight:bold">=</span> centreArray[i];
+		
+	}
+	ln<span style="color:#000;font-weight:bold">=</span>i;
+	i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;
+	<span style="color:#000;font-weight:bold">for</span>(rn<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>n;rn<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>,i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){               <span style="color:#998;font-style:italic">//右子树的后序				          
+</span><span style="color:#998;font-style:italic"></span>		rcArray[rn] <span style="color:#000;font-weight:bold">=</span> centreArray[i];
+	}
+	
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>ln;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){                   <span style="color:#998;font-style:italic">//左子树的先序 
+</span><span style="color:#998;font-style:italic"></span>		lfArray[i] <span style="color:#000;font-weight:bold">=</span> frontArray[i<span style="color:#000;font-weight:bold">+</span><span style="color:#099">1</span>];
+	}
+	
+	<span style="color:#000;font-weight:bold">for</span>(j<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;j<span style="color:#000;font-weight:bold">&lt;</span>rn;j<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>,i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){              <span style="color:#998;font-style:italic">//右子树的先序 
+</span><span style="color:#998;font-style:italic"></span>		rfArray[j]<span style="color:#000;font-weight:bold">=</span>frontArray[i<span style="color:#000;font-weight:bold">+</span><span style="color:#099">1</span>];
+	}  
+	
+	                           
+	root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>lChild <span style="color:#000;font-weight:bold">=</span> CreatBiTree(lfArray,lcArray,ln);<span style="color:#998;font-style:italic">//以当前节点的左指针为下一级二叉树的跟 
+</span><span style="color:#998;font-style:italic"></span>	root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rChild <span style="color:#000;font-weight:bold">=</span> CreatBiTree(rfArray,rcArray,rn);<span style="color:#998;font-style:italic">//以当前节点的右指针为下一级二叉树的跟	
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">return</span> root;
+}
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="五二叉树的遍历的应用">五.二叉树的遍历的应用</h3>
+<h4 id="1-节点及所在层次">1. 节点及所在层次</h4>
+<p><img src="/image/Data_structure/13_1.png" alt="这里写图片描述"></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">PreOrder</span>(BiTree root){    <span style="color:#998;font-style:italic">//先序遍历输出加层次 
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">static</span> count;
+	<span style="color:#000;font-weight:bold">if</span>(root<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>)
+		<span style="color:#000;font-weight:bold">return</span>;
+	count<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;	
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">(%c,%d)</span><span style="color:#d14">&#34;</span>,root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>data,count);
+	PreOrder(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>lChild);
+	PreOrder(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rChild);
+	count<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">-</span>;
+}
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="2-某层叶子节点个数">2. 某层叶子节点个数</h4>
+<p><img src="/image/Data_structure/13_2.png" alt="这里写图片描述"></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">f1</span>(BiTree root,<span style="color:#458;font-weight:bold">int</span> k){   
+	<span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">static</span> countlevel;
+	<span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">static</span> countleaf;
+	<span style="color:#000;font-weight:bold">if</span>(root<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>)
+		<span style="color:#000;font-weight:bold">return</span>;
+	countlevel<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;	
+	<span style="color:#000;font-weight:bold">if</span>(countlevel <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> k<span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span>root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>lChild<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span><span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span>root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rChild<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>)
+		countleaf<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;
+	f1(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>lChild,k);
+	f1(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rChild,k);
+	countlevel<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">-</span>;
+	<span style="color:#000;font-weight:bold">return</span> countleaf;
+}
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="3-交换左右子树">3. 交换左右子树</h4>
+<p><img src="/image/Data_structure/13_3.png" alt="这里写图片描述"></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">exchange</span>(BiTree root){     <span style="color:#998;font-style:italic">//交换各节点的左右子树 
+</span><span style="color:#998;font-style:italic"></span>	BiTree t;
+	<span style="color:#000;font-weight:bold">if</span>(root<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>)
+		<span style="color:#000;font-weight:bold">return</span>;
+	t<span style="color:#000;font-weight:bold">=</span>root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>lChild;
+	root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>lChild<span style="color:#000;font-weight:bold">=</span>root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rChild;
+	root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rChild<span style="color:#000;font-weight:bold">=</span>t;
+	exchange(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>lChild);
+	exchange(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rChild);
+}
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="4-根节点到叶子节点的路径">4. 根节点到叶子节点的路径</h4>
+<p><img src="/image/Data_structure/13_4.png" alt="这里写图片描述"></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">PreOrder</span>(BiTree root){     
+	<span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">static</span> count;
+	
+	<span style="color:#458;font-weight:bold">int</span> i;
+	<span style="color:#000;font-weight:bold">if</span>(root<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>)
+		<span style="color:#000;font-weight:bold">return</span>;
+	count<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;	
+	<span style="color:#000;font-weight:bold">if</span>(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>lChild<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span><span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span>root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rChild<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>){
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%c:</span><span style="color:#d14">&#34;</span>,root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>data);
+		
+		<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">1</span>;i<span style="color:#000;font-weight:bold">&lt;</span>count;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+			printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%c</span><span style="color:#d14">&#34;</span>,array[i]);
+		}
+			
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+	}<span style="color:#000;font-weight:bold">else</span>{
+		array[count]<span style="color:#000;font-weight:bold">=</span>root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>data;
+	}
+	PreOrder(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>lChild);
+	PreOrder(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rChild);
+	count<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">-</span>;
+}
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="5-两个节点的共同祖先">5. 两个节点的共同祖先</h4>
+<p><img src="/image/Data_structure/13_5.png" alt="这里写图片描述"></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span>  count;	
+<span style="color:#458;font-weight:bold">int</span>  flag; <span style="color:#998;font-style:italic">//标记是否找到 
+</span><span style="color:#998;font-style:italic"></span>	
+<span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">PreOrder</span>(BiTree root,<span style="color:#458;font-weight:bold">char</span> ch,<span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>array){  
+	
+	<span style="color:#000;font-weight:bold">if</span>(root<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>)
+		<span style="color:#000;font-weight:bold">return</span> ;
+		
+	count<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;	
+	<span style="color:#000;font-weight:bold">if</span>(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>data<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span>ch){
+		flag <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>;
+		array[count]<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;
+		<span style="color:#000;font-weight:bold">return</span> ;
+	}<span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span>(flag <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span><span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span>root<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>){
+		array[count]<span style="color:#000;font-weight:bold">=</span>root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>data;	
+	}
+	
+	
+	
+	<span style="color:#000;font-weight:bold">if</span>(flag<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>){
+		PreOrder(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>lChild,ch,array);
+		PreOrder(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rChild,ch,array);
+	}
+	
+	count<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">-</span>;
+	<span style="color:#000;font-weight:bold">return</span>;
+}
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="六源码地址">六.源码地址</h3>
+<p><a href="https://github.com/hsc396612325/Blog">在text12中</a></p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8415%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%81%8D%E5%8E%86%E5%92%8C%E5%BB%BA%E7%AB%8B/">http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8415%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%81%8D%E5%8E%86%E5%92%8C%E5%BB%BA%E7%AB%8B/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8414%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%AE%9A%E4%B9%89%E6%80%A7%E8%B4%A8%E5%8F%8A%E5%82%A8%E5%AD%98/">数据结构14————二叉树的定义性质及储存</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8413%E6%A0%91%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AD%98%E5%82%A8/">数据结构13————树的基本概念和存储</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8412%E9%A9%AC%E9%9E%8D%E7%82%B9%E9%97%AE%E9%A2%98%E4%B8%89%E5%85%83%E7%BB%84%E7%A8%80%E7%96%8F%E7%9F%A9%E9%98%B5%E5%8D%81%E5%AD%97%E9%93%BE%E8%A1%A8%E7%A8%80%E7%96%8F%E9%93%BE%E8%A1%A8%E7%9A%84%E5%8A%A0%E5%87%8F%E6%B3%95/">数据结构12————马鞍点问题&amp;三元组稀疏矩阵&amp;十字链表稀疏链表的加减法</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8411%E4%B8%B2%E7%9A%84BF%E5%8C%B9%E9%85%8D%E6%A8%A1%E5%BC%8F%E5%92%8CKMP%E5%8C%B9%E9%85%8D%E6%A8%A1%E5%BC%8F/">数据结构11————串的BF匹配模式和KMP匹配模式</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8410%E4%B8%B2-%E4%BB%8Ec%E8%AF%AD%E8%A8%80String%E5%BA%93%E6%BA%90%E7%A0%81%E6%9D%A5%E5%AD%A6%E4%B9%A0/">数据结构10————串-从c语言String库源码来学习</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84'>数据结构</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "https://github.com/hsc396612325/HSCBlog/tree/gh-pages"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一内容">一.内容</a></li>
+    <li><a href="#二二叉树遍历的概念">二.二叉树遍历的概念</a>
+      <ul>
+        <li><a href="#1层次遍历">1.层次遍历</a></li>
+        <li><a href="#2前序遍历">2.前序遍历</a></li>
+        <li><a href="#3中序遍历">3.中序遍历</a></li>
+        <li><a href="#4后序遍历">4.后序遍历</a></li>
+      </ul>
+    </li>
+    <li><a href="#三二叉树的遍历-递归实现">三.二叉树的遍历 递归实现</a>
+      <ul>
+        <li><a href="#1前序遍历">1.前序遍历</a></li>
+        <li><a href="#2中序遍历">2.中序遍历</a></li>
+        <li><a href="#3后序遍历">3.后序遍历</a></li>
+        <li><a href="#4层次遍历">4.层次遍历</a></li>
+      </ul>
+    </li>
+    <li><a href="#三二叉树的遍历-栈实现">三.二叉树的遍历 栈实现</a>
+      <ul>
+        <li><a href="#1前序遍历-1">1.前序遍历</a></li>
+        <li><a href="#2中序遍历-1">2.中序遍历</a></li>
+        <li><a href="#3后序遍历-1">3.后序遍历</a></li>
+      </ul>
+    </li>
+    <li><a href="#四二叉树的建立">四.二叉树的建立</a>
+      <ul>
+        <li><a href="#1根据扩展的先序序列创建二叉树">1.根据扩展的先序序列创建二叉树.</a></li>
+        <li><a href="#2根据先序和中序序列创建二叉树">2.根据先序和中序序列创建二叉树</a></li>
+      </ul>
+    </li>
+    <li><a href="#五二叉树的遍历的应用">五.二叉树的遍历的应用</a>
+      <ul>
+        <li><a href="#1-节点及所在层次">1. 节点及所在层次</a></li>
+        <li><a href="#2-某层叶子节点个数">2. 某层叶子节点个数</a></li>
+        <li><a href="#3-交换左右子树">3. 交换左右子树</a></li>
+        <li><a href="#4-根节点到叶子节点的路径">4. 根节点到叶子节点的路径</a></li>
+        <li><a href="#5-两个节点的共同祖先">5. 两个节点的共同祖先</a></li>
+      </ul>
+    </li>
+    <li><a href="#六源码地址">六.源码地址</a></li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>数据结构24————图的拓扑排序和关键排序 | 冰炭不投day的博客</title>
+    <meta property="og:title" content="数据结构24————图的拓扑排序和关键排序 - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2018-05-24T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2018-05-24T22:40:54&#43;08:00'>
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="数据结构24————图的拓扑排序和关键排序">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8424%E5%9B%BE%E7%9A%84%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F%E5%92%8C%E5%85%B3%E9%94%AE%E6%8E%92%E5%BA%8F/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">数据结构24————图的拓扑排序和关键排序</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年5月24日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84'>“数据结构&#34;</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h3 id="一-图的拓扑排序">一. 图的拓扑排序</h3>
+<h4 id="1-算法定义">1. 算法定义</h4>
+<p>AOV网</p>
+<blockquote>
+<p>在一个表示工程的有向图中，用顶点表示活动之间优先级关系,这样的有向图为顶点表示活动的网，我们称为AOV网</p>
+</blockquote>
+<p>拓扑排序</p>
+<blockquote>
+<p>按照有向图给出的次序关系，将图中的顶点排成一个线性序列，对于有向图中没有限定次序关系的顶点，则可以人为加上任意的次序关系，由此所得顶点的线性序列称为拓扑有序序列</p>
+</blockquote>
+<h4 id="2-算法思路">2. 算法思路</h4>
+<ol>
+<li>从有向图中选取一个没有前驱的顶点,并输出之</li>
+<li>从有向图中删去此项顶点及其所有以它为尾的弧</li>
+</ol>
+<p>重复上述两步，直至图空，或者图不空但找不到无前驱的顶点为止。</p>
+<h4 id="3-算法演示">3. 算法演示</h4>
+<p><img src="/image/Data_structure/25_0.png" alt="这里写图片描述"></p>
+<h4 id="4-算法代码">4. 算法代码</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">TopologicalSort</span>(AdjList <span style="color:#000;font-weight:bold">*</span>GL){
+	ArcNode <span style="color:#000;font-weight:bold">*</span>arc;
+	<span style="color:#458;font-weight:bold">int</span> i,k,gettop;
+	<span style="color:#458;font-weight:bold">int</span> top<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>; <span style="color:#998;font-style:italic">//栈顶
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#458;font-weight:bold">int</span> count<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>; <span style="color:#998;font-style:italic">//用于统计顶点的个数
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#458;font-weight:bold">int</span> stack[MAXVEX];	
+	
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>GL<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		<span style="color:#000;font-weight:bold">if</span>(GL<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].in<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>){
+			stack[<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>top]<span style="color:#000;font-weight:bold">=</span>i;
+		}
+	}
+	
+	<span style="color:#000;font-weight:bold">while</span>(top<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>){
+		gettop <span style="color:#000;font-weight:bold">=</span> stack[top<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">-</span>]; <span style="color:#998;font-style:italic">//出栈 
+</span><span style="color:#998;font-style:italic"></span>		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%c-&gt;</span><span style="color:#d14">&#34;</span>,GL<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[gettop].vexdata);
+		count<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>; <span style="color:#998;font-style:italic">//统计输出的节点个数 
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#000;font-weight:bold">for</span>(arc<span style="color:#000;font-weight:bold">=</span>GL<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[gettop].head;arc;arc<span style="color:#000;font-weight:bold">=</span>arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next){ <span style="color:#998;font-style:italic">//对此顶点弧表遍历 
+</span><span style="color:#998;font-style:italic"></span>			k<span style="color:#000;font-weight:bold">=</span>arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>adhVex;
+			<span style="color:#000;font-weight:bold">if</span>(<span style="color:#000;font-weight:bold">!</span>(<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">-</span>GL<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[k].in)){  <span style="color:#998;font-style:italic">//将k顶点的邻接点度-1 
+</span><span style="color:#998;font-style:italic"></span>				stack[<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>top]<span style="color:#000;font-weight:bold">=</span>k; <span style="color:#998;font-style:italic">//如果度减为0，则入栈 
+</span><span style="color:#998;font-style:italic"></span>			} 
+		}
+	}
+	
+	<span style="color:#000;font-weight:bold">if</span>(count <span style="color:#000;font-weight:bold">&lt;</span> GL<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum) <span style="color:#998;font-style:italic">//表示有回路 
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#000;font-weight:bold">return</span> <span style="color:#099">1</span>; 
+	<span style="color:#000;font-weight:bold">else</span> 
+		<span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>; 
+}
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="/image/Data_structure/25_1.png" alt="这里写图片描述"></p>
+<h3 id="二-图的关键路径">二. 图的关键路径</h3>
+<h4 id="1-算法定义-1">1. 算法定义</h4>
+<p>AOE网</p>
+<blockquote>
+<p>在有向图中,用顶点表示事件,用弧表示活动，弧的权值表示<strong>活动所用的时</strong>间。我们称这种有向图为AOE网</p>
+</blockquote>
+<p>源点</p>
+<blockquote>
+<p>存在唯一的,入度为0的顶点，叫源点</p>
+</blockquote>
+<p>汇点</p>
+<blockquote>
+<p>存在唯一的,出度为0的顶点，叫汇点</p>
+</blockquote>
+<p>关键路径</p>
+<blockquote>
+<p>从源点到汇点的最长带权路径长度即完成整个工程任务所需的时间，该路径称为关键路径。</p>
+</blockquote>
+<p>关键活动</p>
+<blockquote>
+<p>关键路径上的活动叫做关键活动。关键活动的权值增加(活动延期)，将使AOE-网的最长路径长度增加(整个活动延期)</p>
+</blockquote>
+<h4 id="2-算法思路-1">2. 算法思路</h4>
+<ol>
+<li>“事件vj”的最早发生时间ve(j):<br>
+从源点到顶点j的最长路径长度,表示从源点到顶点j所以路径的活动均已完成,vj才能发生。</li>
+</ol>
+<blockquote>
+<p>可按拓扑序列求ve(j)<br>
+ve(0)=0<br>
+ve(j)=MAX(ve(t)+ &lt; t,j&gt;的权值)</p>
+</blockquote>
+<ol start="2">
+<li>&ldquo;事件vk&quot;的最晚发生事件vl(k):<br>
+在汇点最早发生事件不变的前提下，事件vk发生的最晚事件。即不延迟整个工期的情况下，vk最迟必须发生的时间</li>
+</ol>
+<blockquote>
+<p>可按拓扑逆序求vl(j)<br>
+vl(n-1)=ve(n-1);<br>
+vl(t)=MIN{vl(j)-&lt; t,j&gt;的权值}</p>
+</blockquote>
+<ol start="3">
+<li>活动i的最早开始时间e(i):<br>
+若活动i对应弧&lt; j,k&gt;,则E(i)等于事件j的最早发生时间。即活动i的前驱活动全部结束，活动i才能开始</li>
+</ol>
+<blockquote>
+<p>即e(i)=ve(j)</p>
+</blockquote>
+<ol start="4">
+<li>活动i的最晚开始时间l(i)
+若活动i对应弧&lt; j,k&gt;,则l(i)等于事件k最迟发生事件减去活动(i)持续的时间</li>
+</ol>
+<blockquote>
+<p>l(i)=vl(k)-&lt; j,k&gt;的权值</p>
+</blockquote>
+<p>关键路径的求解思路为:</p>
+<ol>
+<li>求每个事件的最早发生事件ve(j);</li>
+<li>求每个事件的最晚发生事件vl(k);</li>
+<li>求每个活动的最早发生事件e(i);</li>
+<li>求每个红的的最晚发生事件l(i)</li>
+<li>找出e(i)=l(i)的活动ai，即为关键活动</li>
+</ol>
+<h4 id="3-算法演示-1">3. 算法演示</h4>
+<p><img src="/image/Data_structure/25_2.png" alt="这里写图片描述"></p>
+<h4 id="4-算法代码-1">4. 算法代码</h4>
+<p><strong>修改后拓扑排序</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> ve[MAXVEX],vl[MAXVEX];<span style="color:#998;font-style:italic">//事件的最早发生时间和最迟发生时间
+</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">int</span> stack2[MAXVEX]; <span style="color:#998;font-style:italic">//用于存储拓扑排序的栈
+</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">int</span> top2; <span style="color:#998;font-style:italic">//stack的栈顶指针 
+</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">TopologicalSort</span>(AdjList <span style="color:#000;font-weight:bold">*</span>GL){
+	ArcNode <span style="color:#000;font-weight:bold">*</span>arc;
+	<span style="color:#458;font-weight:bold">int</span> i,k,gettop;
+	<span style="color:#458;font-weight:bold">int</span> top<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>; <span style="color:#998;font-style:italic">//栈顶
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#458;font-weight:bold">int</span> count<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>; <span style="color:#998;font-style:italic">//用于统计顶点的个数
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#458;font-weight:bold">int</span> stack[MAXVEX];	
+	
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>GL<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		<span style="color:#000;font-weight:bold">if</span>(GL<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].in<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>){
+			stack[<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>top]<span style="color:#000;font-weight:bold">=</span>i;
+		}
+	}
+	
+	<span style="color:#000;font-weight:bold">while</span>(top<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>){
+		gettop <span style="color:#000;font-weight:bold">=</span> stack[top<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">-</span>]; <span style="color:#998;font-style:italic">//出栈 
+</span><span style="color:#998;font-style:italic"></span>		count<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>; <span style="color:#998;font-style:italic">//统计输出的节点个数 
+</span><span style="color:#998;font-style:italic"></span>		
+		stack2[<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>top2]<span style="color:#000;font-weight:bold">=</span>gettop;<span style="color:#998;font-style:italic">//将弹出的顶点序列压入拓扑排序的栈中 
+</span><span style="color:#998;font-style:italic"></span>		
+		<span style="color:#000;font-weight:bold">for</span>(arc<span style="color:#000;font-weight:bold">=</span>GL<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[gettop].head;arc;arc<span style="color:#000;font-weight:bold">=</span>arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next){ <span style="color:#998;font-style:italic">//对此顶点弧表遍历 
+</span><span style="color:#998;font-style:italic"></span>			k<span style="color:#000;font-weight:bold">=</span>arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>adhVex;
+			<span style="color:#000;font-weight:bold">if</span>(<span style="color:#000;font-weight:bold">!</span>(<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">-</span>GL<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[k].in)){  <span style="color:#998;font-style:italic">//将k顶点的邻接点度-1 
+</span><span style="color:#998;font-style:italic"></span>				stack[<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>top]<span style="color:#000;font-weight:bold">=</span>k; <span style="color:#998;font-style:italic">//如果度减为0，则入栈 
+</span><span style="color:#998;font-style:italic"></span>			}
+			
+			<span style="color:#000;font-weight:bold">if</span>((ve[gettop]<span style="color:#000;font-weight:bold">+</span>arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>weight <span style="color:#000;font-weight:bold">&gt;</span>ve[k])){ <span style="color:#998;font-style:italic">//求各顶点的最早发生时间 
+</span><span style="color:#998;font-style:italic"></span>				ve[k] <span style="color:#000;font-weight:bold">=</span> ve[gettop]<span style="color:#000;font-weight:bold">+</span>arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>weight;
+			} 
+		}
+	}
+	
+	<span style="color:#000;font-weight:bold">if</span>(count <span style="color:#000;font-weight:bold">&lt;</span> GL<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum) <span style="color:#998;font-style:italic">//表示有回路 
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#000;font-weight:bold">return</span> <span style="color:#099">1</span>; 
+	<span style="color:#000;font-weight:bold">else</span> 
+		<span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>; 
+}
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>关键路径算法</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">CriticalPath</span>(AdjList <span style="color:#000;font-weight:bold">*</span>GL){
+	ArcNode <span style="color:#000;font-weight:bold">*</span>arc;
+	<span style="color:#458;font-weight:bold">int</span> i,gettop,k,j;
+	<span style="color:#458;font-weight:bold">int</span> e,l; <span style="color:#998;font-style:italic">// 活动的最早和最晚发生时间
+</span><span style="color:#998;font-style:italic"></span>	TopologicalSort(GL); <span style="color:#998;font-style:italic">//求拓扑排序，计算数组ve和stack2的值
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>GL<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		vl[i]<span style="color:#000;font-weight:bold">=</span>ve[GL<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum<span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>];
+	}	 
+	
+	<span style="color:#000;font-weight:bold">while</span>(top2<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>){
+		gettop <span style="color:#000;font-weight:bold">=</span> stack2[top2<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">-</span>];
+		<span style="color:#000;font-weight:bold">for</span>(arc <span style="color:#000;font-weight:bold">=</span> GL<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[gettop].head;arc;arc<span style="color:#000;font-weight:bold">=</span>arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next){
+			<span style="color:#998;font-style:italic">//求各顶点的最迟发生时间vl值
+</span><span style="color:#998;font-style:italic"></span>			k<span style="color:#000;font-weight:bold">=</span>arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>adhVex;
+			<span style="color:#000;font-weight:bold">if</span>(vl[k]<span style="color:#000;font-weight:bold">-</span>arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>weight <span style="color:#000;font-weight:bold">&lt;</span>vl[gettop]){
+				vl[gettop]<span style="color:#000;font-weight:bold">=</span>vl[k]<span style="color:#000;font-weight:bold">-</span>arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>weight;
+			} 
+		}
+	}
+	
+	<span style="color:#000;font-weight:bold">for</span>(j<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;j<span style="color:#000;font-weight:bold">&lt;</span>GL<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;j<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){  <span style="color:#998;font-style:italic">//求活动的e,l和关键活动 
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#000;font-weight:bold">for</span>(arc <span style="color:#000;font-weight:bold">=</span> GL<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[j].head;arc;arc<span style="color:#000;font-weight:bold">=</span>arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next){
+			
+			k<span style="color:#000;font-weight:bold">=</span>arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>adhVex;
+			e<span style="color:#000;font-weight:bold">=</span>ve[j];
+			l<span style="color:#000;font-weight:bold">=</span>vl[k]<span style="color:#000;font-weight:bold">-</span>arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>weight;
+			<span style="color:#000;font-weight:bold">if</span>(e<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span>l){ <span style="color:#998;font-style:italic">//两者相等即为关键活动 
+</span><span style="color:#998;font-style:italic"></span>				printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">&lt;%c,%c&gt; lenghth:%d</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>,GL<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[j].vexdata,GL<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[k].vexdata,arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>weight); 
+			}
+		}			
+	}
+	 
+}
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="/image/Data_structure/25_3.png" alt="这里写图片描述"></p>
+<h3 id="三-源码地址">三. 源码地址</h3>
+<p><a href="https://github.com/hsc396612325/Blog/tree/master/text21">点此查看源码</a></p>
+<h3 id="四-参考资料">四. 参考资料</h3>
+<p>《大话数据结构》<br>
+《数据结构与算法》</p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8424%E5%9B%BE%E7%9A%84%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F%E5%92%8C%E5%85%B3%E9%94%AE%E6%8E%92%E5%BA%8F/">http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8424%E5%9B%BE%E7%9A%84%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F%E5%92%8C%E5%85%B3%E9%94%AE%E6%8E%92%E5%BA%8F/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8423%E5%9B%BE%E7%9A%84%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84Dijkstra%E7%AE%97%E6%B3%95Floyd%E7%AE%97%E6%B3%95/">数据结构23————图的最短路径Dijkstra算法&amp;Floyd算法</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8422%E5%9B%BE%E7%9A%84%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91PrimKruskal/">数据结构22————图的最小生成树Prim&amp;Kruskal</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8421%E5%9B%BE%E7%9A%84%E6%B7%B1%E5%BA%A6%E4%BC%98%E5%85%88%E9%81%8D%E5%8E%86DFS%E5%B9%BF%E5%BA%A6%E4%BC%98%E5%85%88%E9%81%8D%E5%8E%86BFS/">数据结构21————图的深度优先遍历(DFS)&amp;广度优先遍历(BFS)</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8420%E5%9B%BE%E7%9A%84%E4%BA%94%E7%A7%8D%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">数据结构20————图的存储结构</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8419%E5%9B%BE%E7%9A%84%E5%AE%9A%E4%B9%89%E5%92%8C%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">数据结构19————图的定义和基本概念</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84'>数据结构</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "https://github.com/hsc396612325/HSCBlog/tree/gh-pages"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一-图的拓扑排序">一. 图的拓扑排序</a>
+      <ul>
+        <li><a href="#1-算法定义">1. 算法定义</a></li>
+        <li><a href="#2-算法思路">2. 算法思路</a></li>
+        <li><a href="#3-算法演示">3. 算法演示</a></li>
+        <li><a href="#4-算法代码">4. 算法代码</a></li>
+      </ul>
+    </li>
+    <li><a href="#二-图的关键路径">二. 图的关键路径</a>
+      <ul>
+        <li><a href="#1-算法定义-1">1. 算法定义</a></li>
+        <li><a href="#2-算法思路-1">2. 算法思路</a></li>
+        <li><a href="#3-算法演示-1">3. 算法演示</a></li>
+        <li><a href="#4-算法代码-1">4. 算法代码</a></li>
+      </ul>
+    </li>
+    <li><a href="#三-源码地址">三. 源码地址</a></li>
+    <li><a href="#四-参考资料">四. 参考资料</a></li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

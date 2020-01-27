@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Android学习笔记————Activity的生命周期和启动模式 | 冰炭不投day的博客</title>
+    <meta property="og:title" content="Android学习笔记————Activity的生命周期和启动模式 - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2018-07-07T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2018-07-07T22:40:54&#43;08:00'>
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="Android学习笔记————Activity的生命周期和启动模式">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/Android/Android%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0Activity%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%92%8C%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">Android学习笔记————Activity的生命周期和启动模式</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年7月7日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android'>Android</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h3 id="一activity的生命周期">一.Activity的生命周期</h3>
+<h4 id="1与activity生命周期相关的七个函数">1.与Activity生命周期相关的七个函数</h4>
+<p><strong>onCreate():</strong> 表示Activity正在被创建，这是生命周期的第一个方法，在这个方法中我们可以做一些初始化工作，比如调用setContentView去加载界面布局资源，初始化Activity所需数据</p>
+<p><strong>onRestart():</strong> 表示Activity正在重新启动。一般情况下，当当前Activity从不可见，重新变成可见状态时，onRestary就会被调用。这种情况一般是用户行为所导致的，比如按Home键切换到桌面，或者用户打开一个新的activity,这时当前的Activity就会暂停，也就是onPause和onStop被执行了，接着用户又回到这个Activity，就会出现这种情况</p>
+<p><strong>onStart():</strong> 表示Activity正在被启动，即将开始，这时Activity已经可见了，但还是没有出现在前台，还无法和用户交互。这个时候其实可以理解为Activity已经显示，但我们还看不到。</p>
+<p><strong>onResume():</strong> 表示Activity已经可见了，并且出现在前台并开始活动。要注意和onStart()的对比，onStart和onResume都表示Activity已经可见，但是onStart()的时候Activity还在后台，onResume()的时候Activity才显示出来。</p>
+<p><strong>onPause():</strong> 表示Activity正在停止，正常情况下，紧接着onStop就会被调用。在特殊情况下，如果这个时候快速回到当前的Activity，那么onRestart就会被调用，这种情况下属于极端情况，用户操作很难重现这一幕。此时可以做一些存储数据和停止动画的操作，但注意不能太耗时，因为这会影响新Activity的显示，onPause()先执行完，新的onResume才会执行。</p>
+<p><strong>onStop():</strong> 表示Activity即将停止，可以做一些稍微重量级的回收工作，同样不能太耗时。</p>
+<p><strong>onDestroy():</strong> 表示Activity即将被销毁，这是Activity生命周期中最后一个回调，在这里我们可以进行一些回收工作和最终的资源释放。</p>
+<h4 id="2典型情况下的生命周期分析">2.典型情况下的生命周期分析</h4>
+<p><img src="/image/Android/0_0.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<ol>
+<li>针对一个特定的Activity，第一次启动，回调如下:onCreate-&gt;onStart-&gt;onResume;</li>
+<li>当用户打开新的Activity或者切换到桌面时，回调如下：onPause-&gt;onStop。这里有一种特殊情况，如果新Activity采用了透明主题，那么当前Activity不会回调onStop；</li>
+<li>当用户再次回到原Activity时，回调如下：onRestart-&gt;onStart-&gt;onResume</li>
+<li>当用户back键回退时，回调如下：onPause-&gt; onStop -&gt; onDestroy</li>
+<li>当Activity被系统回收后再次打开，生命周期方法回调过程和1一样，注意只是生命周期方法一样，不代表所以过程都一样。</li>
+</ol>
+<p>从整个生命周期来说，onCreate和onDestroy是配对的，分别标识着Activity的创建和销毁，并且只能又一次调用。从Activity是否可见来说，onStart和onStop是配对的，随着用户的操作或者设备屏幕的点亮和熄灭，这两个方面可能被调用多次；从Activity是否在前台来说，onResume和onPause是配对，随着用户的操作或者设备屏幕的点亮和熄灭，这两个方面可能被调用多次。</p>
+<h4 id="3异常情况下的生命周期分析">3.异常情况下的生命周期分析</h4>
+<ol>
+<li>
+<p>系统配置变化导致Activity销毁重建
+这种情况比较典型的就是竖屏突然转换为横屏，由于系统配置发生改变，Activity就会销毁并重新创建。
+这种情况下的Activity的生命周期，如图：
+<img src="/image/Android/0_1.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述">
+当Activity被销毁时，它的onPasuse，onStop，onDestoy均会被调用。但同时由于是异常情况终止的，系统在onStop之前回调用onSavaInstanceState来保存当前Activity的状态，它和onPause没有一定的时序关系。当Activity被重新创建后，系统在onStart之后调用onRestoreInstanceState来恢复之前保存的数据。.
+<strong>保存数据的过程</strong>：Activity调用onSavaInstanceState去保存数据。然后Activity去委托Window去保存数据,紧接着window去委托他上面的顶级容器去保存数据，最后顶级容器去委托它的子元素来保存数据。</p>
+</li>
+<li>
+<p>资源内存不足导致低优先级的Activity被杀死
+<strong>Activity的优先级</strong>：①前台Activity ②可见但非前台的Activity ③后台Activity(执行了onStop)
+当系统内存不足，系统会按照上述优先级回收目标Activity所在的进程，并在后续通过onSaveInstanceState和onRestoreInstanceState来恢复和存储数据。</p>
+</li>
+<li>
+<p>指定Activity中的configChanges属性，使系统配置发生变化时，不重建Activity
+在AndroMenifest.xml的Activity声明configChanges的值，可以在系统配置发生改变时，使系统不会重建该Activity。常用的
+configChanges属性：locale（设备本地位置发生变化） orientation（屏幕方向发生变化）和keyboardHidden（）这三个选项。</p>
+</li>
+</ol>
+<h3 id="二activity的启动模式">二.Activity的启动模式、</h3>
+<p>Activity目前一共有4种启动模式，分别是:standard,singleTop,singleTask,singleInstance.</p>
+<h4 id="1standard">1.standard</h4>
+<p>标准模式，是Activity的默认启动模式，在不显示指定的情况下，所有活动都会自动使用这种启动模式，这种模式下，没启动一个新的Activity，他就会在任务栈中入栈，并处于栈顶位置，并不在乎任务栈中是否存在相同实例。</p>
+<p>standard模式下。Activity的onCreate，onStart,onResume均会被调用。</p>
+<h4 id="2singletop">2.singleTop</h4>
+<p>栈顶复用模式：在这种模式下，如果新Activity已经处于任务栈栈顶，那么此Activity就不会被重新创建。</p>
+<p>在singleTop模式下，Activity的onNewIntent方法会被回到，通过此方法的参数可以取出当前请求的信息。在这个Activity的onCreate，onStart不会被系统调用，因此它并不会发生什么变化。如果新的Activity存在但不存在与栈顶，那么新的Activity依然会重建。</p>
+<h4 id="3-singletask">3. singleTask</h4>
+<p>栈内复用模式：这是一种单实例模式，这种模式下，只要Activity在一个栈内存在，那么多次启动此Activity都不会重新实例。</p>
+<p>在singleTask模式下，和singlTop一样，系统也会回调其onNewIntent方法，一个具有singleTask模式的Activity请求启动后，系统首先会寻找A想要的任务栈，如果不存在，就重新创建一个任务栈，然后创建A的实例后，把A放到栈内。如果存在A所需的任务栈，这时就要看A是否栈内有实例，如果有实例存在，那么系统就会把A调到栈顶并调用onNewIntent方法**,同时把A上面的所有Activity退栈**，如果实例不存在，就创建A的实例并把A压入栈中。</p>
+<h4 id="4-singleinstance">4. singleInstance</h4>
+<p>单实例模式：这是一种加强的singleTask模式，他除了具有singleTask模式的所有特性之外，还加强了一点，在这种模式下的Activity只能单独处于一个任务栈中。如果ActivityA是singleInstance模式，当A启动后，系统会为它新建一个任务栈。然后A独自在这个任务栈中</p>
+<h4 id="5-任务栈">5. 任务栈</h4>
+<p>在singleTask模式中提到了任务栈,任务栈由参数TaskAffinity决定，这个参数标识了一个Activity所需要的任务栈的名字。默认情况下，所有Activity所需的任务栈名字为应用的包名。</p>
+<h4 id="6启动方式的设置">6.启动方式的设置</h4>
+<ol>
+<li>通过AndroidMenifst中指定</li>
+</ol>
+<pre><code>&lt;activity android:name=&quot;.MainActivity&quot;
+	android:screenOrientation=&quot;portrait&quot;
+	android:launchMode=&quot;singleTop&quot;&gt;
+	&lt;intent-filter&gt;
+		&lt;action android:name=&quot;android.intent.action.MAIN&quot; /&gt;
+                &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot; /&gt;
+	&lt;/intent-filter&gt;
+&lt;/activity&gt;
+</code></pre><ol start="2">
+<li>在Intent中通过标志位指定</li>
+</ol>
+<pre><code>Intent intent = new Intent();
+intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+startActivity(intent);
+</code></pre><h4 id="7activity常用flags">7.Activity常用Flags</h4>
+<ol>
+<li>FLAG_ACTIVITY_NEW_TASK
+这个标记位作用是为Activity指定“singleTask”启动模式</li>
+<li>FLAG_ACTIVITY_SINGLE_TOP
+这个标记位作用是为Activity指定“singleTop”的启动模式</li>
+<li>FLAG_ACTIVITY_CLEAR_TOP
+具有此标记位的Activity，当他启动时在同一个任务栈中所有位于他上面的Activity都有出栈。</li>
+<li>FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
+具有此标志的Activity，不会出现在历史Activity中</li>
+</ol>
+<h3 id="三intentfilter的区配规则">三.IntentFilter的区配规则</h3>
+<h4 id="1-概述">1. 概述</h4>
+<p>Activity的启动分为显示和隐式调用。隐式调用需要匹配目标组件的IntentFilter组件的所设的过滤信息，如果不匹配将无法启动目标Activity。IntentFilter中的过滤信息包括，action，category，data。
+例：
+<img src="/image/Android/0_2.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述">
+一个过滤列表可以有多个action，cotegory，data，所有的action，cotegory，data分别构成不同类别,同一类别可以共同约束当前类别的匹配过程。只有一个Intent同时可以匹配action类别，category类别，data类别，才算完全匹配，只有完全匹配才能成功启动目标Activity。另外，一个Activity中可以有多个intent-filter,一个Intent只要能够匹配任意一组intent-filter即可成功启动相应的Activity。</p>
+<h4 id="2action的匹配规则">2.action的匹配规则</h4>
+<p><strong>action的匹配规则：</strong> intent中的action必须能够和过滤规则中的action匹配，即和字符串值完全一样。一个过滤规则中可以有多个action，那么只要Intent中的action能够和过滤规则中的任意一组相同即匹配成功</p>
+<p><strong>注意的点：</strong></p>
+<ol>
+<li>action是一个字符串，系统预定义了一些action，同时也可以自定义自己的action。</li>
+<li>Intent中如果没有指定ction，那么匹配失败</li>
+<li>action区分大小写</li>
+</ol>
+<h4 id="3-category的匹配规则">3. category的匹配规则</h4>
+<p><strong>category的匹配规则</strong> ：如果Intent中如果含有category，那么所有的category都必须和过滤规则中的其中一个category相同。即，如果Intent中如果出现了category，不管有几个category，对于每个category都必须是过来规则中存在的。</p>
+<p><strong>注意的点</strong></p>
+<ol>
+<li>Intent中可以不指定category，不指定时，也可以匹配成功，</li>
+<li>系统在调用startActivity或者StartActivityForResult会默认为Intent加上&quot;abdroid.intent.category.DEEAULT”这个category。所以为了我们的Activity能够隐式调用Activity，就必须在intent-filter中指定“abdroid.intent.category.DEEAULT”指定category。</li>
+</ol>
+<h4 id="4-data的匹配规则">4. data的匹配规则</h4>
+<ul>
+<li>data的语法</li>
+</ul>
+<pre><code>&lt;data android:scheme = &quot;string&quot; 
+  android:host = &quot;string&quot;
+  android:port = &quot;string&quot;
+  android:path = &quot;string&quot;
+  android:pathPattern = &quot;string&quot;
+  android:pathPrefix=&quot;string&quot;
+  android:mimeTYpe = &quot;string&quot;/&gt;
+</code></pre><p>data由两部分组成，mimeType和URI。
+<strong>mimeType</strong>指3媒体类型，比如image/jpeg,video等等
+<strong>URI</strong>:</p>
+<ul>
+<li>结构：&lt; scheme &gt;://&lt; host &gt;:&lt; port &gt;/[ &lt; path &gt; | &lt; pathPrefix &gt; | &lt; pathpattern &gt; ]</li>
+<li>例：content：//com.exaple:project:200/folder/subfolde/etc    <a href="http://www.baidui.com:80/search/info">http://www.baidui.com:80/search/info</a></li>
+<li>scheme:URI的模式，比如http，file，content等，如果URI没有指定scheme，那么这个URI无效</li>
+<li>Host ：URI的主机名，比如www.baidu.com,如果host未指定，那么整个URI也是无效</li>
+<li>port：URI的端口号</li>
+<li>path，pathPrefix，pathpattern：这3个表示路径信息，其中path表示完整路径信息，path表示完整路径信息，pathpattern也表示完整信息，但是他的可以包含通配符。pathPrefix表示路径的前缀信息</li>
+</ul>
+<ul>
+<li>data的匹配规则
+data的匹配规则和action类似。它也要求Intent中必须含有data数据，并且data数据能够完全匹配过滤规则中的某一个data。</li>
+</ul>
+<h4 id="5判断是否有activity能够相应我们的隐式的intent">5.判断是否有Activity能够相应我们的隐式的intent</h4>
+<p>判断是否有Activity能够响应我们的intent有两种方法：PackageManager的resolveActivity方法或者Intent的resolvActivity方法，如果找不到匹配的Activity就会返回null。</p>
+<h3 id="四参考资料">四.参考资料</h3>
+<p>《Android艺术开发探索》
+《第一行代码》</p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/Android/Android%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0Activity%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%92%8C%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/">http://blog.bingtan.online/posts/Android/Android%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0Activity%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%92%8C%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/Android/Android%E5%B0%8F%E9%A1%B9%E7%9B%AE%E8%81%8A%E5%A4%A9%E5%AE%A4%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%AF%87/">Android小项目————聊天室（网络编程篇)</a></li>
+        
+        <li><a href="/posts/Android/Android%E5%B0%8F%E9%A1%B9%E7%9B%AE-%E5%86%B0%E7%82%AD%E4%B8%8D%E6%8A%95de%E5%B0%8F%E8%AE%A1%E7%AE%97%E5%99%A8/">Android小项目————冰炭不投de小计算器</a></li>
+        
+        <li><a href="/posts/Android/Android%E5%B0%8F%E9%A1%B9%E7%9B%AE%E8%81%8A%E5%A4%A9%E5%AE%A4UI%E7%AF%87/">Android小项目————聊天室（UI篇）</a></li>
+        
+        <li><a href="/posts/Android/Android%E5%BD%95%E9%9F%B3%E4%B8%8BAudioRecord%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">Android录音下————AudioRecord源码分析</a></li>
+        
+        <li><a href="/posts/Android/Android%E5%BD%95%E9%9F%B3%E4%B8%8AAudioRecord%E5%AE%9E%E7%8E%B0%E5%BD%95%E9%9F%B3%E5%8A%9F%E8%83%BD/">Android录音上————AudioRecord实现录音功能</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/Android'>Android</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "https://github.com/hsc396612325/HSCBlog/tree/gh-pages"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一activity的生命周期">一.Activity的生命周期</a>
+      <ul>
+        <li><a href="#1与activity生命周期相关的七个函数">1.与Activity生命周期相关的七个函数</a></li>
+        <li><a href="#2典型情况下的生命周期分析">2.典型情况下的生命周期分析</a></li>
+        <li><a href="#3异常情况下的生命周期分析">3.异常情况下的生命周期分析</a></li>
+      </ul>
+    </li>
+    <li><a href="#二activity的启动模式">二.Activity的启动模式、</a>
+      <ul>
+        <li><a href="#1standard">1.standard</a></li>
+        <li><a href="#2singletop">2.singleTop</a></li>
+        <li><a href="#3-singletask">3. singleTask</a></li>
+        <li><a href="#4-singleinstance">4. singleInstance</a></li>
+        <li><a href="#5-任务栈">5. 任务栈</a></li>
+        <li><a href="#6启动方式的设置">6.启动方式的设置</a></li>
+        <li><a href="#7activity常用flags">7.Activity常用Flags</a></li>
+      </ul>
+    </li>
+    <li><a href="#三intentfilter的区配规则">三.IntentFilter的区配规则</a>
+      <ul>
+        <li><a href="#1-概述">1. 概述</a></li>
+        <li><a href="#2action的匹配规则">2.action的匹配规则</a></li>
+        <li><a href="#3-category的匹配规则">3. category的匹配规则</a></li>
+        <li><a href="#4-data的匹配规则">4. data的匹配规则</a></li>
+        <li><a href="#5判断是否有activity能够相应我们的隐式的intent">5.判断是否有Activity能够相应我们的隐式的intent</a></li>
+      </ul>
+    </li>
+    <li><a href="#四参考资料">四.参考资料</a></li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

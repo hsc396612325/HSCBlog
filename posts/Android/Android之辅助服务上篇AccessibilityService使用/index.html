@@ -1,0 +1,1324 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Android之辅助服务上篇————AccessibilityService使用 | 冰炭不投day的博客</title>
+    <meta property="og:title" content="Android之辅助服务上篇————AccessibilityService使用 - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2018-07-09T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2018-07-09T22:40:54&#43;08:00'>
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="Android之辅助服务上篇————AccessibilityService使用">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/Android/Android%E4%B9%8B%E8%BE%85%E5%8A%A9%E6%9C%8D%E5%8A%A1%E4%B8%8A%E7%AF%87AccessibilityService%E4%BD%BF%E7%94%A8/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">Android之辅助服务上篇————AccessibilityService使用</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年7月9日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android'>Android</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h3 id="一前言">一.前言</h3>
+<p>最近好久没写博客了，特别是Android系统启动这一个系列，虽然过程已经理了很多遍了，但是由于实习期间是在抽不出时间，没办法输出文章。最近接触了Android辅助服务，即AccessibilityService的相关内容，也算是解决了我一直一来的困惑——微信抢红包插件是怎么实现的。这两天，抽空总结一下这一部分相关的内容，上篇介绍使用，下篇分析原理。</p>
+<h3 id="二概述">二.概述</h3>
+<h4 id="1辅助服务是什么">1.辅助服务是什么</h4>
+<p>下面两个链接是Google官方对于辅助服务的介绍：
+<a href="https://developer.android.com/guide/topics/ui/accessibility/service#manifest">辅助服务使用官方介绍</a>
+<a href="https://developer.android.com/reference/android/accessibilityservice/AccessibilityService#developer-guides">辅助服务类官方api文档</a></p>
+<p>辅助服务的设计初衷提供给无法和界面进行交互的残疾用户。来协助帮助他们进行一些用户操作，比如点击，返回，长按，获取屏幕信息等能力。后来被开发者另辟蹊径，用于一些插件开发，做一些监听第三方应用的插件。</p>
+<p>下面是辅助服务的继承关系：
+<img src="/image/Android/9_0.png" alt="在这里插入图片描述"></p>
+<h4 id="2辅助服务生命周期">2.辅助服务生命周期</h4>
+<p>辅助服务的生命周期由系统专门管理，并遵循Server的生命周期。服务的启动只能用户在设备设置中明确启动服务来触发。当系统绑定到服务后，它会调用AccessibilityService#onServiceConnected()方法。当用户在设置设置中关闭时，辅助服务功能将停止，或者调用AccessibilityService#disableSelf()方法。giant服务会被关闭销毁</p>
+<p>设备设置无障碍选择：
+<img src="/image/Android/9_1.png" alt="在这里插入图片描述"></p>
+<p>下面是关于AccessibilityService的使用</p>
+<h3 id="三配置">三.配置</h3>
+<h4 id="1继承accessbilityservice类">1.继承AccessbilityService类</h4>
+<p>要使用辅助服务，首先先继承AccessbilityService类，并且重写其方法。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">StatusAccessibilityService</span> <span style="color:#000;font-weight:bold">extends</span> AccessibilityService <span style="color:#000;font-weight:bold">{</span>
+
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 发生用户界面事件回调此事件
+</span><span style="color:#998;font-style:italic">     * @param event
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onAccessibilityEvent</span><span style="color:#000;font-weight:bold">(</span>AccessibilityEvent event<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 中断可访问性反馈
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onInterrupt</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>除了上面的两个必须要重写的方法外，AccessbilityService还提供了下面的一些方法：</p>
+<ul>
+<li>disableSelf()，禁用当前服务，也就是说关闭当服务</li>
+<li>dispatchGesture(GestureDescription gesture, AccessibilityService.GestureResultCallback callback, Handler handler)，将手势发送到触摸屏</li>
+<li>findFocus(int focus)：寻找到具有指定焦点类型的视图。</li>
+<li>getRootInActiveWindow()：获取当前活动窗口中的根节点。</li>
+<li>getServiceInfo()：获取当前服务的配置信息</li>
+<li>getSystemService(String name)：获取系统服务</li>
+<li>getWindows():获取屏幕上的窗口。</li>
+<li>performGlobalAction(int action)：执行全局操作：比如返回，回到主页，打开最近等操作</li>
+<li>setServiceInfo(AccessibilityServiceInfo info):设置当前服务的配置信息 (下面的配置AccessbilityService会介绍)</li>
+</ul>
+<p>不太常用的：</p>
+<ul>
+<li>getAccessibilityButtonController()：返回系统导航区域内辅助功能按钮的控制器。</li>
+<li>getFingerprintGestureController()：获取指纹手势的控制器。</li>
+<li>getMagnificationController():返回放大器控制器，可用于查询和修改显示放大率的状态。</li>
+<li>getSoftKeyboardController():返回软键盘控制器，可用于查询和修改软键盘显示模式。</li>
+</ul>
+<h4 id="2在androidmanifest中注册该服务">2.在AndroidManifest中注册该服务</h4>
+<p>AccessbilityService是一个服务，所以同样，他也要在AndroidManifest中注册：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        <span style="color:#000;font-weight:bold">&lt;</span>service
+            android<span style="color:#000;font-weight:bold">:</span>name<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;com.hahak.walle.accessibilitydame.StatusAccessibilityService&#34;</span>
+            android<span style="color:#000;font-weight:bold">:</span>label<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;辅助服务测试&#34;</span>
+            android<span style="color:#000;font-weight:bold">:</span>permission<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;android.permission.BIND_ACCESSIBILITY_SERVICE&#34;</span><span style="color:#000;font-weight:bold">&gt;</span>
+            <span style="color:#000;font-weight:bold">&lt;</span>intent<span style="color:#000;font-weight:bold">-</span>filter<span style="color:#000;font-weight:bold">&gt;</span>
+                <span style="color:#000;font-weight:bold">&lt;</span>action android<span style="color:#000;font-weight:bold">:</span>name<span style="color:#000;font-weight:bold">=</span><span style="color:#d14">&#34;android.accessibilityservice.AccessibilityService&#34;</span><span style="color:#000;font-weight:bold">/</span><span style="color:#000;font-weight:bold">&gt;</span>
+            <span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000;font-weight:bold">/</span>intent<span style="color:#000;font-weight:bold">-</span>filter<span style="color:#000;font-weight:bold">&gt;</span>
+        <span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000;font-weight:bold">/</span>service<span style="color:#000;font-weight:bold">&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>android:permission：需要指定BIND_ACCESSIBILITY_SERVICE权限，这是4.0以上的系统要求的</li>
+<li>intent-filter：这个name是固定不变的</li>
+</ul>
+<h4 id="3配置accessbilityservice">3.配置AccessbilityService</h4>
+<p>接下来，就是配置服务参数，即设定AccessbilityService所能干的事。
+配置方法有两种，一种是在代码中动态设置，一种是写配置文件。</p>
+<p><strong>方法1.写配置文件</strong>
+首先在AndroidManifest中生命配置文件的位置</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">       <span style="color:#000080">&lt;service</span>
+            <span style="color:#008080">android:name=</span><span style="color:#d14">&#34;com.hahack.walle.AutoCheckStatusAccessibilityService&#34;</span>
+            <span style="color:#008080">android:label=</span><span style="color:#d14">&#34;运营助手：自动艾特用户&#34;</span>
+            <span style="color:#008080">android:permission=</span><span style="color:#d14">&#34;android.permission.BIND_ACCESSIBILITY_SERVICE&#34;</span><span style="color:#000080">&gt;</span>
+            <span style="color:#000080">&lt;intent-filter</span><span style="color:#000080">&gt;</span>
+                <span style="color:#000080">&lt;action</span> <span style="color:#008080">android:name=</span><span style="color:#d14">&#34;android.accessibilityservice.AccessibilityService&#34;</span><span style="color:#000080">/&gt;</span>
+            <span style="color:#000080">&lt;/intent-filter&gt;</span>
+
+            <span style="color:#000080">&lt;meta-data</span>
+                <span style="color:#008080">android:name=</span><span style="color:#d14">&#34;android.accessibilityservice&#34;</span>
+                <span style="color:#008080">android:resource=</span><span style="color:#d14">&#34;@xml/allocation&#34;</span><span style="color:#000080">/&gt;</span>
+        <span style="color:#000080">&lt;/service&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>其次，在@xml/allocation文件中，声明下面的内容</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#000080">&lt;accessibility-service</span> <span style="color:#008080">xmlns:android=</span><span style="color:#d14">&#34;http://schemas.android.com/apk/res/android&#34;</span>
+    <span style="color:#008080">android:accessibilityEventTypes=</span><span style="color:#d14">&#34;typeAllMask&#34;</span>
+    <span style="color:#008080">android:description=</span><span style="color:#d14">&#34;demo&#34;</span>
+    <span style="color:#008080">android:accessibilityFeedbackType=</span><span style="color:#d14">&#34;feedbackSpoken&#34;</span>
+    <span style="color:#008080">android:canRetrieveWindowContent=</span><span style="color:#d14">&#34;true&#34;</span>
+    <span style="color:#008080">android:notificationTimeout=</span><span style="color:#d14">&#34;1000&#34;</span><span style="color:#000080">/&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>方法2:.在代码中动态添加</strong>
+在自定义的AccessibilityService类中，可以通过在AccessibilityServiceInfo类重写onServiceConnected()，并通过 this.setServiceInfo来添加配置</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Override</span>
+<span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onServiceConnected</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+
+    info<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">eventTypes</span> <span style="color:#000;font-weight:bold">=</span> AccessibilityEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">TYPE_VIEW_CLICKED</span> <span style="color:#000;font-weight:bold">|</span>
+            AccessibilityEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">TYPE_VIEW_FOCUSED</span><span style="color:#000;font-weight:bold">;</span>
+
+    info<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">packageNames</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> String<span style="color:#000;font-weight:bold">[</span><span style="color:#000;font-weight:bold">]</span>
+            <span style="color:#000;font-weight:bold">{</span><span style="color:#d14">&#34;com.example.android.myFirstApp&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;com.example.android.mySecondApp&#34;</span><span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">;</span>
+
+    info<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">feedbackType</span> <span style="color:#000;font-weight:bold">=</span> AccessibilityServiceInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">FEEDBACK_SPOKEN</span>
+
+    info<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">notificationTimeout</span> <span style="color:#000;font-weight:bold">=</span> 100<span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setServiceInfo</span><span style="color:#000;font-weight:bold">(</span>info<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>下面说说配置内容的具体含义：</p>
+<ul>
+<li>accessibilityEventTypes：此服务希望按照指定接收的事件类型(AccessibilityEvent)</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>常量</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>typeViewClicked</td>
+<td>点击事件</td>
+</tr>
+<tr>
+<td>typeViewSelected</td>
+<td>view被选择</td>
+</tr>
+<tr>
+<td>typeViewScrolled</td>
+<td>滑动事件</td>
+</tr>
+<tr>
+<td>typeWindowContentChanged</td>
+<td>窗口内容该表</td>
+</tr>
+<tr>
+<td>typeAllMask</td>
+<td>所有事件</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>accessibilityFeedbackType：此服务提供的反馈类型，比如说是语音播报还是真的震动</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>常量</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>feedbackSpoken</td>
+<td>语音反馈</td>
+</tr>
+<tr>
+<td>feedbackHaptic</td>
+<td>触觉（震动）反馈</td>
+</tr>
+<tr>
+<td>feedbackAudible</td>
+<td>音频反馈</td>
+</tr>
+<tr>
+<td>feedbackVisual</td>
+<td>视频反馈</td>
+</tr>
+<tr>
+<td>feedbackGeneric</td>
+<td>通用反馈</td>
+</tr>
+<tr>
+<td>feedbackAllMask</td>
+<td>以上都具有</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>canRetrieveWindowContent：表示该服务能否访问活动窗口中的内容。也就是如果你希望在服务中获取窗体内容，则需要设置其值为true</li>
+<li>description：对该无障碍功能的描述。</li>
+<li>notificationTimeout：接受事件的时间间隔，通常将其设置为100即可</li>
+<li>packageNames：表示对该服务是用来监听哪个包的产生的事件，上面以微信的包名为例</li>
+<li>canPerformGestures:表示是否允许进行手势分发</li>
+<li>canRequestFilterKeyEvents：辅助服务希望能够请求过滤关键事件。</li>
+<li>nonInteractiveUiTimeout：超时设置，未不包含交互式空间返回合适的值</li>
+</ul>
+<h3 id="四使用">四.使用</h3>
+<h4 id="1启动服务">1.启动服务</h4>
+<p>辅助服务的启动必须通过用户设置来开启，所以我们要先提醒用户进行无障碍功能列表</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Intent intent <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Intent<span style="color:#000;font-weight:bold">(</span>Settings<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_ACCESSIBILITY_SETTINGS</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+startActivity<span style="color:#000;font-weight:bold">(</span>intent<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>通过上面的代码就可以打开系统的无障碍功能列表</p>
+<h4 id="2获取事件信息">2.获取事件信息</h4>
+<p>当我们监听的目标应用界面或者界面等信息，会通过onAccessibilityEvent回调我们的事件，接着进行事件的处理。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onAccessibilityEvent</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">final</span> AccessibilityEvent event<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        String packageName <span style="color:#000;font-weight:bold">=</span> event<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getPackageName</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">toString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">!</span>packageName<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">equals</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;com.tencent.mm&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#458;font-weight:bold">int</span> eventType <span style="color:#000;font-weight:bold">=</span> event<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getEventType</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">switch</span> <span style="color:#000;font-weight:bold">(</span>eventType<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">case</span> AccessibilityEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">TYPE_WINDOW_STATE_CHANGED</span><span style="color:#000;font-weight:bold">:</span>
+            处理
+            <span style="color:#000;font-weight:bold">.</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000;font-weight:bold">.</span>
+        <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>可以看出，当发生变化时，回调onAccessibilityEvent方法，并传入AccessibilityEvent类型。下面让我们看看AccessibilityEvent的含义。</p>
+<p>先看看AccessibilityEvent提供的方法(源是指触发此方法的ui/时间)：</p>
+<ul>
+<li>getAction()：获取触发此世界的已执行操作</li>
+<li>getEventTime()：获取发送此事件的时间</li>
+<li>getEventType()：获取事件类型。</li>
+<li>getPackageName()：获取源的包名称
+从AccessibilityRecord基础的方法</li>
+<li>getMaxScrollY()：获取源上边缘的最大滚动偏移（以像素为单位）</li>
+<li>getMaxScrollX()：获取源左边缘的最大滚动偏移量（以像素为单位）。</li>
+<li>getClassName()：获取源的类名。</li>
+<li>getText()：获取事件的文本，比如事件是有TextView发出的,此时获取的就是TextView的text属性。如果该事件源是树结构，那么此时获取的是这个树上所有具有text属性的值的集合</li>
+<li>getToIndex()： 获取滚动时文本选择结束的索引或最后一个可见项的索引。</li>
+<li>getItemCount()：如果事件源是树结构，将返回该树根节点下子节点的数量
+更详细的可以参考官方文档：
+<a href="https://developer.android.com/reference/android/view/accessibility/AccessibilityEvent.html">AccessibilityEvent官方api介绍</a></li>
+</ul>
+<p>关于事件类型getEventType()返回值：</p>
+<ul>
+<li>TYPE_VIEW_LONG_CLICKED 长按事件</li>
+<li>TYPE_VIEW_CONTEXT_CLICKED点击事件</li>
+<li>TYPE_WINDOW_STATE_CHANGED 表示用户界面被更改。</li>
+<li>TYPE_NOTIFICATION_STATE_CHANGED：通知栏的改变</li>
+<li>TYPE_WINDOWS_CHANGED：表示系统窗口的时间变更</li>
+<li>&hellip;..还有很多，详情可以看看官方文档</li>
+</ul>
+<h4 id="3处理事件--寻找控件">3.处理事件&ndash;寻找控件</h4>
+<p>当我们接受到事件后，根据事件就可以处理对应的时间，比如说检测到弹窗，就可以转换为动作：点击弹窗。
+处理事件总的来说，分为两个步骤。第一步，寻找该控件。第二部，模拟人的操作对各个控件进行操作(点击，长按，输入，读取)</p>
+<p><strong>寻找控件</strong>
+寻找控件首先要找的它对象窗口内容对应的树，即AccessibilityWindowInfo(代表)和AccessibilityNodeInfo(代表具体的View)。注意，这个功能需要在xml资源配置中声明SERVICE_META_DATA。
+针对寻找AccessibilityWindowInfo和AccessibilityNodeInfo，谷歌官方提供了下面的api</p>
+<ul>
+<li>AccessibilityEvent#getSource(),返回值为发起当前事件的控件的AccessibilityNodeInfo</li>
+<li>AccessibilityService#findFocus(int)，参数表示输入焦点，返回值为指定焦点对应的AccessibilityNodeInfo</li>
+<li>AccessibilityService#getWindows()，返回值为当前所有可交互窗户的 AccessibilityWindowInfo列表（List）</li>
+<li>AccessibilityService#getRootInActiveWindow()，返回值为当前活动的AccessibilityWindowInfo，如果用户没有触摸任何窗口，则活动窗口是具有输入焦点的窗口。</li>
+</ul>
+<p><strong>AccessibilityWindowInfo</strong>：
+AccessibilityWindowInfo表示可访问窗口的状态快照。屏幕内容包含一个或者多个窗口，其中一些窗口可以是其他窗口的后代，窗口是次序排序的。
+AccessibilityWindowInfor提供的api简介：</p>
+<ul>
+<li>getChild(int index) ，返回给定索引处的子窗口的AccessibilityWindowInfo</li>
+<li>getChildCount()，返回代表子窗口的数量的int值</li>
+<li>getId(),返回代表唯一的窗口id的int值</li>
+<li>getParent()，返回代表父窗口的AccessibilityWindowInfo</li>
+<li>getLayer()，返回代表窗口在z轴的图层的int值</li>
+<li><strong>getRoot()</strong>，返回代表窗口层次中根节点的AccessibilityNodeInfo</li>
+<li>&hellip;.其余详见官网文档</li>
+</ul>
+<p><strong>AccessibilityNodeInfo</strong>：
+AccessibilityNodeInfo表示窗口内容的节点以及可以进行的操作。
+AccessibilityNodeInfo内部类介绍：</p>
+<ul>
+<li>AccessibilityAction，表示可以对AccessibilityNodeInfo提供的操作</li>
+<li>CollectionInfo，表示当节点是集合时，包含集合信息的类。</li>
+<li>CollectionItemInfo，表示当节点是集合子项，包含集合子项信息的类。</li>
+<li>RangeInfo，表示当节点是范围，包含该范围包含信息的类。</li>
+</ul>
+<p>AccessibilityNodeInfo提供的api简述</p>
+<ul>
+<li>addAction(action: AccessibilityNodeInfo.AccessibilityAction)/(action: Int)，添加可在节点上执行的操作,有两个同名方法，参数不同</li>
+<li>performAction(action: Int)，在节点上执行操作</li>
+<li>addChild(child: View!)添加一个子项</li>
+<li>findAccessibilityNodeInfosByText(text: String!)，按文字寻找对应的控件，并返回其 AccessibilityNodeInfo</li>
+<li>findAccessibilityNodeInfosByViewId(viewId: String!)，根据View的id资源名称查找对应的View，返回AccessibilityNodeInfo</li>
+<li>findFocus(focus: Int)，找到具有指定焦点类型的视图。返回AccessibilityNodeInfo</li>
+<li>focusSearch(direction: Int)，搜索指定方向上可以获取输入焦点的最近视图。返回AccessibilityNodeInfo</li>
+<li>getActionList()，获取可以在节点上执行的操作。</li>
+<li>getHintText()，获取此节点的提示文本</li>
+<li>getText()，获取此节点的文本</li>
+<li>isClickable()，获取此节点是否可单击，还有其他对于的方法，判断节点是否可操作</li>
+<li>&hellip;.其余详见官网文档</li>
+</ul>
+<h4 id="4处理事件--操作控件">4.处理事件&ndash;操作控件</h4>
+<p>在上面一小节里，我们通过addAction，可以给AccessibilityNodeInfo添加对于的动作，其参数是 AccessibilityNodeInfo的内部类AccessibilityAction。</p>
+<p><strong>AccessibilityAction</strong>
+AccessibilityAction表示可以对AccessibilityNodeInfo。每个操作都有一个唯一的ID，这是必需的和可选的数据。
+其有三类动作</p>
+<ul>
+<li>标准操作 - 这些操作由平台中的标准UI小部件报告和处理。对于每个标准动作，在该类中定义了一个静态常量，例如ACTION_FOCUS。这些操作将有null标签。</li>
+<li>自定义操作操作 - 这些是由自定义窗口小部件报告和处理的操作。即不属于UI工具包的那些。例如，应用程序可以定义用于清除用户历史的自定义操作。</li>
+<li>覆盖标准操作 - 这些操作会覆盖标准操作以自定义它们。例如，应用可以向标准ACTION_CLICK操作添加标签，以向用户指示此操作清除浏览历史记录。</li>
+</ul>
+<p>可提供的操作</p>
+<ul>
+<li>ACTION_ACCESSIBILITY_FOCUS，为可访问性提供焦点的操作。</li>
+<li>ACTION_CLEAR_ACCESSIBILITY_FOCUS，清除节点可访问性焦点的操作。</li>
+<li>ACTION_CLICK，单击节点信息的操作。</li>
+<li>ACTION_LONG_CLICK,长按</li>
+<li>ACTION_FOCUS，为输入焦点提供节点</li>
+<li>ACTION_COPY，将当前选择复制到剪贴板的操作。</li>
+<li>ACTION_CUT，剪切</li>
+<li>ACTION_PAGE_DOWN，移动到下一页，以及移动到下，左，右页面</li>
+<li>ACTION_PASTE，粘贴剪切板内容</li>
+<li>ACTION_SCROLL_BACKWARD/ACTION_SCROLL_FORWARD ,下滑/上滑</li>
+<li>ACTION_SET_TEXT，设置节点文本</li>
+<li>&hellip;.其余详见官网文档</li>
+</ul>
+<h3 id="五综合应用">五.综合应用</h3>
+<h4 id="1获得view对应的id">1.获得View对应的id</h4>
+<ul>
+<li>
+<p>打开tools&ndash;&gt;Android&ndash;&gt;Android Device Monitor
+<img src="/image/Android/9_2.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p>选择设备，并点击图中坐标
+<img src="/image/Android/9_3.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p>选择对应的控件进行点击查看
+<img src="/image/Android/9_4.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+</li>
+</ul>
+<h4 id="2accessibilityservice的手势控制">2.AccessibilityService的手势控制</h4>
+<p>在Android7.0之后，AccessibilityService又增加了一个新的方法dispatchGesture。可以将手势发送到触摸屏上。但是要使用这个功能必须在配置文件中声明，canPerformGestures = “true”</p>
+<p>api接口:</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">dispatchGesture</span> <span style="color:#000;font-weight:bold">(</span>GestureDescription gesture<span style="color:#000;font-weight:bold">,</span> 
+                AccessibilityService<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">GestureResultCallback</span> callback<span style="color:#000;font-weight:bold">,</span> 
+                Handler handler<span style="color:#000;font-weight:bold">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>参数:</p>
+<ul>
+<li>GestureDescription：要分派的手势</li>
+<li>AccessibilityService.GestureResultCallback:完成后的回调</li>
+<li>Handler；处理回调程序的线程，如果传入null,则为主线程</li>
+</ul>
+<p>使用示例</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        Path path <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Path<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        path<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">moveTo</span><span style="color:#000;font-weight:bold">(</span>0<span style="color:#000;font-weight:bold">,</span> 400<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        path<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">lineTo</span><span style="color:#000;font-weight:bold">(</span>400<span style="color:#000;font-weight:bold">,</span> 400<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">final</span> GestureDescription<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">StrokeDescription</span> sd<span style="color:#000;font-weight:bold">;</span>
+
+        sd <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> GestureDescription<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">StrokeDescription</span><span style="color:#000;font-weight:bold">(</span>path<span style="color:#000;font-weight:bold">,</span> 100<span style="color:#000;font-weight:bold">,</span> 50<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#998;font-style:italic">//先横滑
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#458;font-weight:bold">boolean</span> flag <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">dispatchGesture</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> GestureDescription<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Builder</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">addStroke</span><span style="color:#000;font-weight:bold">(</span>sd<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">build</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">new</span> AccessibilityService<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">GestureResultCallback</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+            <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onCompleted</span><span style="color:#000;font-weight:bold">(</span>GestureDescription gestureDescription<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onCompleted</span><span style="color:#000;font-weight:bold">(</span>gestureDescription<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;22222&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onCompleted:横滑 &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Path path2 <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Path<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                path2<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">moveTo</span><span style="color:#000;font-weight:bold">(</span>600<span style="color:#000;font-weight:bold">,</span> 600<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                path2<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">lineTo</span><span style="color:#000;font-weight:bold">(</span>600<span style="color:#000;font-weight:bold">,</span> 800<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">final</span> GestureDescription<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">StrokeDescription</span> sd2 <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> GestureDescription<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">StrokeDescription</span><span style="color:#000;font-weight:bold">(</span>path2<span style="color:#000;font-weight:bold">,</span> 1000<span style="color:#000;font-weight:bold">,</span> 500<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#998;font-style:italic">//滑完后再过1秒竖滑
+</span><span style="color:#998;font-style:italic"></span>                BaseAccessibilityService<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">dispatchGesture</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> GestureDescription<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Builder</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">addStroke</span><span style="color:#000;font-weight:bold">(</span>sd2<span style="color:#000;font-weight:bold">)</span><span style="color:#998;font-style:italic">/*.addStroke(sd2)*/</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">build</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+            <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+            <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onCancelled</span><span style="color:#000;font-weight:bold">(</span>GestureDescription gestureDescription<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;22222&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onCancelled&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onCancelled</span><span style="color:#000;font-weight:bold">(</span>gestureDescription<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>上图的示例为左滑和下滑，如果要实现点击事件，则可以只传入一个点Path。即</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Path path <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Path<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+path<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">moveTo</span><span style="color:#000;font-weight:bold">(</span>0<span style="color:#000;font-weight:bold">,</span> 400<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+sd <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> GestureDescription<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">StrokeDescription</span><span style="color:#000;font-weight:bold">(</span>path<span style="color:#000;font-weight:bold">,</span> 100<span style="color:#000;font-weight:bold">,</span> 50<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="3accessibilityservice的基础类">3.AccessibilityService的基础类</h4>
+<p>下面是对AccessibilityService提供的各种方法的封装</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 77
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 78
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 79
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 80
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 81
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 82
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 83
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 84
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 85
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 86
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 87
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 88
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 89
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 90
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 91
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 92
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 93
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 94
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 95
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 96
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 97
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 98
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 99
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">100
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">101
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">102
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">103
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">104
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">105
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">106
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">107
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">108
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">109
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">110
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">111
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">112
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">113
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">114
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">115
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">116
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">117
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">118
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">119
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">120
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">121
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">122
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">123
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">124
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">125
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">126
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">127
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">128
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">129
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">130
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">131
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">132
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">133
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">134
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">135
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">136
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">137
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">138
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">139
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">140
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">141
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">142
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">143
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">144
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">145
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">146
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">147
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">148
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">149
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">150
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">151
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">152
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">153
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">154
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">155
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">156
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">157
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">158
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">159
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">160
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">161
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">162
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">163
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">164
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">165
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">166
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">167
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">168
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">169
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">170
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">171
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">172
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">173
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">174
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">175
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">176
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">177
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">178
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">179
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">180
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">181
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">182
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">183
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">184
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">185
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">186
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">187
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">188
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">189
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">190
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">191
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">192
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">193
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">194
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">195
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">196
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">197
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">198
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">199
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">200
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">201
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">202
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">203
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">204
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">205
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">206
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">207
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">208
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">209
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">210
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">211
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">212
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">213
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">214
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">215
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">216
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">217
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">218
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">219
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">220
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">221
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">222
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">223
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">224
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">225
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">226
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">227
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">BaseAccessibilityService</span> <span style="color:#000;font-weight:bold">extends</span> AccessibilityService <span style="color:#000;font-weight:bold">{</span>
+
+    <span style="color:#000;font-weight:bold">private</span> AccessibilityManager mAccessibilityManager<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">private</span> Context mContext<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> BaseAccessibilityService mInstance<span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">init</span><span style="color:#000;font-weight:bold">(</span>Context context<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        mContext <span style="color:#000;font-weight:bold">=</span> context<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getApplicationContext</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        mAccessibilityManager <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>AccessibilityManager<span style="color:#000;font-weight:bold">)</span> mContext<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getSystemService</span><span style="color:#000;font-weight:bold">(</span>Context<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACCESSIBILITY_SERVICE</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> BaseAccessibilityService <span style="color:#900;font-weight:bold">getInstance</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mInstance <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            mInstance <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> BaseAccessibilityService<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">return</span> mInstance<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * Check当前辅助服务是否启用
+</span><span style="color:#998;font-style:italic">     *
+</span><span style="color:#998;font-style:italic">     * @param serviceName serviceName
+</span><span style="color:#998;font-style:italic">     * @return 是否启用
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">checkAccessibilityEnabled</span><span style="color:#000;font-weight:bold">(</span>String serviceName<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        List<span style="color:#000;font-weight:bold">&lt;</span>AccessibilityServiceInfo<span style="color:#000;font-weight:bold">&gt;</span> accessibilityServices <span style="color:#000;font-weight:bold">=</span>
+                mAccessibilityManager<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getEnabledAccessibilityServiceList</span><span style="color:#000;font-weight:bold">(</span>AccessibilityServiceInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">FEEDBACK_GENERIC</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span>AccessibilityServiceInfo info <span style="color:#000;font-weight:bold">:</span> accessibilityServices<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>info<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getId</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">equals</span><span style="color:#000;font-weight:bold">(</span>serviceName<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 前往开启辅助服务界面
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">goAccess</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        Intent intent <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Intent<span style="color:#000;font-weight:bold">(</span>Settings<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_ACCESSIBILITY_SETTINGS</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        intent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setFlags</span><span style="color:#000;font-weight:bold">(</span>Intent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">FLAG_ACTIVITY_NEW_TASK</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        mContext<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">startActivity</span><span style="color:#000;font-weight:bold">(</span>intent<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 模拟点击事件
+</span><span style="color:#998;font-style:italic">     *
+</span><span style="color:#998;font-style:italic">     * @param nodeInfo nodeInfo
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">performViewClick</span><span style="color:#000;font-weight:bold">(</span>AccessibilityNodeInfo nodeInfo<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>nodeInfo <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">while</span> <span style="color:#000;font-weight:bold">(</span>nodeInfo <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>nodeInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isClickable</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                nodeInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">performAction</span><span style="color:#000;font-weight:bold">(</span>AccessibilityNodeInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_CLICK</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+            nodeInfo <span style="color:#000;font-weight:bold">=</span> nodeInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getParent</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 模拟返回操作
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">performBackClick</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+            Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>500<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>InterruptedException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        performGlobalAction<span style="color:#000;font-weight:bold">(</span>GLOBAL_ACTION_BACK<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 模拟下滑操作
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">performScrollBackward</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+            Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>500<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>InterruptedException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        performGlobalAction<span style="color:#000;font-weight:bold">(</span>AccessibilityNodeInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_SCROLL_BACKWARD</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 模拟上滑操作
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#3c5d5d;font-weight:bold">@RequiresApi</span><span style="color:#000;font-weight:bold">(</span>api <span style="color:#000;font-weight:bold">=</span> Build<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">VERSION_CODES</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">N</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">performScrollForward</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+            Thread<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>500<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>InterruptedException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">printStackTrace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        performGlobalAction<span style="color:#000;font-weight:bold">(</span>AccessibilityNodeInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_SCROLL_FORWARD</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 查找对应文本的View
+</span><span style="color:#998;font-style:italic">     *
+</span><span style="color:#998;font-style:italic">     * @param text text
+</span><span style="color:#998;font-style:italic">     * @return View
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">public</span> AccessibilityNodeInfo <span style="color:#900;font-weight:bold">findViewByText</span><span style="color:#000;font-weight:bold">(</span>String text<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">return</span> findViewByText<span style="color:#000;font-weight:bold">(</span>text<span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 查找对应文本的View
+</span><span style="color:#998;font-style:italic">     *
+</span><span style="color:#998;font-style:italic">     * @param text      text
+</span><span style="color:#998;font-style:italic">     * @param clickable 该View是否可以点击
+</span><span style="color:#998;font-style:italic">     * @return View
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">public</span> AccessibilityNodeInfo <span style="color:#900;font-weight:bold">findViewByText</span><span style="color:#000;font-weight:bold">(</span>String text<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">boolean</span> clickable<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        AccessibilityNodeInfo accessibilityNodeInfo <span style="color:#000;font-weight:bold">=</span> getRootInActiveWindow<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>accessibilityNodeInfo <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        List<span style="color:#000;font-weight:bold">&lt;</span>AccessibilityNodeInfo<span style="color:#000;font-weight:bold">&gt;</span> nodeInfoList <span style="color:#000;font-weight:bold">=</span> accessibilityNodeInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">findAccessibilityNodeInfosByText</span><span style="color:#000;font-weight:bold">(</span>text<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>nodeInfoList <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span> <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">!</span>nodeInfoList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isEmpty</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span>AccessibilityNodeInfo nodeInfo <span style="color:#000;font-weight:bold">:</span> nodeInfoList<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>nodeInfo <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span> <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">(</span>nodeInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isClickable</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> clickable<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#000;font-weight:bold">return</span> nodeInfo<span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 查找对应ID的View
+</span><span style="color:#998;font-style:italic">     *
+</span><span style="color:#998;font-style:italic">     * @param id id
+</span><span style="color:#998;font-style:italic">     * @return View
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#3c5d5d;font-weight:bold">@TargetApi</span><span style="color:#000;font-weight:bold">(</span>Build<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">VERSION_CODES</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">JELLY_BEAN_MR2</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">public</span> AccessibilityNodeInfo <span style="color:#900;font-weight:bold">findViewByID</span><span style="color:#000;font-weight:bold">(</span>String id<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        AccessibilityNodeInfo accessibilityNodeInfo <span style="color:#000;font-weight:bold">=</span> getRootInActiveWindow<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>accessibilityNodeInfo <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        List<span style="color:#000;font-weight:bold">&lt;</span>AccessibilityNodeInfo<span style="color:#000;font-weight:bold">&gt;</span> nodeInfoList <span style="color:#000;font-weight:bold">=</span> accessibilityNodeInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">findAccessibilityNodeInfosByViewId</span><span style="color:#000;font-weight:bold">(</span>id<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>nodeInfoList <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span> <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">!</span>nodeInfoList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isEmpty</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;dd&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;findViewByID: &#34;</span> <span style="color:#000;font-weight:bold">+</span> nodeInfoList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">size</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span>AccessibilityNodeInfo nodeInfo <span style="color:#000;font-weight:bold">:</span> nodeInfoList<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;dd&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;findViewByID: &#34;</span> <span style="color:#000;font-weight:bold">+</span> nodeInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">toString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>nodeInfo <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#000;font-weight:bold">return</span> nodeInfo<span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">clickTextViewByText</span><span style="color:#000;font-weight:bold">(</span>String text<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        AccessibilityNodeInfo accessibilityNodeInfo <span style="color:#000;font-weight:bold">=</span> getRootInActiveWindow<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>accessibilityNodeInfo <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        List<span style="color:#000;font-weight:bold">&lt;</span>AccessibilityNodeInfo<span style="color:#000;font-weight:bold">&gt;</span> nodeInfoList <span style="color:#000;font-weight:bold">=</span> accessibilityNodeInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">findAccessibilityNodeInfosByText</span><span style="color:#000;font-weight:bold">(</span>text<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>nodeInfoList <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span> <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">!</span>nodeInfoList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isEmpty</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span>AccessibilityNodeInfo nodeInfo <span style="color:#000;font-weight:bold">:</span> nodeInfoList<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>nodeInfo <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    performViewClick<span style="color:#000;font-weight:bold">(</span>nodeInfo<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@TargetApi</span><span style="color:#000;font-weight:bold">(</span>Build<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">VERSION_CODES</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">JELLY_BEAN_MR2</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">clickTextViewByID</span><span style="color:#000;font-weight:bold">(</span>String id<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        AccessibilityNodeInfo accessibilityNodeInfo <span style="color:#000;font-weight:bold">=</span> getRootInActiveWindow<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>accessibilityNodeInfo <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        List<span style="color:#000;font-weight:bold">&lt;</span>AccessibilityNodeInfo<span style="color:#000;font-weight:bold">&gt;</span> nodeInfoList <span style="color:#000;font-weight:bold">=</span> accessibilityNodeInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">findAccessibilityNodeInfosByViewId</span><span style="color:#000;font-weight:bold">(</span>id<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>nodeInfoList <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span> <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">!</span>nodeInfoList<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">isEmpty</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span>AccessibilityNodeInfo nodeInfo <span style="color:#000;font-weight:bold">:</span> nodeInfoList<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>nodeInfo <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    performViewClick<span style="color:#000;font-weight:bold">(</span>nodeInfo<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">/**
+</span><span style="color:#998;font-style:italic">     * 模拟输入
+</span><span style="color:#998;font-style:italic">     *
+</span><span style="color:#998;font-style:italic">     * @param nodeInfo nodeInfo
+</span><span style="color:#998;font-style:italic">     * @param text     text
+</span><span style="color:#998;font-style:italic">     */</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">inputText</span><span style="color:#000;font-weight:bold">(</span>AccessibilityNodeInfo nodeInfo<span style="color:#000;font-weight:bold">,</span> String text<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>Build<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">VERSION</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">SDK_INT</span> <span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">=</span> Build<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">VERSION_CODES</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">LOLLIPOP</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            Bundle arguments <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Bundle<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            arguments<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">putCharSequence</span><span style="color:#000;font-weight:bold">(</span>AccessibilityNodeInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE</span><span style="color:#000;font-weight:bold">,</span> text<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            nodeInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">performAction</span><span style="color:#000;font-weight:bold">(</span>AccessibilityNodeInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_SET_TEXT</span><span style="color:#000;font-weight:bold">,</span> arguments<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>Build<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">VERSION</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">SDK_INT</span> <span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">=</span> Build<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">VERSION_CODES</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">JELLY_BEAN_MR2</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            ClipboardManager clipboard <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>ClipboardManager<span style="color:#000;font-weight:bold">)</span> getSystemService<span style="color:#000;font-weight:bold">(</span>Context<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">CLIPBOARD_SERVICE</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            ClipData clip <span style="color:#000;font-weight:bold">=</span> ClipData<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">newPlainText</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;label&#34;</span><span style="color:#000;font-weight:bold">,</span> text<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            clipboard<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setPrimaryClip</span><span style="color:#000;font-weight:bold">(</span>clip<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            nodeInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">performAction</span><span style="color:#000;font-weight:bold">(</span>AccessibilityNodeInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_FOCUS</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            nodeInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">performAction</span><span style="color:#000;font-weight:bold">(</span>AccessibilityNodeInfo<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_PASTE</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onAccessibilityEvent</span><span style="color:#000;font-weight:bold">(</span>AccessibilityEvent event<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;dd&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onAccessibilityEvent: &#34;</span> <span style="color:#000;font-weight:bold">+</span> event<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">toString</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onInterrupt</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onServiceConnected</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onServiceConnected</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;llll&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onServiceConnected: &#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="4实际应用">4.实际应用</h4>
+<p>学习了大部分的AccessibilityService相关知识。就可以灵活运用这些内容进行组装。
+比如说：</p>
+<ul>
+<li>微信红包外挂</li>
+<li>支付宝自动收能量</li>
+<li>微信自动发消息</li>
+<li>朋友圈自动点赞</li>
+<li>&hellip;</li>
+</ul>
+<h3 id="六参考资料">六.参考资料</h3>
+<p><a href="https://developer.android.google.cn/reference/android/accessibilityservice/AccessibilityService.html#lifecycle">官方api文档 </a>
+<a href="https://developer.android.google.cn/guide/topics/ui/accessibility/index.html">官网辅助服务介绍</a>
+<a href="https://juejin.im/post/5acb49126fb9a028cc6186f1">妙用AccessibilityService黑科技实现微信自动加好友拉人进群聊</a></p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/Android/Android%E4%B9%8B%E8%BE%85%E5%8A%A9%E6%9C%8D%E5%8A%A1%E4%B8%8A%E7%AF%87AccessibilityService%E4%BD%BF%E7%94%A8/">http://blog.bingtan.online/posts/Android/Android%E4%B9%8B%E8%BE%85%E5%8A%A9%E6%9C%8D%E5%8A%A1%E4%B8%8A%E7%AF%87AccessibilityService%E4%BD%BF%E7%94%A8/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/Android/Android%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BBGestureDetectory/">Android源码阅读————GestureDetectory</a></li>
+        
+        <li><a href="/posts/Android/Android%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0Activity%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%92%8C%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/">Android学习笔记————Activity的生命周期和启动模式</a></li>
+        
+        <li><a href="/posts/Android/Android%E5%B0%8F%E9%A1%B9%E7%9B%AE%E8%81%8A%E5%A4%A9%E5%AE%A4%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%AF%87/">Android小项目————聊天室（网络编程篇)</a></li>
+        
+        <li><a href="/posts/Android/Android%E5%B0%8F%E9%A1%B9%E7%9B%AE-%E5%86%B0%E7%82%AD%E4%B8%8D%E6%8A%95de%E5%B0%8F%E8%AE%A1%E7%AE%97%E5%99%A8/">Android小项目————冰炭不投de小计算器</a></li>
+        
+        <li><a href="/posts/Android/Android%E5%B0%8F%E9%A1%B9%E7%9B%AE%E8%81%8A%E5%A4%A9%E5%AE%A4UI%E7%AF%87/">Android小项目————聊天室（UI篇）</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/Android'>Android</a></li>
+                
+                <li><a href='http://blog.bingtan.online/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB'>源码阅读</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "https://github.com/hsc396612325/HSCBlog/tree/gh-pages"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一前言">一.前言</a></li>
+    <li><a href="#二概述">二.概述</a>
+      <ul>
+        <li><a href="#1辅助服务是什么">1.辅助服务是什么</a></li>
+        <li><a href="#2辅助服务生命周期">2.辅助服务生命周期</a></li>
+      </ul>
+    </li>
+    <li><a href="#三配置">三.配置</a>
+      <ul>
+        <li><a href="#1继承accessbilityservice类">1.继承AccessbilityService类</a></li>
+        <li><a href="#2在androidmanifest中注册该服务">2.在AndroidManifest中注册该服务</a></li>
+        <li><a href="#3配置accessbilityservice">3.配置AccessbilityService</a></li>
+      </ul>
+    </li>
+    <li><a href="#四使用">四.使用</a>
+      <ul>
+        <li><a href="#1启动服务">1.启动服务</a></li>
+        <li><a href="#2获取事件信息">2.获取事件信息</a></li>
+        <li><a href="#3处理事件--寻找控件">3.处理事件&ndash;寻找控件</a></li>
+        <li><a href="#4处理事件--操作控件">4.处理事件&ndash;操作控件</a></li>
+      </ul>
+    </li>
+    <li><a href="#五综合应用">五.综合应用</a>
+      <ul>
+        <li><a href="#1获得view对应的id">1.获得View对应的id</a></li>
+        <li><a href="#2accessibilityservice的手势控制">2.AccessibilityService的手势控制</a></li>
+        <li><a href="#3accessibilityservice的基础类">3.AccessibilityService的基础类</a></li>
+        <li><a href="#4实际应用">4.实际应用</a></li>
+      </ul>
+    </li>
+    <li><a href="#六参考资料">六.参考资料</a></li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

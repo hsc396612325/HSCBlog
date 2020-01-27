@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>小项目 on 冰炭不投day的博客</title>
+    <link>http://blog.bingtan.online/tags/%E5%B0%8F%E9%A1%B9%E7%9B%AE/</link>
+    <description>Recent content in 小项目 on 冰炭不投day的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 05 Jul 2018 22:40:54 +0800</lastBuildDate>
+    
+	<atom:link href="http://blog.bingtan.online/tags/%E5%B0%8F%E9%A1%B9%E7%9B%AE/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Android小项目————聊天室（网络编程篇)</title>
+      <link>http://blog.bingtan.online/posts/Android/Android%E5%B0%8F%E9%A1%B9%E7%9B%AE%E8%81%8A%E5%A4%A9%E5%AE%A4%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%AF%87/</link>
+      <pubDate>Thu, 05 Jul 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/Android/Android%E5%B0%8F%E9%A1%B9%E7%9B%AE%E8%81%8A%E5%A4%A9%E5%AE%A4%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%AF%87/</guid>
+      <description>一.前言 这是关于聊天室的第二篇博客，内容主要是聊天室的核心篇章，即网络编程，主要是客户端和电脑端的服务器的代码。 二.客户端 步骤 创建一个ClientThread类 数据的流动 当按动发送键时，将数据从EditText中提取出来，通过Handler和Message传递给发送子线程。 发送子</description>
+    </item>
+    
+    <item>
+      <title>Android小项目————冰炭不投de小计算器</title>
+      <link>http://blog.bingtan.online/posts/Android/Android%E5%B0%8F%E9%A1%B9%E7%9B%AE-%E5%86%B0%E7%82%AD%E4%B8%8D%E6%8A%95de%E5%B0%8F%E8%AE%A1%E7%AE%97%E5%99%A8/</link>
+      <pubDate>Wed, 04 Jul 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/Android/Android%E5%B0%8F%E9%A1%B9%E7%9B%AE-%E5%86%B0%E7%82%AD%E4%B8%8D%E6%8A%95de%E5%B0%8F%E8%AE%A1%E7%AE%97%E5%99%A8/</guid>
+      <description>一.前言 这是我首个使用java写的app，也在学习郭霖老师的第一行代码和李刚老师的疯狂java讲义之时，进行的练习之作，刚刚学习java和android，有些地方可能并没有做的很完善，希望大家可以多多包涵。 二.环境准备和所需知识点 1. 编译器：Andriod Studio 2. 新建一个项目并选择全部</description>
+    </item>
+    
+    <item>
+      <title>Android小项目————聊天室（UI篇）</title>
+      <link>http://blog.bingtan.online/posts/Android/Android%E5%B0%8F%E9%A1%B9%E7%9B%AE%E8%81%8A%E5%A4%A9%E5%AE%A4UI%E7%AF%87/</link>
+      <pubDate>Wed, 04 Jul 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/Android/Android%E5%B0%8F%E9%A1%B9%E7%9B%AE%E8%81%8A%E5%A4%A9%E5%AE%A4UI%E7%AF%87/</guid>
+      <description>一.前言 这是所做的第二个android项目，主要目的对暑假所学的java和android知识点进行复习巩固和实践，由于知识所限，目前这个聊天室并不是很完善，而且由于对于多线程的相关知识点不太熟练，所以服务器端经常崩，后期会将其更加完善 其中聊天室主界面主要借鉴的是郭霖老师《第一行代</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>数据结构17————树,森林转化为二叉树(孩子兄弟表示法) | 冰炭不投day的博客</title>
+    <meta property="og:title" content="数据结构17————树,森林转化为二叉树(孩子兄弟表示法) - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2018-05-17T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2018-05-17T22:40:54&#43;08:00'>
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="数据结构17————树,森林转化为二叉树(孩子兄弟表示法)">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8417%E6%A0%91%E6%A3%AE%E6%9E%97%E8%BD%AC%E5%8C%96%E4%B8%BA%E4%BA%8C%E5%8F%89%E6%A0%91%E5%AD%A9%E5%AD%90%E5%85%84%E5%BC%9F%E8%A1%A8%E7%A4%BA%E6%B3%95/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">数据结构17————树,森林转化为二叉树(孩子兄弟表示法)</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年5月17日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84'>“数据结构&#34;</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h3 id="一-内容">一. 内容</h3>
+<ol>
+<li>树转换二叉树</li>
+<li>森林转换为二叉树</li>
+<li>二叉树转森林和树</li>
+<li>森林和树的遍历</li>
+<li>二叉森林树的应用</li>
+</ol>
+<h3 id="二树转为二叉树">二.树转为二叉树</h3>
+<h4 id="1思路">1.思路</h4>
+<p>整体思路就是我前面的一篇博客提到的树的孩子兄弟法。<br>
+就是对于一个节点:</p>
+<ul>
+<li>左指针指向它的第一个孩子</li>
+<li>右指针指向它的右兄弟</li>
+</ul>
+<h4 id="2例子">2.例子</h4>
+<p><img src="/image/Data_structure/3_0.png" alt="这里写图片描述"></p>
+<h3 id="三森林转二叉树">三.森林转二叉树</h3>
+<h4 id="1思路-1">1.思路</h4>
+<p>和树的兄弟节点很想，只是把树的左边的树也当做根节点的兄弟<br>
+就是对于任一个节点：</p>
+<ul>
+<li>左指针指向它的第一个孩子</li>
+<li>右指针指向它的兄弟/旁边的树</li>
+</ul>
+<h4 id="2例子-1">2.例子</h4>
+<p><img src="/image/Data_structure/3_1.png" alt="这里写图片描述"></p>
+<h3 id="四二叉树转换为树或森林">四.二叉树转换为树或森林</h3>
+<p>二叉树转树和森林就是上面过程的逆过程。即<br>
+对于任意一个节点:</p>
+<ul>
+<li>左子树转换为它的子树</li>
+<li>如果是根节点,右子树转换为另一颗树,如果不是，右子树转换为该节点的兄弟</li>
+</ul>
+<h3 id="五树和森林的遍历">五.树和森林的遍历</h3>
+<h4 id="1树的遍历">1.树的遍历</h4>
+<p><strong>a.先根遍历</strong></p>
+<ul>
+<li>即先访问树的根节点，然后依次访问根的每颗子树。</li>
+<li>以前面的那个树T为例，它的先根遍历为ABDEFCG</li>
+<li>很显然树的先根遍历 = 转换后二叉树的先序遍历</li>
+</ul>
+<p><strong>b.后根遍历</strong></p>
+<ul>
+<li>即先访问树的每颗子树，在访问根节点</li>
+<li>以前面那个树为例,它的先根遍历为DEFBCGA</li>
+<li>很显然树的后跟遍历 = 转换后二叉树的中序遍历</li>
+</ul>
+<h4 id="2森林的遍历">2.森林的遍历</h4>
+<p><strong>a.先序遍历</strong></p>
+<ul>
+<li>即先访问第一个树的根节点，然后依次遍历这颗树的子树,然后依次访问剩下的树</li>
+<li>以前面的森林为例，它的先序遍历序列为ABDEFCGHIJK</li>
+<li>很显然森林的先序遍历 = 转换后二叉树的先序遍历</li>
+</ul>
+<p><strong>b.后序遍历</strong></p>
+<ul>
+<li>即先访问第一棵树的各个子树,然后访问根节点，然后依次访问剩下的树</li>
+<li>以前面那个森林为例，它的后序遍历序列为DEFBGCAIJHK</li>
+<li>很显然森林的后序遍历 = 转换后二叉树的中序遍历</li>
+</ul>
+<h3 id="六二叉森林的应用">六.二叉森林的应用</h3>
+<h4 id="1求树叶子节点个数">1.求树叶子节点个数。</h4>
+<p>具体要求：编写算法，在以孩子兄弟二叉链表存储的树中,求树(森林)叶子节点个数。
+思路: 使用二叉树的遍历算法，遍历所有节点,如果左子树为空，则说明在这个树中，该节点为叶子节点。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">Statistics</span>(BiTree	root){
+	<span style="color:#000;font-weight:bold">static</span> <span style="color:#458;font-weight:bold">int</span> count;
+	<span style="color:#000;font-weight:bold">if</span>(root<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>)
+		<span style="color:#000;font-weight:bold">return</span> ;
+	<span style="color:#000;font-weight:bold">if</span>(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>lChild<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>)
+		count<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;
+		
+	Statistics(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>lChild);
+	Statistics(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rChild);
+
+	<span style="color:#000;font-weight:bold">return</span> count;
+} 
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="2求树的深度">2.求树的深度。</h4>
+<p>具体要求：编写算法,在以孩子兄弟二叉链表存储的树中,求树(或森林)的深度。
+思路:树的深度=左子树深度+1和右子树深度中大者。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">Depth</span>(BiTree root){
+	<span style="color:#458;font-weight:bold">int</span> hchild,hsibling;
+	
+ 	<span style="color:#000;font-weight:bold">if</span>(root<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>)
+		<span style="color:#000;font-weight:bold">return</span> <span style="color:#099">0</span>;
+		
+	hchild<span style="color:#000;font-weight:bold">=</span>Depth(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>lChild);
+	hsibling <span style="color:#000;font-weight:bold">=</span>Depth(root<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rChild);
+	
+	<span style="color:#000;font-weight:bold">if</span>(hchild<span style="color:#000;font-weight:bold">+</span><span style="color:#099">1</span><span style="color:#000;font-weight:bold">&gt;</span>hsibling){
+		<span style="color:#000;font-weight:bold">return</span> hchild<span style="color:#000;font-weight:bold">+</span><span style="color:#099">1</span>;
+	}<span style="color:#000;font-weight:bold">else</span>{
+		<span style="color:#000;font-weight:bold">return</span> hsibling;
+	}
+}
+</code></pre></td></tr></table>
+</div>
+</div><p><a href="https://github.com/hsc396612325/Blog">text14中</a></p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8417%E6%A0%91%E6%A3%AE%E6%9E%97%E8%BD%AC%E5%8C%96%E4%B8%BA%E4%BA%8C%E5%8F%89%E6%A0%91%E5%AD%A9%E5%AD%90%E5%85%84%E5%BC%9F%E8%A1%A8%E7%A4%BA%E6%B3%95/">http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8417%E6%A0%91%E6%A3%AE%E6%9E%97%E8%BD%AC%E5%8C%96%E4%B8%BA%E4%BA%8C%E5%8F%89%E6%A0%91%E5%AD%A9%E5%AD%90%E5%85%84%E5%BC%9F%E8%A1%A8%E7%A4%BA%E6%B3%95/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8416%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E7%BA%BF%E7%B4%A2%E5%8C%96/">数据结构16————二叉树的线索化</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8415%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%81%8D%E5%8E%86%E5%92%8C%E5%BB%BA%E7%AB%8B/">数据结构15————二叉树的遍历和建立</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8414%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%AE%9A%E4%B9%89%E6%80%A7%E8%B4%A8%E5%8F%8A%E5%82%A8%E5%AD%98/">数据结构14————二叉树的定义性质及储存</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8413%E6%A0%91%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AD%98%E5%82%A8/">数据结构13————树的基本概念和存储</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8412%E9%A9%AC%E9%9E%8D%E7%82%B9%E9%97%AE%E9%A2%98%E4%B8%89%E5%85%83%E7%BB%84%E7%A8%80%E7%96%8F%E7%9F%A9%E9%98%B5%E5%8D%81%E5%AD%97%E9%93%BE%E8%A1%A8%E7%A8%80%E7%96%8F%E9%93%BE%E8%A1%A8%E7%9A%84%E5%8A%A0%E5%87%8F%E6%B3%95/">数据结构12————马鞍点问题&amp;三元组稀疏矩阵&amp;十字链表稀疏链表的加减法</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84'>数据结构</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "https://github.com/hsc396612325/HSCBlog/tree/gh-pages"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一-内容">一. 内容</a></li>
+    <li><a href="#二树转为二叉树">二.树转为二叉树</a>
+      <ul>
+        <li><a href="#1思路">1.思路</a></li>
+        <li><a href="#2例子">2.例子</a></li>
+      </ul>
+    </li>
+    <li><a href="#三森林转二叉树">三.森林转二叉树</a>
+      <ul>
+        <li><a href="#1思路-1">1.思路</a></li>
+        <li><a href="#2例子-1">2.例子</a></li>
+      </ul>
+    </li>
+    <li><a href="#四二叉树转换为树或森林">四.二叉树转换为树或森林</a></li>
+    <li><a href="#五树和森林的遍历">五.树和森林的遍历</a>
+      <ul>
+        <li><a href="#1树的遍历">1.树的遍历</a></li>
+        <li><a href="#2森林的遍历">2.森林的遍历</a></li>
+      </ul>
+    </li>
+    <li><a href="#六二叉森林的应用">六.二叉森林的应用</a>
+      <ul>
+        <li><a href="#1求树叶子节点个数">1.求树叶子节点个数。</a></li>
+        <li><a href="#2求树的深度">2.求树的深度。</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>“数据结构&#34; on 冰炭不投day的博客</title>
+    <link>http://blog.bingtan.online/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link>
+    <description>Recent content in “数据结构&#34; on 冰炭不投day的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sat, 26 May 2018 22:40:54 +0800</lastBuildDate>
+    
+	<atom:link href="http://blog.bingtan.online/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>数据结构26————有序表查找</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8426%E6%9C%89%E5%BA%8F%E8%A1%A8%E6%9F%A5%E6%89%BE/</link>
+      <pubDate>Sat, 26 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8426%E6%9C%89%E5%BA%8F%E8%A1%A8%E6%9F%A5%E6%89%BE/</guid>
+      <description>一. 有序表查找 有序表查找即在一个有序表中查找需要的值，因为是有序的所以可以不用如线性表那样遍历所有数据，可以利用有序这一特点进行查找。 二. 二分(折半)查找 1. 思路 在有序表(从小到大)中，取中间记录作为比较对象,若给定值与中间记录的关键字相等，则查找成功，如给定值小于中间记录的关键字</description>
+    </item>
+    
+    <item>
+      <title>数据结构25————图的拓扑排序和关键排序</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8425-%E9%A1%BA%E5%BA%8F%E8%A1%A8%E6%9F%A5%E6%89%BE/</link>
+      <pubDate>Fri, 25 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8425-%E9%A1%BA%E5%BA%8F%E8%A1%A8%E6%9F%A5%E6%89%BE/</guid>
+      <description>一. 顺序表查找 顺序查找又叫线性查找，是最基本的查找技术，它的查找过程:从表中第一个(或最后一个)记录开始，逐个进行记录的关键字和给定值比较，若找到则查找成功，如果直到最后一个(或者第一个)记录，都未找到，则表中没有所查找的数据，查找失败 二. 顺序表查找代码 1.基本算法 #include &amp;lt;stdio.h&amp;gt; //顺序查</description>
+    </item>
+    
+    <item>
+      <title>数据结构24————图的拓扑排序和关键排序</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8424%E5%9B%BE%E7%9A%84%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F%E5%92%8C%E5%85%B3%E9%94%AE%E6%8E%92%E5%BA%8F/</link>
+      <pubDate>Thu, 24 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8424%E5%9B%BE%E7%9A%84%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F%E5%92%8C%E5%85%B3%E9%94%AE%E6%8E%92%E5%BA%8F/</guid>
+      <description>一. 图的拓扑排序 1. 算法定义 AOV网 在一个表示工程的有向图中，用顶点表示活动之间优先级关系,这样的有向图为顶点表示活动的网，我们称为AOV网 拓扑排序 按照有向图给出的次序关系，将图中的顶点排成一个线性序列，对于有向图中没有限定次序关系的顶点，则可以人为加上任意的次序关系，由此所得顶点</description>
+    </item>
+    
+    <item>
+      <title>数据结构23————图的最短路径Dijkstra算法&amp;Floyd算法</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8423%E5%9B%BE%E7%9A%84%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84Dijkstra%E7%AE%97%E6%B3%95Floyd%E7%AE%97%E6%B3%95/</link>
+      <pubDate>Wed, 23 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8423%E5%9B%BE%E7%9A%84%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84Dijkstra%E7%AE%97%E6%B3%95Floyd%E7%AE%97%E6%B3%95/</guid>
+      <description>一. 最短路径的概念 从某顶点(源点)出发到另一顶点(目的点)的路径中,有一条各边(或弧)权值之和最小的路径称为最短路径。 形式化表述: 设有带权的有向图D=(V,{E})，D中的边权为W(e)。已知源点为v0，求v0到其它各顶点的最短路径。 最短路径有两种算法:迪杰斯特拉(Dijkstr</description>
+    </item>
+    
+    <item>
+      <title>数据结构22————图的最小生成树Prim&amp;Kruskal</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8422%E5%9B%BE%E7%9A%84%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91PrimKruskal/</link>
+      <pubDate>Tue, 22 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8422%E5%9B%BE%E7%9A%84%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91PrimKruskal/</guid>
+      <description>一. 最小生成树的概念 1.最小生成树的概念 生成树:连通图的极小连通子图称为图的生成树,显然顶点数为n 的连通图, 生成树边数为n-1; 从连通图中某一顶点出发遍历图时,图中所有的顶点加上遍历时经过的边所构成的子图T, 恰好就是一棵生成树 最小生成树：生成树各边权值之和为生成树代价，其代价最小</description>
+    </item>
+    
+    <item>
+      <title>数据结构21————图的深度优先遍历(DFS)&amp;广度优先遍历(BFS)</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8421%E5%9B%BE%E7%9A%84%E6%B7%B1%E5%BA%A6%E4%BC%98%E5%85%88%E9%81%8D%E5%8E%86DFS%E5%B9%BF%E5%BA%A6%E4%BC%98%E5%85%88%E9%81%8D%E5%8E%86BFS/</link>
+      <pubDate>Mon, 21 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8421%E5%9B%BE%E7%9A%84%E6%B7%B1%E5%BA%A6%E4%BC%98%E5%85%88%E9%81%8D%E5%8E%86DFS%E5%B9%BF%E5%BA%A6%E4%BC%98%E5%85%88%E9%81%8D%E5%8E%86BFS/</guid>
+      <description>一、一. 深度优先遍历(DFS) 1.DFS递归定义 假设给定图的所有状态都是未曾访问过.在G中任选一个点V作为初始点。则深度优先遍历的定义如下: 首先访问出发点V，并将其标记为已访问过。然后依次从v出发搜索v的每个邻接点w。若w未曾访问过，则以w为新的处发点继续进行深度优先遍历，直至图</description>
+    </item>
+    
+    <item>
+      <title>数据结构20————图的存储结构</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8420%E5%9B%BE%E7%9A%84%E4%BA%94%E7%A7%8D%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/</link>
+      <pubDate>Sun, 20 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8420%E5%9B%BE%E7%9A%84%E4%BA%94%E7%A7%8D%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/</guid>
+      <description>一. 邻接矩阵 1. 存储形式 使用一维数组存储顶点信息，使用二维数组存储边信息。 如果是图a[i][j]=1表示顶点i和顶点j直接存在边，a[i][j]=0表示顶点i和j不存在边。 如果是网,则a[i][j=m(m为数字)表示顶点i和j之间存在一个权值为m的边，a[i][j]=无穷表示顶点i</description>
+    </item>
+    
+    <item>
+      <title>数据结构19————图的定义和基本概念</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8419%E5%9B%BE%E7%9A%84%E5%AE%9A%E4%B9%89%E5%92%8C%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</link>
+      <pubDate>Sat, 19 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8419%E5%9B%BE%E7%9A%84%E5%AE%9A%E4%B9%89%E5%92%8C%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</guid>
+      <description>一.内容: 图的定义 各种图的相关概念 图的ADT 二.图的定义 1.形式化定义 图(Graph)是由顶点的有穷非空集合和顶点直接边的集合组成,通常表示为G(V,E)，其中G表示一个图,V是图G中顶点的集合,E是图G中的边的集合 图中的数据元素，我们称为顶点 图不存在空集，图中不允许没有顶点 任何</description>
+    </item>
+    
+    <item>
+      <title>数据结构18————哈夫曼树</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8418%E5%93%88%E5%A4%AB%E6%9B%BC%E6%A0%91/</link>
+      <pubDate>Fri, 18 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8418%E5%93%88%E5%A4%AB%E6%9B%BC%E6%A0%91/</guid>
+      <description>数据结构18————哈夫曼树 @[toc] 一.内容 哈夫曼树的定义和原理 哈夫曼树的建立 哈夫曼编码 哈夫曼算法的实现 二.哈夫曼树的定义和原理 1.哈夫曼树的定义及作用 哈夫曼树的又称为最优二叉树,是带权路径最短的树，可用来构造最优编码，常用于数据压缩和信息传递 2.哈夫曼树的相关概念 路径:从一个结点到另</description>
+    </item>
+    
+    <item>
+      <title>数据结构17————树,森林转化为二叉树(孩子兄弟表示法)</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8417%E6%A0%91%E6%A3%AE%E6%9E%97%E8%BD%AC%E5%8C%96%E4%B8%BA%E4%BA%8C%E5%8F%89%E6%A0%91%E5%AD%A9%E5%AD%90%E5%85%84%E5%BC%9F%E8%A1%A8%E7%A4%BA%E6%B3%95/</link>
+      <pubDate>Thu, 17 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8417%E6%A0%91%E6%A3%AE%E6%9E%97%E8%BD%AC%E5%8C%96%E4%B8%BA%E4%BA%8C%E5%8F%89%E6%A0%91%E5%AD%A9%E5%AD%90%E5%85%84%E5%BC%9F%E8%A1%A8%E7%A4%BA%E6%B3%95/</guid>
+      <description>一. 内容 树转换二叉树 森林转换为二叉树 二叉树转森林和树 森林和树的遍历 二叉森林树的应用 二.树转为二叉树 1.思路 整体思路就是我前面的一篇博客提到的树的孩子兄弟法。 就是对于一个节点: 左指针指向它的第一个孩子 右指针指向它的右兄弟 2.例子 三.森林转二叉树 1.思路 和树的兄弟节点很想，只是把树的</description>
+    </item>
+    
+    <item>
+      <title>数据结构16————二叉树的线索化</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8416%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E7%BA%BF%E7%B4%A2%E5%8C%96/</link>
+      <pubDate>Wed, 16 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8416%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E7%BA%BF%E7%B4%A2%E5%8C%96/</guid>
+      <description>一.内容 二叉树的线索化 线索二叉树的线索化 线索二叉树的简单应用 二.二叉树的线索化 1.二叉树的线索化的原因 当我们使用二叉链表实现二叉树,对空间会造成很大的浪费。当我们存储有n个节点的二叉树时，一共有2n个指针域，而二叉树一共有n-1个分支连线。即只有n-1个指针域指向节点，剩下的n+</description>
+    </item>
+    
+    <item>
+      <title>数据结构15————二叉树的遍历和建立</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8415%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%81%8D%E5%8E%86%E5%92%8C%E5%BB%BA%E7%AB%8B/</link>
+      <pubDate>Tue, 15 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8415%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%81%8D%E5%8E%86%E5%92%8C%E5%BB%BA%E7%AB%8B/</guid>
+      <description>一.内容 二叉树遍历的概念 二叉树的遍历 使用递归实现 二叉树的遍历 使用栈实现 二叉树的建立 二叉树遍历的应用 所有代码只是核心函数，完整代码见末尾链接 注意本篇博客都是基于二叉链表的实现 二.二叉树遍历的概念 如果我们要求次序的不重复的，遍历一颗树，并且限制从左到右习惯方式，一共有4种不同遍历方法</description>
+    </item>
+    
+    <item>
+      <title>数据结构14————二叉树的定义性质及储存</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8414%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%AE%9A%E4%B9%89%E6%80%A7%E8%B4%A8%E5%8F%8A%E5%82%A8%E5%AD%98/</link>
+      <pubDate>Mon, 14 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8414%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%AE%9A%E4%B9%89%E6%80%A7%E8%B4%A8%E5%8F%8A%E5%82%A8%E5%AD%98/</guid>
+      <description>一.内容 二叉树的定义 二叉树的性质 二叉树的存储 二.二叉树的定义 1.形式化定义 二叉树(Binary Tree)是n(n&amp;gt;=0)个节点组成的集合,该集合或者为空集(空二叉树)，或者由一个根节点和两颗互不相交的，分别称为根节点的左子树和右子树的二叉树组成。 2.举例 如图就是一个典型的二</description>
+    </item>
+    
+    <item>
+      <title>数据结构13————树的基本概念和存储</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8413%E6%A0%91%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AD%98%E5%82%A8/</link>
+      <pubDate>Sun, 13 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8413%E6%A0%91%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AD%98%E5%82%A8/</guid>
+      <description>一.内容 树的定义 树的相关术语 树的ADT 树的存储 二.树的定义 1.形式化定义： 树（tree）是包含n（n&amp;gt;0）个结点的有穷集，其中： （1）每个元素称为结点（node）； （2）有一个特定的结点被称为根结点或树根（root）。 （3）除根结点之外的其余数据元素被分为m（m≥0）个互不</description>
+    </item>
+    
+    <item>
+      <title>数据结构12————马鞍点问题&amp;三元组稀疏矩阵&amp;十字链表稀疏链表的加减法</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8412%E9%A9%AC%E9%9E%8D%E7%82%B9%E9%97%AE%E9%A2%98%E4%B8%89%E5%85%83%E7%BB%84%E7%A8%80%E7%96%8F%E7%9F%A9%E9%98%B5%E5%8D%81%E5%AD%97%E9%93%BE%E8%A1%A8%E7%A8%80%E7%96%8F%E9%93%BE%E8%A1%A8%E7%9A%84%E5%8A%A0%E5%87%8F%E6%B3%95/</link>
+      <pubDate>Sat, 12 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8412%E9%A9%AC%E9%9E%8D%E7%82%B9%E9%97%AE%E9%A2%98%E4%B8%89%E5%85%83%E7%BB%84%E7%A8%80%E7%96%8F%E7%9F%A9%E9%98%B5%E5%8D%81%E5%AD%97%E9%93%BE%E8%A1%A8%E7%A8%80%E7%96%8F%E9%93%BE%E8%A1%A8%E7%9A%84%E5%8A%A0%E5%87%8F%E6%B3%95/</guid>
+      <description>一.内容 马鞍点问题 三元组稀疏矩阵的加减法 十字链表稀疏矩阵的加减法 二.求矩阵的马鞍点 1.问题描述 2.思路 求出每一行的最小值，存到minrows数组中 求出每一列的最大值，存到maxcols数组中 寻找是否存在i和j，使minrows[i]==maxcols[j],如果存在a[i][j]</description>
+    </item>
+    
+    <item>
+      <title>数据结构11————串的BF匹配模式和KMP匹配模式</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8411%E4%B8%B2%E7%9A%84BF%E5%8C%B9%E9%85%8D%E6%A8%A1%E5%BC%8F%E5%92%8CKMP%E5%8C%B9%E9%85%8D%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Fri, 11 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8411%E4%B8%B2%E7%9A%84BF%E5%8C%B9%E9%85%8D%E6%A8%A1%E5%BC%8F%E5%92%8CKMP%E5%8C%B9%E9%85%8D%E6%A8%A1%E5%BC%8F/</guid>
+      <description>一.前面一些絮絮叨叨的话 1.名称解释 子串：串中任意连续字符组成的子序列组成的 主串：包含子串的相应的串 前缀子串：S=a1&amp;hellip;ab U=a1&amp;hellip;.an 当1&amp;lt;=n&amp;lt; b时，称U为S的前缀子串 后缀子串：S=a1&amp;hellip;ab U=an&amp;hellip;.ab 当1 &amp;lt; n &amp;lt; b时，称U为S的后缀子串 例： S：abaab</description>
+    </item>
+    
+    <item>
+      <title>数据结构10————串-从c语言String库源码来学习</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8410%E4%B8%B2-%E4%BB%8Ec%E8%AF%AD%E8%A8%80String%E5%BA%93%E6%BA%90%E7%A0%81%E6%9D%A5%E5%AD%A6%E4%B9%A0/</link>
+      <pubDate>Thu, 10 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8410%E4%B8%B2-%E4%BB%8Ec%E8%AF%AD%E8%A8%80String%E5%BA%93%E6%BA%90%E7%A0%81%E6%9D%A5%E5%AD%A6%E4%B9%A0/</guid>
+      <description>一.前言 在学习串这一章的时候老师，讲的挺快的。基本只是讲了串的定义，有哪些基本操作。还有串的两种匹配模式。 在学习串的基本操作时，发现好多操作在c语言的String库里都有提供。所以很好奇，在c语言的String库中，这些基本操作都是如何实现的。所以在网上查了一些资料。在博客的后面</description>
+    </item>
+    
+    <item>
+      <title>数据结构9————栈的应用3-后缀表达式</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%849%E6%A0%88%E7%9A%84%E5%BA%94%E7%94%A83-%E5%90%8E%E7%BC%80%E8%A1%A8%E8%BE%BE%E5%BC%8F/</link>
+      <pubDate>Wed, 09 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%849%E6%A0%88%E7%9A%84%E5%BA%94%E7%94%A83-%E5%90%8E%E7%BC%80%E8%A1%A8%E8%BE%BE%E5%BC%8F/</guid>
+      <description>一.前言 1. 中缀表达式是什么 是一个通用的算术或逻辑公式表示方法， 操作符是以中缀形式处于操作数的中间（例：3 + 4），中缀表达式是人们常用的算术表示方法。 2. 后缀表达式(逆波兰表达式)是什么 后缀表达式，指的是不包含括号，运算符放在两个运算对象的后面，所有的计算按运算符出现的顺序，严格从左</description>
+    </item>
+    
+    <item>
+      <title>数据结构8————栈的应用2-非递归解决迷宫和马踏棋盘问题</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%848%E6%A0%88%E7%9A%84%E5%BA%94%E7%94%A82-%E9%9D%9E%E9%80%92%E5%BD%92%E8%A7%A3%E5%86%B3%E8%BF%B7%E5%AE%AB%E5%92%8C%E9%A9%AC%E8%B8%8F%E6%A3%8B%E7%9B%98%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Tue, 08 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%848%E6%A0%88%E7%9A%84%E5%BA%94%E7%94%A82-%E9%9D%9E%E9%80%92%E5%BD%92%E8%A7%A3%E5%86%B3%E8%BF%B7%E5%AE%AB%E5%92%8C%E9%A9%AC%E8%B8%8F%E6%A3%8B%E7%9B%98%E9%97%AE%E9%A2%98/</guid>
+      <description>一.前言 1. 迷宫问题的描述 在高为H，宽为W的地图中，0代表可以走，1代表障碍物，不重复的走到终点。给定地图和终点求下列问题 子问题1 按照右下左上（优先级）输出一条到达终点路径 子问题2 输出所有路径 2. 马踏棋盘问题的描述 将马放在国际象棋8×8棋盘某个方格中，马按走棋规则进行移动，要求每个方</description>
+    </item>
+    
+    <item>
+      <title>数据结构7————递归解决迷宫问题和马踏棋盘</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%847%E9%80%92%E5%BD%92%E8%A7%A3%E5%86%B3%E8%BF%B7%E5%AE%AB%E9%97%AE%E9%A2%98%E5%92%8C%E9%A9%AC%E8%B8%8F%E6%A3%8B%E7%9B%98/</link>
+      <pubDate>Mon, 07 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%847%E9%80%92%E5%BD%92%E8%A7%A3%E5%86%B3%E8%BF%B7%E5%AE%AB%E9%97%AE%E9%A2%98%E5%92%8C%E9%A9%AC%E8%B8%8F%E6%A3%8B%E7%9B%98/</guid>
+      <description>一.前言 1. 迷宫问题的描述 在高为H，宽为W的地图中，0代表可以走，1代表障碍物，不重复的走到终点。给定地图和终点求下列问题 子问题1 求出最少步数 子问题2 求出最多步数 子问题3 输出所有走法 2. 马踏棋盘问题的描述 将马放在国际象棋8×8棋盘某个方格中，马按走棋规则进行移动，要求每个方格只进入一</description>
+    </item>
+    
+    <item>
+      <title>数据结构6————队栈的应用1</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%846%E9%98%9F%E6%A0%88%E7%9A%84%E5%BA%94%E7%94%A81/</link>
+      <pubDate>Sun, 06 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%846%E9%98%9F%E6%A0%88%E7%9A%84%E5%BA%94%E7%94%A81/</guid>
+      <description>一.前言 关于队和栈的概念，可以看我的前两篇博客，在这里我就不贴队和栈的源代码，都是关于核心函数的代码。如果需要看完整代码，或者是运行查看结果，可以参看末尾的git链接，里面有源码。 这一篇里的应用都是很简单的应用,其实不需要队和栈都可以实现，为了练手我就用队和栈实现了一次（其实是作</description>
+    </item>
+    
+    <item>
+      <title>数据结构5————队的概念和运算</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%845%E9%98%9F%E7%9A%84%E6%A6%82%E5%BF%B5%E5%92%8C%E8%BF%90%E7%AE%97/</link>
+      <pubDate>Sat, 05 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%845%E9%98%9F%E7%9A%84%E6%A6%82%E5%BF%B5%E5%92%8C%E8%BF%90%E7%AE%97/</guid>
+      <description>一. 队的概念 1.定义 栈是一种只允许在一端进行插入，在另一端进行删除的线性表，和栈类似都是一种操作受限的线性表 2. 相关概念 队头：允许进行删除的一端称为队顶 队尾：允许进行插入的一端称为队底 出队：在队头进行删除操作 入队：在队尾进行插入操作 空队：队内没有元素 3. 特点 先进先出。 4.栈的ADT定</description>
+    </item>
+    
+    <item>
+      <title>数据结构4————栈的概念和运算</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%844%E6%A0%88%E7%9A%84%E6%A6%82%E5%BF%B5%E5%92%8C%E8%BF%90%E7%AE%97/</link>
+      <pubDate>Fri, 04 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%844%E6%A0%88%E7%9A%84%E6%A6%82%E5%BF%B5%E5%92%8C%E8%BF%90%E7%AE%97/</guid>
+      <description>一. 前言和引入 在刚接触c的时候，经常听到一个高大上的名词，栈。当时还是萌新的我很懵，栈是个啥，问老师和学长学姐们，他们告诉我，函数储存在栈内存中，是一种先进后先出的储存结构，一个函数运行完毕后在释放。 而先进后出，形象来说，栈好像一个封底的盒子，如果想取出盒子中间位置的物品a，必须</description>
+    </item>
+    
+    <item>
+      <title>数据结构3————链表的应用2[一元多项式]</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%843%E9%93%BE%E8%A1%A8%E7%9A%84%E5%BA%94%E7%94%A82%E4%B8%80%E5%85%83%E5%A4%9A%E9%A1%B9%E5%BC%8F/</link>
+      <pubDate>Thu, 03 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%843%E9%93%BE%E8%A1%A8%E7%9A%84%E5%BA%94%E7%94%A82%E4%B8%80%E5%85%83%E5%A4%9A%E9%A1%B9%E5%BC%8F/</guid>
+      <description>一.前言 这次博客主要是使用链表进行多项式的运算，包括 多项式的建立输出 多项式的加法 多项式的减法 多项式的乘法 多项式的求值 多项式的求导 二.说明 我是在学校的acm系统上做的题，由于acm上面的一些问题，接受数据时，第一个节点接受的是垃圾数据,所以我多建立了一个节点，当链表建立完成后，将第</description>
+    </item>
+    
+    <item>
+      <title>数据结构2————链表的简单应用1</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%842%E9%93%BE%E8%A1%A8%E7%9A%84%E7%AE%80%E5%8D%95%E5%BA%94%E7%94%A81/</link>
+      <pubDate>Wed, 02 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%842%E9%93%BE%E8%A1%A8%E7%9A%84%E7%AE%80%E5%8D%95%E5%BA%94%E7%94%A81/</guid>
+      <description>一.前言 在我的上一篇博客中，介绍和链表是什么和链表的基本操作，即创建输出，增删改查。这些是链表应用的基础，几乎所有链表的应用都是在这些的基础上进行的延伸和融合。所以对于链表的基本操作一定要做到熟练掌握。 在我的上篇博客中还写了一些关于链表的应用。 1. 升序合并 2. 基于链表的冒泡和插入排序</description>
+    </item>
+    
+    <item>
+      <title>数据结构1————链表的基本操作</title>
+      <link>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%841%E9%93%BE%E8%A1%A8%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/</link>
+      <pubDate>Tue, 01 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%841%E9%93%BE%E8%A1%A8%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/</guid>
+      <description>一.链表的基本概念 链表是什么： 链表是一种逻辑顺序是连续的但物理存储单元上非连续、非顺序的存储结构。 链表实现方法： 链表是通过以结构体为节点，然后将所有节点通过结构体的指针域指向下一个节点连接起来（连接的实现），将数据存储到数据域中（存储的实现）。 1 2 3 4 5 struct node//节点 { int da</description>
+    </item>
+    
+  </channel>
+</rss>

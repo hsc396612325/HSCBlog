@@ -1,0 +1,1148 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>数据结构2————链表的简单应用1 | 冰炭不投day的博客</title>
+    <meta property="og:title" content="数据结构2————链表的简单应用1 - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2018-05-02T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2018-05-02T22:40:54&#43;08:00'>
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="数据结构2————链表的简单应用1">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%842%E9%93%BE%E8%A1%A8%E7%9A%84%E7%AE%80%E5%8D%95%E5%BA%94%E7%94%A81/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">数据结构2————链表的简单应用1</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年5月2日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84'>“数据结构&#34;</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h3 id="一前言">一.前言</h3>
+<p>在我的上一篇博客中，介绍和链表是什么和链表的基本操作，即创建输出，增删改查。这些是链表应用的基础，几乎所有链表的应用都是在这些的基础上进行的延伸和融合。所以对于链表的基本操作一定要做到熟练掌握。</p>
+<p>在我的上篇博客中还写了一些关于链表的应用。
+1. 升序合并
+2. 基于链表的冒泡和插入排序
+3.  删除a链中于b链重复的节点
+4. n个小孩报数问题
+5.  简单的学生管理系统</p>
+<p>在上篇博客写完后，又学习了一些关于链表的应用，所以写这片博客跟大家分享一下
+1. 链表的逆置
+2. 两个升序合并为降序
+3. 两个长度不同的链表交叉合并
+4.  简易通讯录
+5. 约瑟夫环问题</p>
+<h3 id="二链表的逆置">二.链表的逆置</h3>
+<h4 id="1-方法一">1. 方法一</h4>
+<p><strong>思路：</strong><br>
+灵活运用头插法进行逆置，初始为一个头节点，找一个临时指针存下一个节点地址，将下一个节点以头插法的形式插入（插入前备份指针域）。</p>
+<p><strong>核心代码</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">//插入节点的指针域（下一个节点的地址）备份
+</span><span style="color:#998;font-style:italic"></span>pTemp1<span style="color:#000;font-weight:bold">=</span>pTemp2;
+pTemp2<span style="color:#000;font-weight:bold">=</span>pTemp1<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+
+<span style="color:#998;font-style:italic">//头插
+</span><span style="color:#998;font-style:italic"></span>pTemp1<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>pHead<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+pHead<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>pTemp1;
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>完整代码</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">contrary</span>(<span style="color:#000;font-weight:bold">struct</span> node <span style="color:#000;font-weight:bold">*</span>pHead)
+{
+	<span style="color:#000;font-weight:bold">struct</span> node <span style="color:#000;font-weight:bold">*</span>pTemp1<span style="color:#000;font-weight:bold">=</span>pHead<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next,<span style="color:#000;font-weight:bold">*</span>pTemp2<span style="color:#000;font-weight:bold">=</span>pHead<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+	pHead<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>;
+	<span style="color:#000;font-weight:bold">while</span>(pTemp2)
+	{
+		pTemp1<span style="color:#000;font-weight:bold">=</span>pTemp2;
+		pTemp2<span style="color:#000;font-weight:bold">=</span>pTemp1<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+		
+		pTemp1<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>pHead<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+		pHead<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>pTemp1;	
+	}
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>完整代码地址（包含创建和输出）<br>
+<a href="http://note.youdao.com/noteshare?id=83ff64925fba341e4f3a5d827f2fee71&amp;sub=1DC28C1E0B7945F3AE2B5AC41BD699FA">点我查看</a>
+<a href="https://code.csdn.net/snippets/2413707">或者点我查看</a></p>
+<h4 id="2-方法二">2. 方法二</h4>
+<p><strong>思路：</strong><br>
+从第一个节点开始，改变每个节点的指针域指向，直到最后一个节点，是否原来不存数据的头节点，新申请一个头节点</p>
+<p><strong>核心代码</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">pi_q<span style="color:#000;font-weight:bold">=</span>pi;<span style="color:#998;font-style:italic">//移动 
+</span><span style="color:#998;font-style:italic"></span>pi<span style="color:#000;font-weight:bold">=</span>pi_h;
+pi_h<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+		
+<span style="color:#998;font-style:italic">//改变指向
+</span><span style="color:#998;font-style:italic"></span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>pi_q;
+
+pi<span style="color:#a61717;background-color:#e3d2d2">—</span><span style="color:#a61717;background-color:#e3d2d2">—</span><span style="color:#a61717;background-color:#e3d2d2">当</span><span style="color:#a61717;background-color:#e3d2d2">前</span><span style="color:#a61717;background-color:#e3d2d2">要</span><span style="color:#a61717;background-color:#e3d2d2">改</span><span style="color:#a61717;background-color:#e3d2d2">变</span><span style="color:#a61717;background-color:#e3d2d2">的</span><span style="color:#a61717;background-color:#e3d2d2">节</span><span style="color:#a61717;background-color:#e3d2d2">点</span>
+pi_q<span style="color:#a61717;background-color:#e3d2d2">—</span><span style="color:#a61717;background-color:#e3d2d2">—</span><span style="color:#a61717;background-color:#e3d2d2">当</span><span style="color:#a61717;background-color:#e3d2d2">前</span><span style="color:#a61717;background-color:#e3d2d2">要</span><span style="color:#a61717;background-color:#e3d2d2">改</span><span style="color:#a61717;background-color:#e3d2d2">变</span><span style="color:#a61717;background-color:#e3d2d2">的</span><span style="color:#a61717;background-color:#e3d2d2">节</span><span style="color:#a61717;background-color:#e3d2d2">点</span><span style="color:#a61717;background-color:#e3d2d2">前</span><span style="color:#a61717;background-color:#e3d2d2">节</span><span style="color:#a61717;background-color:#e3d2d2">点</span>
+pi_h<span style="color:#a61717;background-color:#e3d2d2">—</span><span style="color:#a61717;background-color:#e3d2d2">—</span><span style="color:#a61717;background-color:#e3d2d2">当</span><span style="color:#a61717;background-color:#e3d2d2">前</span><span style="color:#a61717;background-color:#e3d2d2">要</span><span style="color:#a61717;background-color:#e3d2d2">改</span><span style="color:#a61717;background-color:#e3d2d2">变</span><span style="color:#a61717;background-color:#e3d2d2">的</span><span style="color:#a61717;background-color:#e3d2d2">节</span><span style="color:#a61717;background-color:#e3d2d2">点</span><span style="color:#a61717;background-color:#e3d2d2">后</span><span style="color:#a61717;background-color:#e3d2d2">节</span><span style="color:#a61717;background-color:#e3d2d2">点</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>完整代码</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">struct</span> lianbiao <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">Nizhi</span>(<span style="color:#000;font-weight:bold">struct</span> lianbiao <span style="color:#000;font-weight:bold">*</span>pHead)
+{
+	<span style="color:#000;font-weight:bold">struct</span> lianbiao <span style="color:#000;font-weight:bold">*</span>pi<span style="color:#000;font-weight:bold">=</span>pHead,<span style="color:#000;font-weight:bold">*</span>pi_q,<span style="color:#000;font-weight:bold">*</span>pi_h<span style="color:#000;font-weight:bold">=</span>pHead<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next,<span style="color:#000;font-weight:bold">*</span>p;
+	<span style="color:#000;font-weight:bold">while</span>(pi_h)
+	{
+		pi_q<span style="color:#000;font-weight:bold">=</span>pi;<span style="color:#998;font-style:italic">//移动 
+</span><span style="color:#998;font-style:italic"></span>		pi<span style="color:#000;font-weight:bold">=</span>pi_h;
+		pi_h<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+		
+		pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>pi_q;
+	} 
+	free(pHead);
+	pHead<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>;<span style="color:#998;font-style:italic">//原来头部指针清0 
+</span><span style="color:#998;font-style:italic"></span>	p<span style="color:#000;font-weight:bold">=</span>(<span style="color:#000;font-weight:bold">struct</span> lianbiao <span style="color:#000;font-weight:bold">*</span>)malloc(<span style="color:#000;font-weight:bold">sizeof</span>(<span style="color:#000;font-weight:bold">struct</span> lianbiao));
+	p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>pi; 
+	<span style="color:#000;font-weight:bold">return</span> p;
+}     
+
+</code></pre></td></tr></table>
+</div>
+</div><p>完整代码地址（包含创建和输出）
+<a href="http://note.youdao.com/noteshare?id=6722090ad38b0855cbccfd3d8cabe5af&amp;sub=9987EFBD12E341B9A42B4E85F5CE27CC">点我查看</a>
+<a href="https://code.csdn.net/snippets/2413709">或者点我查看</a></p>
+<h3 id="二-两个升序链表合并为降序">二. 两个升序链表合并为降序</h3>
+<h4 id="1-方法一-1">1. 方法一</h4>
+<p>将俩个升序链表合并升序链表，再调用上面的(逆置)函数进行逆置</p>
+<h4 id="2方法二">2.方法二</h4>
+<p><strong>思路</strong><br>
+类似于两个升序链表合成一个升序链表，使用3个指针，a,b.a指向La链表链表当前节点，b指向Lb链表的当前节点，比较a，b所指的节点数据域大小，将小的以头插的方式插到La头节点后（插入前备份），然后小的后移。
+<strong>核心代码</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">//备份和移动
+</span><span style="color:#998;font-style:italic"></span>La_t<span style="color:#000;font-weight:bold">=</span>La<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+La<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>pHead_a<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+<span style="color:#998;font-style:italic">//头插
+</span><span style="color:#998;font-style:italic"></span>pHead_a<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>La;
+La<span style="color:#000;font-weight:bold">=</span>La_t;
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>完整代码</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">merge</span>(<span style="color:#000;font-weight:bold">struct</span> node <span style="color:#000;font-weight:bold">*</span>pHead_a,<span style="color:#000;font-weight:bold">struct</span> node <span style="color:#000;font-weight:bold">*</span>pHead_b)
+{
+	<span style="color:#000;font-weight:bold">struct</span> node <span style="color:#000;font-weight:bold">*</span>La,<span style="color:#000;font-weight:bold">*</span>Lb,<span style="color:#000;font-weight:bold">*</span>Lc,<span style="color:#000;font-weight:bold">*</span>La_t,<span style="color:#000;font-weight:bold">*</span>Lb_t;
+	La<span style="color:#000;font-weight:bold">=</span>pHead_a<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+	Lb<span style="color:#000;font-weight:bold">=</span>pHead_b<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+	
+	pHead_a<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>;
+	<span style="color:#000;font-weight:bold">while</span>(La<span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span>Lb)
+	{
+		<span style="color:#000;font-weight:bold">if</span>((La<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>date)<span style="color:#000;font-weight:bold">&lt;</span>(Lb<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>date))
+		{
+			La_t<span style="color:#000;font-weight:bold">=</span>La<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+			La<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>pHead_a<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+			pHead_a<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>La;
+			La<span style="color:#000;font-weight:bold">=</span>La_t; 
+			
+		}
+		<span style="color:#000;font-weight:bold">else</span>
+		{
+			Lb_t<span style="color:#000;font-weight:bold">=</span>Lb<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+			Lb<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>pHead_a<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+			pHead_a<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>Lb;
+			Lb<span style="color:#000;font-weight:bold">=</span>Lb_t;	
+		}
+	}
+
+	<span style="color:#000;font-weight:bold">while</span>(La)<span style="color:#998;font-style:italic">//假如b链表遍历完，a链表未遍历完，将a链表剩下的节点进行头插
+</span><span style="color:#998;font-style:italic"></span>	{
+		La_t<span style="color:#000;font-weight:bold">=</span>La<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+		La<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>pHead_a<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+		pHead_a<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>La;
+		La<span style="color:#000;font-weight:bold">=</span>La_t;	
+	}
+	<span style="color:#000;font-weight:bold">while</span>(Lb)
+	{
+		Lb_t<span style="color:#000;font-weight:bold">=</span>Lb<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+		Lb<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>pHead_a<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+		pHead_a<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>Lb;
+		Lb<span style="color:#000;font-weight:bold">=</span>Lb_t;	
+	}
+
+}
+
+
+</code></pre></td></tr></table>
+</div>
+</div><p>完整代码地址（包含创建和输出）
+<a href="http://note.youdao.com/noteshare?id=db959781f6436060c3c224544c618b25&amp;sub=4B5831FDCC854D6BA30F5DE7B7BEF637">点我查看</a>
+<a href="https://code.csdn.net/snippets/2413714">或者点我查看</a></p>
+<h3 id="三交叉合并">三.交叉合并</h3>
+<p><strong>题意要求</strong><br>
+将两个长度不一样的链表进行交叉合并（即a1，b1，a2，b2），并以长度短的为开头。当短的排完后，剩下的节点全部为长链表</p>
+<p><strong>思路</strong> <br>
+使用Lx，Ly，Lz三个指针，Lx指向短链表，Ly指向长链表，Lz指向已排好序的链表尾部，使用指针通过Lz，Lx，Ly将它们交叉串起来</p>
+<p><strong>核心代码</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">Lz<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>Lx; <span style="color:#998;font-style:italic">//连接lz和短链表的当前节点
+</span><span style="color:#998;font-style:italic"></span>Lx_h<span style="color:#000;font-weight:bold">=</span>Lx<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;<span style="color:#998;font-style:italic">//备份Lx的指针域
+</span><span style="color:#998;font-style:italic"></span>		
+Lx<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>Ly;<span style="color:#998;font-style:italic">//连接Lx当前节点和Ly当前节点
+</span><span style="color:#998;font-style:italic"></span>
+Lz<span style="color:#000;font-weight:bold">=</span>Ly;<span style="color:#998;font-style:italic">//移动lz，使lz成为当前已排好节点的尾部
+</span><span style="color:#998;font-style:italic"></span>Lx<span style="color:#000;font-weight:bold">=</span>Lx_h;<span style="color:#998;font-style:italic">//移动lx，使lx成为短链表未排好序的第一个
+</span><span style="color:#998;font-style:italic"></span>Ly<span style="color:#000;font-weight:bold">=</span>Ly<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;<span style="color:#998;font-style:italic">//移动ly，使ly成为长链表未排好序的第一个
+</span></code></pre></td></tr></table>
+</div>
+</div><p><strong>完整代码</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">merge</span>(<span style="color:#000;font-weight:bold">struct</span> node <span style="color:#000;font-weight:bold">*</span>pHead_x,<span style="color:#000;font-weight:bold">struct</span> node <span style="color:#000;font-weight:bold">*</span>pHead_y)
+{
+	<span style="color:#000;font-weight:bold">struct</span> node <span style="color:#000;font-weight:bold">*</span>Lx,<span style="color:#000;font-weight:bold">*</span>Lx_h,<span style="color:#000;font-weight:bold">*</span>Ly,<span style="color:#000;font-weight:bold">*</span>Lz;
+	Lx<span style="color:#000;font-weight:bold">=</span>pHead_x<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+	Ly<span style="color:#000;font-weight:bold">=</span>pHead_y<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+	Lz<span style="color:#000;font-weight:bold">=</span>pHead_x;
+	<span style="color:#000;font-weight:bold">while</span>(Lx)
+	{
+		Lz<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>Lx;
+		Lx_h<span style="color:#000;font-weight:bold">=</span>Lx<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+		
+		Lx<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>Ly;
+		Lz<span style="color:#000;font-weight:bold">=</span>Ly;
+		
+		Lx<span style="color:#000;font-weight:bold">=</span>Lx_h;
+		Ly<span style="color:#000;font-weight:bold">=</span>Ly<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+		
+	}
+	Lz<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>Ly;	
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>完整代码地址（包含创建和输出）
+<a href="http://note.youdao.com/noteshare?id=2ac32fb6b01944b48acac08c039fddac&amp;sub=71C3967464B648CDA7D5FABBA090C694">点我查看</a>
+<a href="https://code.csdn.net/snippets/2413719">或者点我查看</a></p>
+<h3 id="四简单通讯录">四.简单通讯录</h3>
+<p><strong>题意：</strong><br>
+通信录应该包括联系人姓名，电话，类别<br>
+实现通讯录的信息的增删改查<br>
+拓展：输出按人名的字典顺序输出
+<strong>思路</strong>
+这道题是链表的使用链表的基本操作，创建，遍历，增删改查，排序的糅合</p>
+<p>完整代码地址
+<a href="http://note.youdao.com/noteshare?id=6d965a7cbe6f595ed62ea3c6c8ba1e27&amp;sub=8CEB5B232E9645F6AA382C8AD39655AB">点我查看</a>
+<a href="https://code.csdn.net/snippets/2413722">或者点我</a></p>
+<h3 id="五约瑟夫环">五.约瑟夫环</h3>
+<h4 id="1-基本款">1. 基本款</h4>
+<p><strong>题意：</strong><br>
+n个人按顺时针方向围坐在一张圆桌周围，每个人手中持有一张密码。 一开始任选将第一个人的密码牌作为报数上限m，从第一个人开始从1报数，直到报到m为止，报道m的人出队，将他的密码作为新的m，继续报数，重复直到只剩一个人的时候停止。要求密码随机
+<strong>思路：</strong></p>
+<ul>
+<li>创建一个循环链表（和单链表相比，头节点存数据，尾节点指针域存头指针）。每个节点的数据域由两部分构成，序号和密码，密码由随机函数rand()产生随机数，序号由建立时依次填入。</li>
+<li>进行循环，先使用指针找到报到m的节点(人)，再对这个节点进行删除操作（不释放空间）。然后将这个节点的密码赋给m，输出本次出队结果。然后再进行循环。</li>
+<li>循环的停止，当指针的和他的指针域相同时，出循环。此时剩下的节点为最后一个人。
+<strong>核心代码</strong></li>
+</ul>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">while</span>(pi<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next)
+	{ 
+		<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>M<span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>)<span style="color:#998;font-style:italic">//寻找本次需要删除的节点 
+</span><span style="color:#998;font-style:italic"></span>		{
+			pi_q<span style="color:#000;font-weight:bold">=</span>pi;
+			pi<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+		}
+			M<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>num;<span style="color:#998;font-style:italic">//换密码 
+</span><span style="color:#998;font-style:italic"></span>		pi_q<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;<span style="color:#998;font-style:italic">//出队 
+</span><span style="color:#998;font-style:italic"></span>		pi<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;<span style="color:#998;font-style:italic">//移动`
+</span><span style="color:#998;font-style:italic"></span>	}
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>完整代码</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">struct</span> node <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">f1</span>(<span style="color:#000;font-weight:bold">struct</span> node <span style="color:#000;font-weight:bold">*</span>pHead,<span style="color:#458;font-weight:bold">int</span> iCound)
+{
+	<span style="color:#000;font-weight:bold">struct</span> node <span style="color:#000;font-weight:bold">*</span>pi<span style="color:#000;font-weight:bold">=</span>pHead,<span style="color:#000;font-weight:bold">*</span>pi_q<span style="color:#000;font-weight:bold">=</span>pHead<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+	<span style="color:#458;font-weight:bold">int</span> i,M,a[Long]<span style="color:#000;font-weight:bold">=</span>{<span style="color:#099">0</span>},j;
+	<span style="color:#000;font-weight:bold">while</span>(pi_q<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span>pi)
+		pi_q<span style="color:#000;font-weight:bold">=</span>pi_q<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+	M<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>num;
+	<span style="color:#000;font-weight:bold">while</span>(pi<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next)
+	{ 
+		<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>M<span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>)<span style="color:#998;font-style:italic">//寻找本次需要删除的节点 
+</span><span style="color:#998;font-style:italic"></span>		{
+			pi_q<span style="color:#000;font-weight:bold">=</span>pi;
+			pi<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+		}
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">本次密码为%d </span><span style="color:#d14">&#34;</span>,M);<span style="color:#998;font-style:italic">//输出查看 
+</span><span style="color:#998;font-style:italic"></span>		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">本次序号为%d出队</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>,pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>NO);
+		a[pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>NO]<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;<span style="color:#998;font-style:italic">//表示出队
+</span><span style="color:#998;font-style:italic"></span>		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">已出队：</span><span style="color:#d14">&#34;</span>);
+		<span style="color:#000;font-weight:bold">for</span>(j<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;j<span style="color:#000;font-weight:bold">&lt;</span>Long;j<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>)
+			<span style="color:#000;font-weight:bold">if</span>(a[j]<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>)
+				printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%-5d</span><span style="color:#d14">&#34;</span>,j);
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">\n</span><span style="color:#d14">还在队中：</span><span style="color:#d14">&#34;</span>);
+		<span style="color:#000;font-weight:bold">for</span>(j<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;j<span style="color:#000;font-weight:bold">&lt;</span>iCound;j<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>)
+			<span style="color:#000;font-weight:bold">if</span>(a[j]<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>)
+				printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%-5d</span><span style="color:#d14">&#34;</span>,j);	
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">\n</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>); 
+		 
+		M<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>num;<span style="color:#998;font-style:italic">//换密码 
+</span><span style="color:#998;font-style:italic"></span>		pi_q<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;<span style="color:#998;font-style:italic">//删除 
+</span><span style="color:#998;font-style:italic"></span>		pi<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+	}
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">最后在队中的为%d</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>,pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>NO); 
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>完整代码地址
+<a href="http://note.youdao.com/noteshare?id=7071ecbb7a805b255b8b6ffdb57c577c&amp;sub=EDF78FDF3E814C5986A4F1C71AFFD242">点我查看</a>
+<a href="https://code.csdn.net/snippets/2413725">或者点我查看</a></p>
+<h4 id="2-扩展1">2. 扩展1</h4>
+<p><strong>拓展内容：</strong><br>
+不从1号开始报数，第一个报数的人随机选择</p>
+<p><strong>思路：</strong><br>
+大致同第一个一样，不过再进循环前找到随机开始的第一个报数人</p>
+<p><strong>新增代码</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">M<span style="color:#000;font-weight:bold">=</span>rand()<span style="color:#000;font-weight:bold">%</span>(iCound<span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>)<span style="color:#000;font-weight:bold">+</span><span style="color:#099">1</span>;
+printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">从%d个人开始报数</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>,M);
+<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>M<span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>)<span style="color:#998;font-style:italic">//寻找第一个人 
+</span><span style="color:#998;font-style:italic"></span>{
+	pi_q<span style="color:#000;font-weight:bold">=</span>pi;
+	pi<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+}
+M<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>num;
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>完整代码</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">f1_1</span>()
+{
+	<span style="color:#458;font-weight:bold">int</span> j;
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">已出队：</span><span style="color:#d14">&#34;</span>);
+	<span style="color:#000;font-weight:bold">for</span>(j<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;j<span style="color:#000;font-weight:bold">&lt;</span>Long;j<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>)
+		<span style="color:#000;font-weight:bold">if</span>(a[j]<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>)
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%-5d</span><span style="color:#d14">&#34;</span>,j);
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">\n</span><span style="color:#d14">还在队中：</span><span style="color:#d14">&#34;</span>);
+	<span style="color:#000;font-weight:bold">for</span>(j<span style="color:#000;font-weight:bold">=</span><span style="color:#099">1</span>;j<span style="color:#000;font-weight:bold">&lt;</span>iCound<span style="color:#000;font-weight:bold">+</span><span style="color:#099">1</span>;j<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>)
+		<span style="color:#000;font-weight:bold">if</span>(a[j]<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>)
+			printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%-5d</span><span style="color:#d14">&#34;</span>,j);	
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">\n</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+} 
+<span style="color:#000;font-weight:bold">struct</span> node <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">f1</span>(<span style="color:#000;font-weight:bold">struct</span> node <span style="color:#000;font-weight:bold">*</span>pHead,<span style="color:#458;font-weight:bold">int</span> iCound)
+{
+	<span style="color:#000;font-weight:bold">struct</span> node <span style="color:#000;font-weight:bold">*</span>pi<span style="color:#000;font-weight:bold">=</span>pHead,<span style="color:#000;font-weight:bold">*</span>pi_q<span style="color:#000;font-weight:bold">=</span>pHead<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+	<span style="color:#458;font-weight:bold">int</span> i,M;
+	<span style="color:#000;font-weight:bold">while</span>(pi_q<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span>pi)
+		pi_q<span style="color:#000;font-weight:bold">=</span>pi_q<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+	M<span style="color:#000;font-weight:bold">=</span>rand()<span style="color:#000;font-weight:bold">%</span>(iCound<span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>)<span style="color:#000;font-weight:bold">+</span><span style="color:#099">1</span>;
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">从%d个人开始报数</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>,M);
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>M<span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>)<span style="color:#998;font-style:italic">//寻找第一个人 
+</span><span style="color:#998;font-style:italic"></span>	{
+		pi_q<span style="color:#000;font-weight:bold">=</span>pi;
+		pi<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+	}
+	M<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>num;
+	<span style="color:#000;font-weight:bold">while</span>(pi<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next)
+	{ 
+		<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>M<span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>)<span style="color:#998;font-style:italic">//寻找本次需要删除的节点 
+</span><span style="color:#998;font-style:italic"></span>		{
+			pi_q<span style="color:#000;font-weight:bold">=</span>pi;
+			pi<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+		}
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">本次密码为%d </span><span style="color:#d14">&#34;</span>,M);<span style="color:#998;font-style:italic">//输出查看 
+</span><span style="color:#998;font-style:italic"></span>		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">本次序号为%d出队</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>,pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>NO);
+		a[pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>NO]<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;
+	 	f1_1();
+		 
+		M<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>num;<span style="color:#998;font-style:italic">//换密码 
+</span><span style="color:#998;font-style:italic"></span>		pi_q<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;<span style="color:#998;font-style:italic">//删除 
+</span><span style="color:#998;font-style:italic"></span>		pi<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+	}
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">最后在队中的为%d</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>,pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>NO); 
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>完整代码地址
+<a href="http://note.youdao.com/noteshare?id=c72593d7351b455e2d3763d2672957d6&amp;sub=F4E85BF048EB4820ADE05F861236A439">点我查看</a>
+<a href="https://code.csdn.net/snippets/2413727">或者点我查看</a></p>
+<h4 id="3-扩展2">3. 扩展2</h4>
+<p><strong>拓展内容：</strong><br>
+某个人出队时，再次开始报数，随机从左或从右随机开始报数</p>
+<p><strong>思路</strong></p>
+<ul>
+<li>创建一个双向循环链表，与单表相比，指针域分为两部分，左指针和右指针（llink和rlink)，左指针指向前一个节点，右指针指向后一个节点，头节点的左指针域存尾节点的地址。尾节点右指针存头节点地址。</li>
+<li>同二相似，随机选择第一个开始报数的人。选择后进入循环</li>
+<li>使用rand（）函数，若值为0，使用左指针开始向前循环，若值为1，使用右指针开始向后遍历循环</li>
+<li>同一相似，开始遍历链表到m时，使这个节点出队。</li>
+<li>m重新赋值，再次进行选择方向</li>
+<li>当节点的左右指针域都存着自己节点的地址时，停止循环。此时，剩下的节点为最后一个人。</li>
+</ul>
+<p><strong>核心代码</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>M<span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>)<span style="color:#998;font-style:italic">//寻找本次需要删除的节点 
+</span><span style="color:#998;font-style:italic"></span>	{
+		<span style="color:#000;font-weight:bold">if</span>(order)
+		{
+			pi_q<span style="color:#000;font-weight:bold">=</span>pi;
+			pi<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rlink;
+			pi_h<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rlink;
+		}	
+		<span style="color:#000;font-weight:bold">else</span>
+		{
+			pi_h<span style="color:#000;font-weight:bold">=</span>pi;
+				pi<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>llink;
+			pi_q<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>llink;
+		}
+	}
+	<span style="color:#000;font-weight:bold">if</span>(M<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">1</span>)<span style="color:#998;font-style:italic">//密码为1时进行的处理
+</span><span style="color:#998;font-style:italic"></span>	{
+		<span style="color:#000;font-weight:bold">if</span>(order)
+			pi_h<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rlink;	
+		<span style="color:#000;font-weight:bold">else</span>
+			pi_q<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>llink;
+			
+	} 
+	
+	pi_q<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rlink<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rlink;<span style="color:#998;font-style:italic">//删除 
+</span><span style="color:#998;font-style:italic"></span>	pi_h<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>llink<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>llink;
+	
+	order<span style="color:#000;font-weight:bold">=</span>rand()<span style="color:#000;font-weight:bold">%</span><span style="color:#099">2</span>; <span style="color:#a61717;background-color:#e3d2d2">方</span><span style="color:#a61717;background-color:#e3d2d2">向</span><span style="color:#a61717;background-color:#e3d2d2">选</span><span style="color:#a61717;background-color:#e3d2d2">择</span>
+	<span style="color:#900;font-weight:bold">if</span>(order)
+		i<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rlink;
+	<span style="color:#000;font-weight:bold">else</span>
+		pi<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>llink;
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>完整代码</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">77
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">78
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">f1_1</span>()
+{
+	<span style="color:#458;font-weight:bold">int</span> j;
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">已出队：</span><span style="color:#d14">&#34;</span>);
+	<span style="color:#000;font-weight:bold">for</span>(j<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;j<span style="color:#000;font-weight:bold">&lt;</span>Long;j<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>)
+		<span style="color:#000;font-weight:bold">if</span>(a[j]<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>)
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%-5d</span><span style="color:#d14">&#34;</span>,j);
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">\n</span><span style="color:#d14">还在队中：</span><span style="color:#d14">&#34;</span>);
+	<span style="color:#000;font-weight:bold">for</span>(j<span style="color:#000;font-weight:bold">=</span><span style="color:#099">1</span>;j<span style="color:#000;font-weight:bold">&lt;</span>iCound<span style="color:#000;font-weight:bold">+</span><span style="color:#099">1</span>;j<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>)
+		<span style="color:#000;font-weight:bold">if</span>(a[j]<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>)
+			printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%-5d</span><span style="color:#d14">&#34;</span>,j);	
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">\n</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+} 
+<span style="color:#000;font-weight:bold">struct</span> node <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">f1</span>(<span style="color:#000;font-weight:bold">struct</span> node <span style="color:#000;font-weight:bold">*</span>pHead,<span style="color:#458;font-weight:bold">int</span> iCound)
+{
+	<span style="color:#000;font-weight:bold">struct</span> node <span style="color:#000;font-weight:bold">*</span>pi<span style="color:#000;font-weight:bold">=</span>pHead,<span style="color:#000;font-weight:bold">*</span>pi_q<span style="color:#000;font-weight:bold">=</span>pHead<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>llink,<span style="color:#000;font-weight:bold">*</span>pi_h<span style="color:#000;font-weight:bold">=</span>pHead<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rlink;
+	<span style="color:#458;font-weight:bold">int</span> i,M;
+	<span style="color:#458;font-weight:bold">int</span> order;
+		
+	M<span style="color:#000;font-weight:bold">=</span>rand()<span style="color:#000;font-weight:bold">%</span>(iCound<span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>)<span style="color:#000;font-weight:bold">+</span><span style="color:#099">1</span>;
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">从%d个人开始报数</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>,M);
+	
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>M<span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>)<span style="color:#998;font-style:italic">//寻找第一个人 
+</span><span style="color:#998;font-style:italic"></span>	{
+		pi_q<span style="color:#000;font-weight:bold">=</span>pi;
+		pi<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rlink;
+		pi_h<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rlink;
+	}
+	M<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>num;
+	order<span style="color:#000;font-weight:bold">=</span>rand()<span style="color:#000;font-weight:bold">%</span><span style="color:#099">2</span>;
+	<span style="color:#000;font-weight:bold">while</span>(pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>llink<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rlink<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span>pi)
+	{ 
+		
+		<span style="color:#000;font-weight:bold">if</span>(order) 
+			printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">本次向右转  </span><span style="color:#d14">&#34;</span>);
+		<span style="color:#000;font-weight:bold">else</span>
+			printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">本次向左转  </span><span style="color:#d14">&#34;</span>);
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">本次密码为%d </span><span style="color:#d14">&#34;</span>,M); 
+		<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>M<span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>)<span style="color:#998;font-style:italic">//寻找本次需要删除的节点 
+</span><span style="color:#998;font-style:italic"></span>		{
+			<span style="color:#000;font-weight:bold">if</span>(order)
+			{
+				pi_q<span style="color:#000;font-weight:bold">=</span>pi;
+				pi<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rlink;
+				pi_h<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rlink;
+			}	
+			<span style="color:#000;font-weight:bold">else</span>
+			{
+				pi_h<span style="color:#000;font-weight:bold">=</span>pi;
+				pi<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>llink;
+				pi_q<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>llink;
+			}
+		}
+		<span style="color:#000;font-weight:bold">if</span>(M<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">1</span>)
+		{
+			<span style="color:#000;font-weight:bold">if</span>(order)
+				pi_h<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rlink;	
+			<span style="color:#000;font-weight:bold">else</span>
+				pi_q<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>llink;
+			
+		} 
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">本次序号为%d出队</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>,pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>NO);<span style="color:#998;font-style:italic">//输出查看
+</span><span style="color:#998;font-style:italic"></span>		a[pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>NO]<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;
+	 	f1_1();
+		 
+		M<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>num;<span style="color:#998;font-style:italic">//换密码 
+</span><span style="color:#998;font-style:italic"></span>		pi_q<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rlink<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rlink;<span style="color:#998;font-style:italic">//删除 
+</span><span style="color:#998;font-style:italic"></span>		pi_h<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>llink<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>llink;
+		<span style="color:#998;font-style:italic">//free(pi);
+</span><span style="color:#998;font-style:italic"></span>		order<span style="color:#000;font-weight:bold">=</span>rand()<span style="color:#000;font-weight:bold">%</span><span style="color:#099">2</span>;
+		<span style="color:#000;font-weight:bold">if</span>(order)
+			pi<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>rlink;
+		<span style="color:#000;font-weight:bold">else</span>
+			pi<span style="color:#000;font-weight:bold">=</span>pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>llink;
+		
+	}
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">最后在队中的为%d</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>,pi<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>NO); 
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>完整代码地址
+<a href="http://note.youdao.com/noteshare?id=a60278f0de13607ffeec89f9455d9bba&amp;sub=4B3DD381A61D45F3B7DF64ED2CC0860F">点我查看</a>
+<a href="https://code.csdn.net/snippets/2413731">或者点我查看</a></p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%842%E9%93%BE%E8%A1%A8%E7%9A%84%E7%AE%80%E5%8D%95%E5%BA%94%E7%94%A81/">http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%842%E9%93%BE%E8%A1%A8%E7%9A%84%E7%AE%80%E5%8D%95%E5%BA%94%E7%94%A81/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%841%E9%93%BE%E8%A1%A8%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/">数据结构1————链表的基本操作</a></li>
+        
+        <li><a href="/posts/%E9%9A%8F%E7%AC%94/2017%E5%B9%B4%E6%80%BB%E7%BB%932018%E5%B9%B4%E8%AE%A1%E5%88%92/">2017年总结——2018年计划</a></li>
+        
+        <li><a href="/about/">关于我</a></li>
+        
+        <li><a href="/tools/">工具</a></li>
+        
+        <li><a href="/archives/">归档</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84'>数据结构</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "https://github.com/hsc396612325/HSCBlog/tree/gh-pages"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一前言">一.前言</a></li>
+    <li><a href="#二链表的逆置">二.链表的逆置</a>
+      <ul>
+        <li><a href="#1-方法一">1. 方法一</a></li>
+        <li><a href="#2-方法二">2. 方法二</a></li>
+      </ul>
+    </li>
+    <li><a href="#二-两个升序链表合并为降序">二. 两个升序链表合并为降序</a>
+      <ul>
+        <li><a href="#1-方法一-1">1. 方法一</a></li>
+        <li><a href="#2方法二">2.方法二</a></li>
+      </ul>
+    </li>
+    <li><a href="#三交叉合并">三.交叉合并</a></li>
+    <li><a href="#四简单通讯录">四.简单通讯录</a></li>
+    <li><a href="#五约瑟夫环">五.约瑟夫环</a>
+      <ul>
+        <li><a href="#1-基本款">1. 基本款</a></li>
+        <li><a href="#2-扩展1">2. 扩展1</a></li>
+        <li><a href="#3-扩展2">3. 扩展2</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

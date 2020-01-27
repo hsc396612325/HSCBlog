@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>数据结构19————图的定义和基本概念 | 冰炭不投day的博客</title>
+    <meta property="og:title" content="数据结构19————图的定义和基本概念 - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2018-05-19T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2018-05-19T22:40:54&#43;08:00'>
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="数据结构19————图的定义和基本概念">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8419%E5%9B%BE%E7%9A%84%E5%AE%9A%E4%B9%89%E5%92%8C%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">数据结构19————图的定义和基本概念</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年5月19日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84'>“数据结构&#34;</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h3 id="一内容">一.内容:</h3>
+<ol>
+<li>图的定义</li>
+<li>各种图的相关概念</li>
+<li>图的ADT</li>
+</ol>
+<h3 id="二图的定义">二.图的定义</h3>
+<h4 id="1形式化定义">1.形式化定义</h4>
+<blockquote>
+<p>图(Graph)是由顶点的有穷非空集合和顶点直接边的集合组成,通常表示为G(V,E)，其中G表示一个图,V是图G中顶点的集合,E是图G中的边的集合</p>
+</blockquote>
+<ul>
+<li>图中的数据元素，我们称为顶点</li>
+<li>图不存在空集，图中不允许没有顶点</li>
+<li>任何两个顶点之间都可能有关系,顶点之间的逻辑关系用边表示</li>
+</ul>
+<h3 id="三图的相关概念">三.图的相关概念</h3>
+<h4 id="1各种图定义">1.各种图定义</h4>
+<ul>
+<li>无向边:若顶点vi到vj之间没有方向,则称这条边为无向边，有无序偶对(vi,vj)来表示。</li>
+<li>无向图:如果图中任意两个顶点之间的边都是无向边，则称该图为无向图</li>
+<li>有向边:若从顶点vi到vj的边有方向为有向边，也称为弧,用 有序偶&lt; vi, vj&gt; 来表示，vi称为弧尾，vj称为弧头。</li>
+<li>有向图:如果图中任意两个顶点之间的边都是有向边，则称该图为有向图。</li>
+<li>简单图:在图中,如果不存在顶点到其自身的边，且同一条边不重复出现，则称这样的图为简单图。</li>
+<li>无向完全图:在无向图，如果任意两个顶点之间都有存在边，则称该图为无向完全图。</li>
+<li>有向完全图:在有向图中，如果任意两个顶点之间都存在互为相反的弧，则称该图为有向完全图</li>
+<li>稀疏图&amp;稠密图:有很少的边或弧的图称为稀疏图，反之称为稠密图</li>
+<li>权:有些图的边或者弧具有与他相关的数字，这个相关的数称为权</li>
+<li>网:这种带权的图通常称为网</li>
+</ul>
+<h4 id="2图的顶点和边间关系">2.图的顶点和边间关系</h4>
+<ul>
+<li>对于无向图G=(V,{E}),如果边(v1,v2)∈E , 则称顶点v1和v2互为邻接，即v1，v2相邻接。边(v1,v2)依附于顶点v1和v2，或者说(v1,v2)于顶点v1,v2相关联。顶点v的度为是和v相关联的边的数目，记做TD(v)</li>
+<li>对于有向图G=(V,{E})，如果弧&lt; v1,v2&gt;∈E，则称顶点v1邻接到顶点v2，顶点v2邻接自顶点v1.弧&lt; v1,v2&gt;和顶点v1，v2相关联，自顶点v1为头的弧的数目为v1的入度，记为ID(v)，以v1为弧尾的弧的数目称为v1的出度,记为OD(v),顶点v的度TD(v)=ID(v)+OD(v).</li>
+<li>路径:无向图G(V,{E})中从顶点v1到顶点v2的路径是从v1到v2途经顶点的序列</li>
+<li>路径的长度:路径上的边或者弧的数目</li>
+<li>回路(环):第一个顶点到最后一个顶点相同的路径称为回路或者环</li>
+<li>简单路径:序列中顶点不重复出现的路径称为简单路径</li>
+<li>简单回路(环):除了第一个顶点和最后一个顶点外,其余顶点不重复出现的回路，称为简单回路或者简单环</li>
+</ul>
+<h4 id="3连通图相关术语">3连通图相关术语</h4>
+<ul>
+<li>连通: 在无向图G中，如果从顶点v1到顶点v2有路径，则称v1和v2是连通的</li>
+<li>连通图:如果对于无向图中任意两个顶点vi，vj，vi和vj都是连通的，则称该图是连通图</li>
+<li>连通分量:无向图中的极大连通子图称为连通分量。</li>
+<li>强连通图:在有向图中，任如果意两个顶点vi，vj，vi和vj都是连通的，则称该图是强连通图</li>
+<li>强连通分量:有向图中的极大强连通子图称作有向图的强连通分量</li>
+</ul>
+<h3 id="四图的adt">四.图的ADT</h3>
+<pre><code>ADT Graph{  
+
+     数据对象V：V是具有相同特性的数据元素的集合，称为顶点集。  
+
+         数据关系R：R={VR}  
+
+     VR={&lt;v,w&gt;|v,w∈V且P(v,w)，&lt;v,w&gt;表示从v到w的弧，  
+
+         谓词P(v,w)定义了弧&lt;v,w&gt;的意义或信息}  
+
+     基本操作：  
+
+     CreateGraph( &amp;G, V, VR )  
+
+     初始条件：V是图的顶点集，VR是图中弧的集合。  
+
+     操作结果：按V和VR的定义构造图G。  
+
+     DestroyGraph( &amp;G )  
+
+     初始条件：图G存在。  
+
+     操作结果：销毁图G。  
+
+     LocateVex( G, u )  
+
+     初始条件：图G存在，u和G中顶点有相同特征。  
+
+     操作结果：若G中存在顶点u，则返回该顶点在图中位置；否则返回其它信息。  
+
+     GetVex( G, v )  
+
+     初始条件：图G存在，v是G中某个顶点。  
+
+     操作结果：返回v的值。  
+
+     PutVex( &amp;G, v, value )  
+
+     初始条件：图G存在，v是G中某个顶点。  
+
+     操作结果：对v赋值value。  
+
+     FirstAdjVex( G, v )  
+
+     初始条件：图G存在，v是G中某个顶点。  
+
+     操作结果：返回v的第一个邻接顶点。若顶点在G中没有邻接顶点，则返回“空”。  
+
+     NextAdjVex( G, v, w )  
+   
+     初始条件：图G存在，v是G中某个顶点，w是v的邻接顶点。  
+
+     操作结果：返回v的（相对于w的）下一个邻接顶点。若w是v的最后一个邻接点，则返回“空”。  
+
+     InsertVex( &amp;G, v )  
+
+     初始条件：图G存在，v和图中顶点有相同特征。  
+
+     操作结果：在图G中增添新顶点v。  
+
+     DeleteVex( &amp;G, v )  
+
+     初始条件：图G存在，v是G中某个顶点。  
+
+     操作结果：删除G中顶点v及其相关的弧。  
+
+     InsertArc( &amp;G, v, w )  
+
+     初始条件：图G存在，v和w是G中两个顶点。  
+
+     操作结果：在G中增添弧&lt;v,w&gt;，若G是无向的，则还增添对称弧&lt;v,w&gt;。  
+
+     DeleteArc( &amp;G, v, w )  
+
+     初始条件：图G存在，v和w是G中两个顶点。  
+
+     操作结果：在G中删除弧&lt;v,w&gt;，若G是无向的，则还删除对称弧&lt;v,w&gt;。  
+
+     DFSTraverse( G, Visit() )  
+
+     初始条件：图G存在，Visit是顶点的应用函数。  
+
+     操作结果：对图进行深度优先遍历。在遍历过程中对每个顶点调用函数Visit一次且仅一次。一旦visit()失败，则操作失败。  
+
+     BFSTraverse( G, Visit() )  
+
+     初始条件：图G存在，Visit是顶点的应用函数。  
+
+     操作结果：对图进行广度优先遍历。在遍历过程中对每个顶点调用函数Visit一次且仅一次。一旦visit()失败，则操作失败。   
+     
+         
+         
+}ADT Graph 
+</code></pre><p><strong>图的存储以及相关算法见后续的博客</strong></p>
+<h4 id="五参考资料">五.参考资料</h4>
+<p>《大话数据结构》
+《数据结构与算法》</p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8419%E5%9B%BE%E7%9A%84%E5%AE%9A%E4%B9%89%E5%92%8C%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8419%E5%9B%BE%E7%9A%84%E5%AE%9A%E4%B9%89%E5%92%8C%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8418%E5%93%88%E5%A4%AB%E6%9B%BC%E6%A0%91/">数据结构18————哈夫曼树</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8417%E6%A0%91%E6%A3%AE%E6%9E%97%E8%BD%AC%E5%8C%96%E4%B8%BA%E4%BA%8C%E5%8F%89%E6%A0%91%E5%AD%A9%E5%AD%90%E5%85%84%E5%BC%9F%E8%A1%A8%E7%A4%BA%E6%B3%95/">数据结构17————树,森林转化为二叉树(孩子兄弟表示法)</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8416%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E7%BA%BF%E7%B4%A2%E5%8C%96/">数据结构16————二叉树的线索化</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8415%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%81%8D%E5%8E%86%E5%92%8C%E5%BB%BA%E7%AB%8B/">数据结构15————二叉树的遍历和建立</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8414%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%AE%9A%E4%B9%89%E6%80%A7%E8%B4%A8%E5%8F%8A%E5%82%A8%E5%AD%98/">数据结构14————二叉树的定义性质及储存</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84'>数据结构</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "https://github.com/hsc396612325/HSCBlog/tree/gh-pages"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一内容">一.内容:</a></li>
+    <li><a href="#二图的定义">二.图的定义</a>
+      <ul>
+        <li><a href="#1形式化定义">1.形式化定义</a></li>
+      </ul>
+    </li>
+    <li><a href="#三图的相关概念">三.图的相关概念</a>
+      <ul>
+        <li><a href="#1各种图定义">1.各种图定义</a></li>
+        <li><a href="#2图的顶点和边间关系">2.图的顶点和边间关系</a></li>
+        <li><a href="#3连通图相关术语">3连通图相关术语</a></li>
+      </ul>
+    </li>
+    <li><a href="#四图的adt">四.图的ADT</a>
+      <ul>
+        <li><a href="#五参考资料">五.参考资料</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>数据结构18————哈夫曼树 | 冰炭不投day的博客</title>
+    <meta property="og:title" content="数据结构18————哈夫曼树 - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2018-05-18T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2018-05-18T22:40:54&#43;08:00'>
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="数据结构18————哈夫曼树">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8418%E5%93%88%E5%A4%AB%E6%9B%BC%E6%A0%91/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">数据结构18————哈夫曼树</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年5月18日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84'>“数据结构&#34;</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h1 id="数据结构18哈夫曼树">数据结构18————哈夫曼树</h1>
+<p>@[toc]</p>
+<h3 id="一内容">一.内容</h3>
+<ol>
+<li>哈夫曼树的定义和原理</li>
+<li>哈夫曼树的建立</li>
+<li>哈夫曼编码</li>
+<li>哈夫曼算法的实现</li>
+</ol>
+<h3 id="二哈夫曼树的定义和原理">二.哈夫曼树的定义和原理</h3>
+<h4 id="1哈夫曼树的定义及作用">1.哈夫曼树的定义及作用</h4>
+<blockquote>
+<p>哈夫曼树的又称为最优二叉树,是带权路径最短的树，可用来构造最优编码，常用于数据压缩和信息传递</p>
+</blockquote>
+<h4 id="2哈夫曼树的相关概念">2.哈夫曼树的相关概念</h4>
+<ul>
+<li>路径:从一个结点到另一个结点之间的分支路径</li>
+<li>路径长度:从一个结点到另一结点所经过的分支数目</li>
+<li>结点的权值:树中每个结点所赋予的具有某种实际意义的实数</li>
+<li>带权路径长度:从树根到某一结点的路径长度与该结点的权的乘积。</li>
+<li>树的带权路径长度(WPL):树中从根到所有叶子结点的各个带权路径长度之和。</li>
+</ul>
+<p><img src="/image/Data_structure/15_0.png" alt="这里写图片描述">
+如图所示的树,其WPL=7x4+9x4+5x3+4x2+2x1=89</p>
+<p><strong>所以哈夫曼树就是,相同叶子结点所构成的树中，WPL最小的一颗。</strong></p>
+<h3 id="三哈夫曼树的建立">三.哈夫曼树的建立</h3>
+<p>如果给定叶子节点的权值，如何构造出一颗WPL最小的树呢？这个过程就是构造哈夫曼树的过程</p>
+<h4 id="1思想">1.思想</h4>
+<p>每次选择节点集合中最小的两个节点，构成一颗树,根节点的权值为两个之和，将根节点加入节点集合，重复上述过程。<br>
+形式化表述</p>
+<blockquote>
+<p>1.根据给定的n个权值{w1,w2……wn},构造出n颗二叉树的集合F={T1.T2……Tn},其中每一棵二叉树均只含一个带权值为wi的根节点，其左右子树为空树<br>
+2.在F中选择其根节点为权值最小的两颗二叉树，分别作为左右子树构造出一颗新的二叉树。并置这颗新树根节点权值为左右根节点的权值之和。<br>
+3.在F中删去这两棵树，同时加入新生成的树<br>
+4.重复23过程，直到F中只剩一颗树为止。</p>
+</blockquote>
+<h4 id="2例子">2.例子</h4>
+<p><img src="/image/Data_structure/15_1.png" alt="这里写图片描述"></p>
+<h4 id="3如何存储">3.如何存储</h4>
+<p>哈夫曼树的存储可以使用三叉链表和静态三叉链表，为了简单考虑，一般选择静态三叉链表来实现哈夫曼树的存储</p>
+<h4 id="4静态三叉链表实现二叉树的存储">4.静态三叉链表实现二叉树的存储</h4>
+<p><img src="/image/Data_structure/15_2.png" alt="这里写图片描述"></p>
+<h3 id="四哈夫曼编码">四.哈夫曼编码</h3>
+<p>我们前文说过，哈夫曼树主要应用是在数据压缩信息传递中，而如何应用哈夫曼树进行数据的压缩，这就涉及到哈夫曼树编码。</p>
+<h4 id="1编码">1.编码</h4>
+<p>编码是什么?<br>
+举个例子如果我们需要通过网络传输一段文字；ABCDEFGH，那么很容易想到，让A=000，B=001,C=010,D=011,F=100,G=101,H=111。所以ABCDEFG就可以表示为000.001.010.011.100.101.110.111。通过这个规则，就可以表示ABCDEFG所构成的任意一段文字。文字转换出的二进制就是编码。</p>
+<p>上面的编码可以解决大部分的问题，但是否可以进行更好的优化，比如让它编码后的二进制长度尽可能的达到更小。</p>
+<p>如何达到呢？我们可以通过让出现频率大的编码尽可能的短，出现概率小的编码啊可以适当的长点。但是存在一个问题，比如说AB出现的频率大，让A=0，B=1，C出现的频率小，让C=01。那么问题来了，01代表AB还是代表C。所以如果要设计长度不等的编码必须满足</p>
+<blockquote>
+<p>任何一个字符编码都不是另一个字符的编码的前缀，这种编码就是前缀编码</p>
+</blockquote>
+<h4 id="2哈夫曼编码">2.哈夫曼编码</h4>
+<p>哈夫曼编码就是一种前缀编码,而且是编码后最短的前缀编码。<br>
+哈夫曼树的构建</p>
+<blockquote>
+<p>将每个字符出现的次数作为权值，按照哈夫曼树的构建过程组成的一颗二叉树</p>
+</blockquote>
+<p>哈夫曼编码</p>
+<blockquote>
+<p>从哈夫曼树的根节点出发，左子树输出0，右子树输出1。知道达到叶子节点后停止，此时输出的二进制就是该叶子节点的哈夫曼编码</p>
+</blockquote>
+<h4 id="3例子">3.例子</h4>
+<p><img src="/image/Data_structure/15_3.png" alt="这里写图片描述"></p>
+<h3 id="五哈夫曼算法">五.哈夫曼算法</h3>
+<p>我的代码设计未舍弃下标为0的位置，所以叶子节点从0开始</p>
+<h4 id="1结构体的设计">1.结构体的设计</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#</span><span style="color:#999;font-weight:bold;font-style:italic">include</span> <span style="color:#999;font-weight:bold;font-style:italic">&lt;stdio.h&gt;</span><span style="color:#999;font-weight:bold;font-style:italic">
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span><span style="color:#999;font-weight:bold;font-style:italic">#</span><span style="color:#999;font-weight:bold;font-style:italic">define N 30</span><span style="color:#999;font-weight:bold;font-style:italic">
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span><span style="color:#999;font-weight:bold;font-style:italic">#</span><span style="color:#999;font-weight:bold;font-style:italic">define M 2*N-1</span><span style="color:#999;font-weight:bold;font-style:italic">
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span><span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span>{
+	<span style="color:#458;font-weight:bold">int</span> weight;
+	<span style="color:#458;font-weight:bold">char</span> data; 
+	<span style="color:#458;font-weight:bold">int</span> parent,Lchild,Rchild;
+}HTNode,HuffmanTree[M<span style="color:#000;font-weight:bold">+</span><span style="color:#099">1</span>];
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="2哈夫曼树的建立">2.哈夫曼树的建立</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">CrtHuffmanTree</span>(HuffmanTree	ht,<span style="color:#458;font-weight:bold">int</span> n){ <span style="color:#998;font-style:italic">//创建哈夫曼树 
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#458;font-weight:bold">int</span> m<span style="color:#000;font-weight:bold">=</span><span style="color:#099">2</span><span style="color:#000;font-weight:bold">*</span>n<span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;
+	<span style="color:#458;font-weight:bold">int</span> i;
+	<span style="color:#458;font-weight:bold">int</span> s1,s2;
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>n;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){       <span style="color:#998;font-style:italic">//初始化叶子节点 
+</span><span style="color:#998;font-style:italic"></span>		scanf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%d</span><span style="color:#d14">&#34;</span>,<span style="color:#000;font-weight:bold">&amp;</span>ht[i].weight);
+		ht[i].data <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14"></span><span style="color:#d14">&#39;</span><span style="color:#d14">A</span><span style="color:#d14">&#39;</span><span style="color:#000;font-weight:bold">+</span>i; 
+		ht[i].parent<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;
+		ht[i].Lchild<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;
+		ht[i].Rchild<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>; 
+	}	
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span>n;i<span style="color:#000;font-weight:bold">&lt;</span>m;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){   <span style="color:#998;font-style:italic">//初始化非叶子节点
+</span><span style="color:#998;font-style:italic"></span>		ht[i].weight<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;
+		ht[i].parent<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;
+		ht[i].Lchild<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;
+		ht[i].Rchild<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>; 
+	}
+	
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span>n;i<span style="color:#000;font-weight:bold">&lt;</span>m;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>) <span style="color:#998;font-style:italic">//创建哈夫曼树
+</span><span style="color:#998;font-style:italic"></span>	{
+		seek(ht,i,<span style="color:#000;font-weight:bold">&amp;</span>s1,<span style="color:#000;font-weight:bold">&amp;</span>s2);	 <span style="color:#998;font-style:italic">//寻找ht中i之前最小的两个元素下标，s1&lt;s2; 
+</span><span style="color:#998;font-style:italic"></span>		ht[s1].parent<span style="color:#000;font-weight:bold">=</span>i; 
+		ht[s2].parent<span style="color:#000;font-weight:bold">=</span>i;
+		ht[i].weight <span style="color:#000;font-weight:bold">=</span> ht[s1].weight<span style="color:#000;font-weight:bold">+</span>ht[s2].weight;
+		ht[i].Lchild <span style="color:#000;font-weight:bold">=</span> s1;
+		ht[i].Rchild <span style="color:#000;font-weight:bold">=</span> s2;
+	}
+
+}
+
+<span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">seek</span>(HuffmanTree ht,<span style="color:#458;font-weight:bold">int</span> n,<span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">*</span>s1,<span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">*</span>s2){  <span style="color:#998;font-style:italic">//寻找ht中i之前最小的两个元素下标，s1&lt;s2; 
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#458;font-weight:bold">int</span> i,j;
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>n<span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span>ht[i].parent<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>); <span style="color:#998;font-style:italic">//s1,s2的初始化 
+</span><span style="color:#998;font-style:italic"></span>	j<span style="color:#000;font-weight:bold">=</span>i;
+	i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;
+	<span style="color:#000;font-weight:bold">for</span>(;i<span style="color:#000;font-weight:bold">&lt;</span>n<span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span>ht[i].parent<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>);
+	<span style="color:#000;font-weight:bold">*</span>s1 <span style="color:#000;font-weight:bold">=</span> ht[i].weight<span style="color:#000;font-weight:bold">&lt;</span>ht[j].weight<span style="color:#000;font-weight:bold">?</span><span style="color:#900;font-weight:bold">i</span>:j;
+	<span style="color:#000;font-weight:bold">*</span>s2 <span style="color:#000;font-weight:bold">=</span> ht[i].weight<span style="color:#000;font-weight:bold">&lt;</span>ht[j].weight<span style="color:#000;font-weight:bold">?</span><span style="color:#900;font-weight:bold">j</span>:i;
+	i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;
+	<span style="color:#000;font-weight:bold">while</span>(i<span style="color:#000;font-weight:bold">&lt;</span>n){
+		<span style="color:#000;font-weight:bold">if</span>(ht[i].parent<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>){
+			
+		}<span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span>(ht[i].weight<span style="color:#000;font-weight:bold">&lt;</span>ht[<span style="color:#000;font-weight:bold">*</span>s1].weight){
+			<span style="color:#000;font-weight:bold">*</span>s2 <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">*</span>s1;
+			<span style="color:#000;font-weight:bold">*</span>s1 <span style="color:#000;font-weight:bold">=</span> i;
+		}<span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span>(ht[i].weight<span style="color:#000;font-weight:bold">&lt;</span>ht[<span style="color:#000;font-weight:bold">*</span>s2].weight){
+			<span style="color:#000;font-weight:bold">*</span>s2 <span style="color:#000;font-weight:bold">=</span> i;
+			
+		}
+		i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>; 
+	}
+}
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="3输出所有字符的编码">3.输出所有字符的编码</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">codinghuffman</span>(HuffmanTree	ht,<span style="color:#458;font-weight:bold">int</span> n){ <span style="color:#998;font-style:italic">//编码所有的叶子节点 
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#458;font-weight:bold">int</span> i,j;
+	<span style="color:#458;font-weight:bold">char</span> str[N];
+	<span style="color:#458;font-weight:bold">int</span> p,q; <span style="color:#998;font-style:italic">//p当前节点，q是p的双亲节点 
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>n;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		p<span style="color:#000;font-weight:bold">=</span>i;
+		<span style="color:#000;font-weight:bold">for</span>(j<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;ht[p].parent<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;j<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){     
+			
+			q<span style="color:#000;font-weight:bold">=</span>ht[p].parent;
+			<span style="color:#000;font-weight:bold">if</span>(p<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span>ht[q].Lchild){ <span style="color:#998;font-style:italic">//如果是左节点,则为0 
+</span><span style="color:#998;font-style:italic"></span>				str[j]<span style="color:#000;font-weight:bold">=</span><span style="color:#d14"></span><span style="color:#d14">&#39;</span><span style="color:#d14">0</span><span style="color:#d14">&#39;</span>;
+			}<span style="color:#000;font-weight:bold">else</span>{           <span style="color:#998;font-style:italic">//如果是右节点,则为1 
+</span><span style="color:#998;font-style:italic"></span>				str[j]<span style="color:#000;font-weight:bold">=</span><span style="color:#d14"></span><span style="color:#d14">&#39;</span><span style="color:#d14">1</span><span style="color:#d14">&#39;</span>;
+			}
+			p<span style="color:#000;font-weight:bold">=</span>ht[p].parent;
+		}
+		
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%c:</span><span style="color:#d14">&#34;</span>,ht[i].data); <span style="color:#998;font-style:italic">//打印结果 
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#000;font-weight:bold">for</span>(j<span style="color:#000;font-weight:bold">=</span>j<span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;j<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;j<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">-</span>){
+			printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%c</span><span style="color:#d14">&#34;</span>,str[j],j);
+		}
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+	}
+} 
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="4编码字符串">4.编码字符串</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">aCodinghuffman</span>(HuffmanTree	ht){ <span style="color:#998;font-style:italic">//编码字符串 
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#458;font-weight:bold">int</span> i,j;
+	<span style="color:#458;font-weight:bold">char</span> in[N];
+	<span style="color:#458;font-weight:bold">char</span> str[N];
+	<span style="color:#458;font-weight:bold">int</span> p,q;
+	getchar();
+	gets(in);	
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;in[i];i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){ <span style="color:#998;font-style:italic">//遍历每个字母 
+</span><span style="color:#998;font-style:italic"></span>		p<span style="color:#000;font-weight:bold">=</span>in[i]<span style="color:#000;font-weight:bold">-</span><span style="color:#d14"></span><span style="color:#d14">&#39;</span><span style="color:#d14">A</span><span style="color:#d14">&#39;</span>; <span style="color:#998;font-style:italic">//确定该叶子节点存储的位置,这句根据具体问题而定 
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#000;font-weight:bold">for</span>(j<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;ht[p].parent<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;j<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){    <span style="color:#998;font-style:italic">//解码每个字母 
+</span><span style="color:#998;font-style:italic"></span>			
+			q<span style="color:#000;font-weight:bold">=</span>ht[p].parent;
+			<span style="color:#000;font-weight:bold">if</span>(p<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span>ht[q].Lchild){ <span style="color:#998;font-style:italic">//如果是左孩子 
+</span><span style="color:#998;font-style:italic"></span>				str[j]<span style="color:#000;font-weight:bold">=</span><span style="color:#d14"></span><span style="color:#d14">&#39;</span><span style="color:#d14">0</span><span style="color:#d14">&#39;</span>;
+			}<span style="color:#000;font-weight:bold">else</span>{            <span style="color:#998;font-style:italic">//如果是右孩子 
+</span><span style="color:#998;font-style:italic"></span>				str[j]<span style="color:#000;font-weight:bold">=</span><span style="color:#d14"></span><span style="color:#d14">&#39;</span><span style="color:#d14">1</span><span style="color:#d14">&#39;</span>;
+			}
+			p<span style="color:#000;font-weight:bold">=</span>ht[p].parent;
+		} 
+		<span style="color:#000;font-weight:bold">for</span>(j<span style="color:#000;font-weight:bold">=</span>j<span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;j<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;j<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">-</span>){  <span style="color:#998;font-style:italic">//打印结果 
+</span><span style="color:#998;font-style:italic"></span>			printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%c</span><span style="color:#d14">&#34;</span>,str[j],j);
+		}
+	}
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+} 
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="5译码">5.译码</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">decodeHuffmanTree</span>(HuffmanTree ht,<span style="color:#458;font-weight:bold">int</span> n){ <span style="color:#998;font-style:italic">//译码 
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#458;font-weight:bold">int</span> i,j;
+	<span style="color:#458;font-weight:bold">char</span> str[N];
+	<span style="color:#458;font-weight:bold">int</span> p<span style="color:#000;font-weight:bold">=</span><span style="color:#099">2</span><span style="color:#000;font-weight:bold">*</span>n<span style="color:#000;font-weight:bold">-</span><span style="color:#099">2</span>; <span style="color:#998;font-style:italic">// p当前节点，p当前节点儿子
+</span><span style="color:#998;font-style:italic"></span>	 
+	gets(str);
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;str[i];i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		<span style="color:#000;font-weight:bold">if</span>(str[i]<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14"></span><span style="color:#d14">&#39;</span><span style="color:#d14">1</span><span style="color:#d14">&#39;</span>){
+			p <span style="color:#000;font-weight:bold">=</span> ht[p].Rchild;
+		}<span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span>(str[i]<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#d14"></span><span style="color:#d14">&#39;</span><span style="color:#d14">0</span><span style="color:#d14">&#39;</span>){
+			p <span style="color:#000;font-weight:bold">=</span> ht[p].Lchild;
+		}
+		<span style="color:#000;font-weight:bold">if</span>(ht[p].Lchild<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span><span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span>ht[p].Rchild<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>){  <span style="color:#998;font-style:italic">//当前字段解码完毕 
+</span><span style="color:#998;font-style:italic"></span>			printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%c</span><span style="color:#d14">&#34;</span>,ht[p].data);
+			p <span style="color:#000;font-weight:bold">=</span><span style="color:#099">2</span><span style="color:#000;font-weight:bold">*</span>n<span style="color:#000;font-weight:bold">-</span><span style="color:#099">2</span>; 
+		}
+	} 
+} 
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="6带权路径长wpl">6.带权路径长(WPL)</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">WPL</span>(HuffmanTree ht,<span style="color:#458;font-weight:bold">int</span> n){
+	<span style="color:#458;font-weight:bold">int</span> wpl<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;
+	<span style="color:#458;font-weight:bold">int</span> h;
+	<span style="color:#458;font-weight:bold">int</span> p;
+	<span style="color:#458;font-weight:bold">int</span> i;
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>n;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		h<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;
+		<span style="color:#000;font-weight:bold">for</span>(p<span style="color:#000;font-weight:bold">=</span>i;ht[p].parent<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;p<span style="color:#000;font-weight:bold">=</span>ht[p].parent){
+			h<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;
+		}
+		wpl <span style="color:#000;font-weight:bold">=</span> wpl<span style="color:#000;font-weight:bold">+</span> h<span style="color:#000;font-weight:bold">*</span>ht[i].weight;
+	}
+	<span style="color:#000;font-weight:bold">return</span> wpl;
+}
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="六源代码">六.源代码</h3>
+<p><a href="https://github.com/hsc396612325/Blog">text15中</a></p>
+<h3 id="七参考资料">七.参考资料</h3>
+<p>《大话数据结构》
+《数据结构与算法分析》</p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8418%E5%93%88%E5%A4%AB%E6%9B%BC%E6%A0%91/">http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8418%E5%93%88%E5%A4%AB%E6%9B%BC%E6%A0%91/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8417%E6%A0%91%E6%A3%AE%E6%9E%97%E8%BD%AC%E5%8C%96%E4%B8%BA%E4%BA%8C%E5%8F%89%E6%A0%91%E5%AD%A9%E5%AD%90%E5%85%84%E5%BC%9F%E8%A1%A8%E7%A4%BA%E6%B3%95/">数据结构17————树,森林转化为二叉树(孩子兄弟表示法)</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8416%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E7%BA%BF%E7%B4%A2%E5%8C%96/">数据结构16————二叉树的线索化</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8415%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%81%8D%E5%8E%86%E5%92%8C%E5%BB%BA%E7%AB%8B/">数据结构15————二叉树的遍历和建立</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8414%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%AE%9A%E4%B9%89%E6%80%A7%E8%B4%A8%E5%8F%8A%E5%82%A8%E5%AD%98/">数据结构14————二叉树的定义性质及储存</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8413%E6%A0%91%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AD%98%E5%82%A8/">数据结构13————树的基本概念和存储</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84'>数据结构</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "https://github.com/hsc396612325/HSCBlog/tree/gh-pages"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一内容">一.内容</a></li>
+    <li><a href="#二哈夫曼树的定义和原理">二.哈夫曼树的定义和原理</a>
+      <ul>
+        <li><a href="#1哈夫曼树的定义及作用">1.哈夫曼树的定义及作用</a></li>
+        <li><a href="#2哈夫曼树的相关概念">2.哈夫曼树的相关概念</a></li>
+      </ul>
+    </li>
+    <li><a href="#三哈夫曼树的建立">三.哈夫曼树的建立</a>
+      <ul>
+        <li><a href="#1思想">1.思想</a></li>
+        <li><a href="#2例子">2.例子</a></li>
+        <li><a href="#3如何存储">3.如何存储</a></li>
+        <li><a href="#4静态三叉链表实现二叉树的存储">4.静态三叉链表实现二叉树的存储</a></li>
+      </ul>
+    </li>
+    <li><a href="#四哈夫曼编码">四.哈夫曼编码</a>
+      <ul>
+        <li><a href="#1编码">1.编码</a></li>
+        <li><a href="#2哈夫曼编码">2.哈夫曼编码</a></li>
+        <li><a href="#3例子">3.例子</a></li>
+      </ul>
+    </li>
+    <li><a href="#五哈夫曼算法">五.哈夫曼算法</a>
+      <ul>
+        <li><a href="#1结构体的设计">1.结构体的设计</a></li>
+        <li><a href="#2哈夫曼树的建立">2.哈夫曼树的建立</a></li>
+        <li><a href="#3输出所有字符的编码">3.输出所有字符的编码</a></li>
+        <li><a href="#4编码字符串">4.编码字符串</a></li>
+        <li><a href="#5译码">5.译码</a></li>
+        <li><a href="#6带权路径长wpl">6.带权路径长(WPL)</a></li>
+      </ul>
+    </li>
+    <li><a href="#六源代码">六.源代码</a></li>
+    <li><a href="#七参考资料">七.参考资料</a></li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

@@ -6,10 +6,19 @@
     <description>Recent content in Tags on 冰炭不投day的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 06 May 2019 22:40:54 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 01 Jan 2020 22:40:54 +0800</lastBuildDate>
     
 	<atom:link href="http://blog.bingtan.online/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>随笔</title>
+      <link>http://blog.bingtan.online/tags/%E9%9A%8F%E7%AC%94/</link>
+      <pubDate>Wed, 01 Jan 2020 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/tags/%E9%9A%8F%E7%AC%94/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Android</title>
@@ -53,6 +62,51 @@
       <pubDate>Mon, 11 Feb 2019 22:40:54 +0800</pubDate>
       
       <guid>http://blog.bingtan.online/tags/%E7%BD%91%E7%BB%9C/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>源码阅读</title>
+      <link>http://blog.bingtan.online/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/</link>
+      <pubDate>Thu, 12 Jul 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>小项目</title>
+      <link>http://blog.bingtan.online/tags/%E5%B0%8F%E9%A1%B9%E7%9B%AE/</link>
+      <pubDate>Thu, 05 Jul 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/tags/%E5%B0%8F%E9%A1%B9%E7%9B%AE/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>录音</title>
+      <link>http://blog.bingtan.online/tags/%E5%BD%95%E9%9F%B3/</link>
+      <pubDate>Tue, 03 Jul 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/tags/%E5%BD%95%E9%9F%B3/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>MVP</title>
+      <link>http://blog.bingtan.online/tags/MVP/</link>
+      <pubDate>Sun, 01 Jul 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/tags/MVP/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>数据结构</title>
+      <link>http://blog.bingtan.online/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link>
+      <pubDate>Sat, 26 May 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</guid>
       <description></description>
     </item>
     

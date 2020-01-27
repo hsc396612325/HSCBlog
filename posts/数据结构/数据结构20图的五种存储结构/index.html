@@ -1,0 +1,1346 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>数据结构20————图的存储结构 | 冰炭不投day的博客</title>
+    <meta property="og:title" content="数据结构20————图的存储结构 - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2018-05-20T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2018-05-20T22:40:54&#43;08:00'>
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="数据结构20————图的存储结构">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8420%E5%9B%BE%E7%9A%84%E4%BA%94%E7%A7%8D%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">数据结构20————图的存储结构</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年5月20日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84'>“数据结构&#34;</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h3 id="一-邻接矩阵">一. 邻接矩阵</h3>
+<h4 id="1-存储形式">1. 存储形式</h4>
+<ul>
+<li>使用一维数组存储顶点信息，使用二维数组存储边信息。</li>
+<li>如果是图a[i][j]=1表示顶点i和顶点j直接存在边，a[i][j]=0表示顶点i和j不存在边。</li>
+<li>如果是网,则a[i][j=m(m为数字)表示顶点i和j之间存在一个权值为m的边，a[i][j]=无穷表示顶点i和j之间不存在边。</li>
+<li>无向图的邻接矩阵为对称矩阵</li>
+</ul>
+<p><strong>优点:简单易用</strong>
+<strong>缺点:对于稀疏矩阵而言，太过浪费空间</strong></p>
+<h4 id="2-图例">2. 图例</h4>
+<p><strong>无向图:</strong>
+<img src="/image/Data_structure/21_0.png" alt="这里写图片描述">
+<strong>有向图</strong>
+<img src="/image/Data_structure/21_1.png" alt="这里写图片描述">
+<strong>网</strong>
+<img src="/image/Data_structure/21_2.png" alt="这里写图片描述"></p>
+<h4 id="3-数据结构的结构体设计">3. 数据结构的结构体设计</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#</span><span style="color:#999;font-weight:bold;font-style:italic">include</span><span style="color:#999;font-weight:bold;font-style:italic">&lt;stdio.h&gt;</span><span style="color:#999;font-weight:bold;font-style:italic">
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span><span style="color:#999;font-weight:bold;font-style:italic">#</span><span style="color:#999;font-weight:bold;font-style:italic">include</span><span style="color:#999;font-weight:bold;font-style:italic">&lt;stdlib.h&gt;</span><span style="color:#999;font-weight:bold;font-style:italic">
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span><span style="color:#999;font-weight:bold;font-style:italic">#</span><span style="color:#999;font-weight:bold;font-style:italic">define MAXVEX 30</span><span style="color:#999;font-weight:bold;font-style:italic">
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span><span style="color:#000;font-weight:bold">typedef</span> <span style="color:#458;font-weight:bold">char</span> Vertype;
+<span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span>{
+	<span style="color:#458;font-weight:bold">int</span> acre[MAXVEX][MAXVEX];<span style="color:#998;font-style:italic">//邻接表
+</span><span style="color:#998;font-style:italic"></span>	Vertype Vex[MAXVEX];<span style="color:#998;font-style:italic">//顶点信息
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#458;font-weight:bold">int</span> vexnum;<span style="color:#998;font-style:italic">//顶点数量
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#458;font-weight:bold">int</span> acrenum;<span style="color:#998;font-style:italic">//边的数量 
+</span><span style="color:#998;font-style:italic"></span>}AdjMatrix;
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="4-实现有向图的存储并统计出度和入度">4. 实现有向图的存储，并统计出度和入度</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">AdjMatrix <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">Create</span>(){
+	AdjMatrix <span style="color:#000;font-weight:bold">*</span>adj;
+	adj <span style="color:#000;font-weight:bold">=</span> (AdjMatrix<span style="color:#000;font-weight:bold">*</span>)malloc(<span style="color:#000;font-weight:bold">sizeof</span>(AdjMatrix));
+	
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">请输入图的顶点数和边数:</span><span style="color:#d14">&#34;</span>);
+	scanf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%d%d</span><span style="color:#d14">&#34;</span>,<span style="color:#000;font-weight:bold">&amp;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum,<span style="color:#000;font-weight:bold">&amp;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>acrenum);
+	
+	<span style="color:#458;font-weight:bold">int</span> i;
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">请输入点信息:</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+	<span style="color:#000;font-weight:bold">for</span>(i <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;i <span style="color:#000;font-weight:bold">&lt;</span> adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		getchar();
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">请输入第%d个顶点:</span><span style="color:#d14">&#34;</span>,i<span style="color:#000;font-weight:bold">+</span><span style="color:#099">1</span>);
+		scanf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%c</span><span style="color:#d14">&#34;</span>,<span style="color:#000;font-weight:bold">&amp;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>Vex[i]);
+	} 
+
+	
+	<span style="color:#458;font-weight:bold">int</span> j,k;
+	<span style="color:#458;font-weight:bold">char</span> a[<span style="color:#099">3</span>];
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>) <span style="color:#998;font-style:italic">// 初始化 
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#000;font-weight:bold">for</span>(j<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;j<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;j<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>)
+			adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>acre[i][j]<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;
+
+	getchar();
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">\n</span><span style="color:#d14">请输入边信息:如ab</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>acrenum;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">请输入第%d个边:</span><span style="color:#d14">&#34;</span>,i<span style="color:#000;font-weight:bold">+</span><span style="color:#099">1</span>);
+		gets(a);
+		
+		j<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;
+		k<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;	
+		<span style="color:#000;font-weight:bold">while</span>(adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>Vex[j<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>] <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> a[<span style="color:#099">0</span>]<span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span>j<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>acrenum);
+		<span style="color:#000;font-weight:bold">while</span>(adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>Vex[k<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>] <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> a[<span style="color:#099">1</span>]<span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span>k<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>acrenum);
+		adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>acre[j<span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>][k<span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>]<span style="color:#000;font-weight:bold">=</span><span style="color:#099">1</span>;
+	}
+	
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">\n</span><span style="color:#d14">你输入的邻接矩阵如下:</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		<span style="color:#000;font-weight:bold">for</span>(j<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;j<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;j<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+			printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%4d</span><span style="color:#d14">&#34;</span>,adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>acre[i][j]);
+		}
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+	}
+	
+	<span style="color:#000;font-weight:bold">return</span> adj;
+} 
+
+<span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">Statistics</span>(AdjMatrix <span style="color:#000;font-weight:bold">*</span>adj){
+	<span style="color:#458;font-weight:bold">int</span> i,j;
+	<span style="color:#458;font-weight:bold">int</span> countA,countB;
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		countA<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;
+		countB<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;
+		<span style="color:#000;font-weight:bold">for</span>(j<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;j<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>acrenum;j<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){  
+			<span style="color:#000;font-weight:bold">if</span>(adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>acre[i][j]<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">1</span>){<span style="color:#998;font-style:italic">//出度
+</span><span style="color:#998;font-style:italic"></span>				countA<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;
+			} 
+			<span style="color:#000;font-weight:bold">if</span>(adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>acre[j][i]<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">1</span>){<span style="color:#998;font-style:italic">//入度 
+</span><span style="color:#998;font-style:italic"></span>				countB<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>; 
+			}
+		} 
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">顶点%c,出度为%d,入度为%d</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>,adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>Vex[i],countA,countB);
+	} 
+}
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="/image/Data_structure/21_3.png" alt="这里写图片描述"></p>
+<h3 id="二-邻接表">二. 邻接表</h3>
+<h4 id="1-存储形式-1">1. 存储形式</h4>
+<ul>
+<li>图的顶点用一个以为数组存储，该顶点的所有邻接点构成一个线性表，组成单链表，连接在该顶点后。</li>
+<li>在无向图中，每个边会出现两次</li>
+<li>对于有向图，其后面可以跟它的邻接点(邻接表)，也可以跟它的逆邻接点(逆邻接表).</li>
+</ul>
+<p><strong>优点:相对于邻接表而言，解决了稀疏矩阵太过浪费空间的问题</strong>
+<strong>缺点:对于有向图而言，邻接表统计每个顶点的入度都要遍历整个图,，而逆邻接表统计每个顶点的出度都要遍历整个图，对于有向图而言，对于无向图而言，每个边出现两次，浪费了一半的空间,并且删除操作需要删除两次。</strong></p>
+<h4 id="2-图例-1">2. 图例</h4>
+<p><strong>无向图</strong>
+<img src="/image/Data_structure/21_4.png" alt="这里写图片描述">
+<strong>有向图</strong>
+<img src="/image/Data_structure/21_5.png" alt="这里写图片描述">
+<strong>网</strong>
+<img src="/image/Data_structure/21_6.png" alt="这里写图片描述"></p>
+<h4 id="3-数据结构的结构体设计-1">3. 数据结构的结构体设计</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#000;font-weight:bold">typedef</span> <span style="color:#458;font-weight:bold">char</span> Vertype;
+<span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span> ArcNode{
+	<span style="color:#458;font-weight:bold">int</span> adhVex;<span style="color:#998;font-style:italic">//弧尾 
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">struct</span> ArcNode <span style="color:#000;font-weight:bold">*</span>next; 
+}ArcNode;
+
+<span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span> VertexNode{
+	Vertype vexdata; <span style="color:#998;font-style:italic">//点 
+</span><span style="color:#998;font-style:italic"></span>	ArcNode <span style="color:#000;font-weight:bold">*</span>head; 
+}VertexNode;
+
+<span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span>{
+	VertexNode vertex[MAXVEX];
+	<span style="color:#458;font-weight:bold">int</span> vexnum; <span style="color:#998;font-style:italic">// 顶点数
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#458;font-weight:bold">int</span> arcnum; <span style="color:#998;font-style:italic">//边数 
+</span><span style="color:#998;font-style:italic"></span>}AdjList;
+
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="4-实现有向图的存储并统计出度和入">4. 实现有向图的存储，并统计出度和入</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">77
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">AdjList <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">Create</span>(){
+	AdjList <span style="color:#000;font-weight:bold">*</span>adj;
+	
+	adj <span style="color:#000;font-weight:bold">=</span> (AdjList <span style="color:#000;font-weight:bold">*</span>)malloc(<span style="color:#000;font-weight:bold">sizeof</span>(AdjList)); 
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">请输入有向图的顶点的数量和边的数量:</span><span style="color:#d14">&#34;</span>);
+	scanf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%d%d</span><span style="color:#d14">&#34;</span>,<span style="color:#000;font-weight:bold">&amp;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum,<span style="color:#000;font-weight:bold">&amp;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>arcnum);
+	<span style="color:#458;font-weight:bold">int</span> i;
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">请输入点信息:</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i <span style="color:#000;font-weight:bold">&lt;</span> adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		getchar();
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">请输入第%d个顶点:</span><span style="color:#d14">&#34;</span>,i<span style="color:#000;font-weight:bold">+</span><span style="color:#099">1</span>);
+		scanf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%c</span><span style="color:#d14">&#34;</span>,<span style="color:#000;font-weight:bold">&amp;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].vexdata);
+		adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].head <span style="color:#000;font-weight:bold">=</span> <span style="color:#0086b3">NULL</span>;
+	} 
+	
+	
+	getchar();
+	<span style="color:#458;font-weight:bold">int</span> j,k;
+	<span style="color:#458;font-weight:bold">char</span> a[<span style="color:#099">3</span>];
+	ArcNode <span style="color:#000;font-weight:bold">*</span>arc;
+	ArcNode <span style="color:#000;font-weight:bold">*</span>p;
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">\n</span><span style="color:#d14">请输入边信息如ab:</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>arcnum;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">请输入第%d个边:</span><span style="color:#d14">&#34;</span>,i<span style="color:#000;font-weight:bold">+</span><span style="color:#099">1</span>);
+		gets(a);                                                                                                                                                                                                                                  
+		<span style="color:#000;font-weight:bold">for</span>(j<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[j].vexdata <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> a[<span style="color:#099">0</span>] <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span>j<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;j<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>);
+		<span style="color:#000;font-weight:bold">for</span>(k<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[k].vexdata <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> a[<span style="color:#099">1</span>] <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span>k<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;k<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>);
+		
+		arc <span style="color:#000;font-weight:bold">=</span> (ArcNode <span style="color:#000;font-weight:bold">*</span>)malloc(<span style="color:#000;font-weight:bold">sizeof</span>(ArcNode));
+	 	
+		arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>adhVex <span style="color:#000;font-weight:bold">=</span> k;
+		arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next <span style="color:#000;font-weight:bold">=</span> adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[j].head;
+		adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[j].head <span style="color:#000;font-weight:bold">=</span> arc; 
+	}
+	
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">你输入的邻接表如下:</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">顶点:%c </span><span style="color:#d14">&#34;</span>,adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].vexdata);
+		p <span style="color:#000;font-weight:bold">=</span> adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].head;
+		
+		<span style="color:#000;font-weight:bold">while</span>(p<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>){
+			printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">--&gt;%d</span><span style="color:#d14">&#34;</span>,p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>adhVex);
+			p<span style="color:#000;font-weight:bold">=</span>p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;	
+		}
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+	} 
+ 	<span style="color:#000;font-weight:bold">return</span> adj;
+}
+
+<span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">Statistics</span>(AdjList <span style="color:#000;font-weight:bold">*</span>adj){
+	<span style="color:#458;font-weight:bold">int</span> i,j;
+	<span style="color:#458;font-weight:bold">int</span> countA,countB;
+	ArcNode <span style="color:#000;font-weight:bold">*</span>p;
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		countA<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;
+		countB<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">顶点%c：</span><span style="color:#d14">&#34;</span>,adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].vexdata);
+		p<span style="color:#000;font-weight:bold">=</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].head;	
+		<span style="color:#000;font-weight:bold">while</span>(p<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>){
+			countA<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;
+			p<span style="color:#000;font-weight:bold">=</span>p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+		}
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">出度:%d,</span><span style="color:#d14">&#34;</span>,countA);
+		
+		<span style="color:#000;font-weight:bold">for</span>(j<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;j<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;j<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+			p<span style="color:#000;font-weight:bold">=</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[j].head;
+			<span style="color:#000;font-weight:bold">while</span>(p<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>){
+				<span style="color:#000;font-weight:bold">if</span>(p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>adhVex<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span>i){
+					countB<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;
+				}
+				p<span style="color:#000;font-weight:bold">=</span>p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>next;
+			}
+		}
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">入度:%d</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>,countB);	
+		
+	}
+}
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="/image/Data_structure/21_7.png" alt="这里写图片描述"></p>
+<h3 id="三-十字链表">三. 十字链表</h3>
+<h4 id="1-存储形式-2">1. 存储形式</h4>
+<ul>
+<li>对于有向图而言,每个顶点相当于连接两个链表，一个连所有以它为入度的邻接点，一条连接所有以它为出度的邻接点。对于每个边而言，两个指针域，一个连接与他相同起点的下一个边，一个连接与他终点相同的下一个边。</li>
+</ul>
+<p><strong>优点:解决了有向图邻接表入度的问题。</strong>
+<strong>缺点:结构有些复杂.</strong></p>
+<h4 id="2图例">2.图例</h4>
+<p><img src="/image/Data_structure/21_8.png" alt="这里写图片描述"></p>
+<h4 id="3数据结构的结构体设计">3.数据结构的结构体设计</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#</span><span style="color:#999;font-weight:bold;font-style:italic">include</span><span style="color:#999;font-weight:bold;font-style:italic">&lt;stdio.h&gt;</span><span style="color:#999;font-weight:bold;font-style:italic">
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span><span style="color:#999;font-weight:bold;font-style:italic">#</span><span style="color:#999;font-weight:bold;font-style:italic">include</span><span style="color:#999;font-weight:bold;font-style:italic">&lt;stdlib.h&gt;</span><span style="color:#999;font-weight:bold;font-style:italic">
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span><span style="color:#999;font-weight:bold;font-style:italic">#</span><span style="color:#999;font-weight:bold;font-style:italic">define MAXVEX 30</span><span style="color:#999;font-weight:bold;font-style:italic">
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span><span style="color:#000;font-weight:bold">typedef</span> <span style="color:#458;font-weight:bold">char</span> Vertype;
+<span style="color:#998;font-style:italic">//弧尾--&gt;弧头  &lt;尾，头&gt; 
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span> ArcNode{
+	<span style="color:#458;font-weight:bold">int</span> tailvex;<span style="color:#998;font-style:italic">//弧尾
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#458;font-weight:bold">int</span> headvex;<span style="color:#998;font-style:italic">//弧头 
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">struct</span> ArcNode <span style="color:#000;font-weight:bold">*</span>tailLink;<span style="color:#998;font-style:italic">//和它具有相同弧尾的边 
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">struct</span> ArcNode <span style="color:#000;font-weight:bold">*</span>headLink;<span style="color:#998;font-style:italic">//和它具有相同弧头的边
+</span><span style="color:#998;font-style:italic"></span>}ArcNode;
+
+<span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span> VertexNode{
+	Vertype vexdata; <span style="color:#998;font-style:italic">//点 
+</span><span style="color:#998;font-style:italic"></span>	ArcNode <span style="color:#000;font-weight:bold">*</span>firstout;<span style="color:#998;font-style:italic">//连接以它为弧尾的边 
+</span><span style="color:#998;font-style:italic"></span>	ArcNode <span style="color:#000;font-weight:bold">*</span>firstin;<span style="color:#998;font-style:italic">//连接以它为弧头的边 
+</span><span style="color:#998;font-style:italic"></span>}VertexNode;
+
+<span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span>{
+	VertexNode vertex[MAXVEX];
+	<span style="color:#458;font-weight:bold">int</span> vexnum; <span style="color:#998;font-style:italic">// 顶点数
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#458;font-weight:bold">int</span> arcnum; <span style="color:#998;font-style:italic">//边数 
+</span><span style="color:#998;font-style:italic"></span>}AdjList;
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="4实现有向图的存储并统计出度和入">4.实现有向图的存储，并统计出度和入</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">AdjList <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">Create</span>(){
+	AdjList <span style="color:#000;font-weight:bold">*</span>adj;
+	adj <span style="color:#000;font-weight:bold">=</span> (AdjList <span style="color:#000;font-weight:bold">*</span>)malloc(<span style="color:#000;font-weight:bold">sizeof</span>(AdjList));
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">请输入有向图的顶点的数量和边的数量:</span><span style="color:#d14">&#34;</span>);
+	scanf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%d%d</span><span style="color:#d14">&#34;</span>,<span style="color:#000;font-weight:bold">&amp;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum,<span style="color:#000;font-weight:bold">&amp;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>arcnum);
+	
+	<span style="color:#458;font-weight:bold">int</span> i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">请输入点信息:</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		getchar();
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">请输入第%d个顶点:</span><span style="color:#d14">&#34;</span>,i<span style="color:#000;font-weight:bold">+</span><span style="color:#099">1</span>);
+		scanf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%c</span><span style="color:#d14">&#34;</span>,<span style="color:#000;font-weight:bold">&amp;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].vexdata);
+		adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].firstout<span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>;
+		adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].firstin<span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>; 
+	}
+	
+	getchar();
+	<span style="color:#458;font-weight:bold">int</span> j,k;
+	ArcNode <span style="color:#000;font-weight:bold">*</span>arc;
+	<span style="color:#458;font-weight:bold">char</span> a[<span style="color:#099">3</span>];
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">\n</span><span style="color:#d14">请输入边信息如ab:</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>arcnum;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">请输入第%d条边:</span><span style="color:#d14">&#34;</span>,i<span style="color:#000;font-weight:bold">+</span><span style="color:#099">1</span>);
+		gets(a); 
+		<span style="color:#000;font-weight:bold">for</span>(j<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[j].vexdata<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span>a[<span style="color:#099">0</span>]<span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span>j<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;j<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>);
+		<span style="color:#000;font-weight:bold">for</span>(k<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[k].vexdata<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span>a[<span style="color:#099">1</span>]<span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span>k<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;k<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>);
+		arc<span style="color:#000;font-weight:bold">=</span>(ArcNode <span style="color:#000;font-weight:bold">*</span>)malloc(<span style="color:#000;font-weight:bold">sizeof</span>(ArcNode));
+		arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>tailvex<span style="color:#000;font-weight:bold">=</span>j;
+		arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>headvex<span style="color:#000;font-weight:bold">=</span>k;
+		
+		arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>tailLink<span style="color:#000;font-weight:bold">=</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[j].firstout;
+		adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[j].firstout<span style="color:#000;font-weight:bold">=</span>arc;
+		
+		arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>headLink<span style="color:#000;font-weight:bold">=</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[k].firstin;
+		adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[k].firstin<span style="color:#000;font-weight:bold">=</span>arc;				 
+	}
+	
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">你输入的十字链表如下:</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+	ArcNode <span style="color:#000;font-weight:bold">*</span>p;
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">顶点:%c</span><span style="color:#d14">&#34;</span>,adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].vexdata);
+		p <span style="color:#000;font-weight:bold">=</span> adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].firstout;	
+		<span style="color:#000;font-weight:bold">while</span>(p<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>){
+			printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">--&gt;%d</span><span style="color:#d14">&#34;</span>,p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>headvex);
+			p<span style="color:#000;font-weight:bold">=</span>p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>tailLink;	
+		}
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);	
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">顶点:%c</span><span style="color:#d14">&#34;</span>,adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].vexdata);
+		p <span style="color:#000;font-weight:bold">=</span> adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].firstin;
+		<span style="color:#000;font-weight:bold">while</span>(p<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>){
+			printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">&lt;==%d</span><span style="color:#d14">&#34;</span>,p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>tailvex);
+			p<span style="color:#000;font-weight:bold">=</span>p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>headLink;	
+		}
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">\n</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+	} 	
+	<span style="color:#000;font-weight:bold">return</span> adj;	
+} 
+
+Statistics(AdjList <span style="color:#000;font-weight:bold">*</span>adj){
+	<span style="color:#458;font-weight:bold">int</span> i; 
+	<span style="color:#458;font-weight:bold">int</span> countA,countB;
+	ArcNode <span style="color:#000;font-weight:bold">*</span>p;
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		
+		<span style="color:#000;font-weight:bold">for</span>(p<span style="color:#000;font-weight:bold">=</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].firstout,countA<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;p<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>;p<span style="color:#000;font-weight:bold">=</span>p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>tailLink,countA<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>);
+		<span style="color:#000;font-weight:bold">for</span>(p<span style="color:#000;font-weight:bold">=</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].firstin,countB<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;p<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>;p<span style="color:#000;font-weight:bold">=</span>p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>headLink,countB<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>);
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">点%c的出度为:%d,入度为:%d</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>,adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].vexdata,countA,countB);
+	}	
+}
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="/image/Data_structure/21_9.png" alt="这里写图片描述"></p>
+<h3 id="四邻接多重表">四.邻接多重表</h3>
+<h4 id="1存储形式">1.存储形式</h4>
+<ul>
+<li>无向图的每个边只会出现一次。每个边两个指针域，一个指向顶点i的下一个边，一个指向顶点j的下一个边.</li>
+</ul>
+<p><strong>优点:解决了无向图邻接表中，一条边出现两次的问题。</strong>
+<strong>缺点:结构有些复杂.</strong></p>
+<h4 id="2-图例-2">2. 图例</h4>
+<p><img src="/image/Data_structure/21_10.png" alt="这里写图片描述"></p>
+<h4 id="3-数据结构的结构体设计-2">3. 数据结构的结构体设计</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#</span><span style="color:#999;font-weight:bold;font-style:italic">include</span><span style="color:#999;font-weight:bold;font-style:italic">&lt;stdio.h&gt;</span><span style="color:#999;font-weight:bold;font-style:italic">
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span><span style="color:#999;font-weight:bold;font-style:italic">#</span><span style="color:#999;font-weight:bold;font-style:italic">include</span><span style="color:#999;font-weight:bold;font-style:italic">&lt;stdlib.h&gt;</span><span style="color:#999;font-weight:bold;font-style:italic">
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span><span style="color:#999;font-weight:bold;font-style:italic">#</span><span style="color:#999;font-weight:bold;font-style:italic">define MAXVEX 30</span><span style="color:#999;font-weight:bold;font-style:italic">
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span><span style="color:#000;font-weight:bold">typedef</span> <span style="color:#458;font-weight:bold">char</span> Vertype;
+<span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span> ArcNode{
+	<span style="color:#458;font-weight:bold">int</span> ivex;<span style="color:#998;font-style:italic">//边的i顶点 
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#458;font-weight:bold">int</span> jvex;<span style="color:#998;font-style:italic">//边的j顶点 
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">struct</span> ArcNode <span style="color:#000;font-weight:bold">*</span>ilink;<span style="color:#998;font-style:italic">//指向同样具有i顶点的边 
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">struct</span> ArcNode <span style="color:#000;font-weight:bold">*</span>jlink;<span style="color:#998;font-style:italic">//指向同样具有j顶点的边
+</span><span style="color:#998;font-style:italic"></span>}ArcNode;
+
+<span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span> VertexNode{
+	Vertype vexdata; <span style="color:#998;font-style:italic">//点 
+</span><span style="color:#998;font-style:italic"></span>	ArcNode <span style="color:#000;font-weight:bold">*</span>firstdge;<span style="color:#998;font-style:italic">//连接以它为弧尾的边 
+</span><span style="color:#998;font-style:italic"></span>}VertexNode;
+
+<span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span>{
+	VertexNode vertex[MAXVEX];
+	<span style="color:#458;font-weight:bold">int</span> vexnum; <span style="color:#998;font-style:italic">// 顶点数
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#458;font-weight:bold">int</span> arcnum; <span style="color:#998;font-style:italic">//边数 
+</span><span style="color:#998;font-style:italic"></span>}AdjList;
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="4-实现无向图的存储并统计出度和入">4. 实现无向图的存储，并统计出度和入</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">72
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">AdjList <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">Create</span>(){
+	AdjList <span style="color:#000;font-weight:bold">*</span>adj;
+	adj <span style="color:#000;font-weight:bold">=</span> (AdjList <span style="color:#000;font-weight:bold">*</span>)malloc(<span style="color:#000;font-weight:bold">sizeof</span>(AdjList));
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">请输入有向图的顶点的数量和边的数量:</span><span style="color:#d14">&#34;</span>);
+	scanf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%d%d</span><span style="color:#d14">&#34;</span>,<span style="color:#000;font-weight:bold">&amp;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum,<span style="color:#000;font-weight:bold">&amp;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>arcnum);
+	
+	<span style="color:#458;font-weight:bold">int</span> i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">请输入点信息:</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		getchar();
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">请输入第%d个顶点:</span><span style="color:#d14">&#34;</span>,i<span style="color:#000;font-weight:bold">+</span><span style="color:#099">1</span>);
+		scanf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%c</span><span style="color:#d14">&#34;</span>,<span style="color:#000;font-weight:bold">&amp;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].vexdata);
+		adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].firstdge<span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>;
+	}
+	
+		getchar();
+	<span style="color:#458;font-weight:bold">int</span> j,k;
+	ArcNode <span style="color:#000;font-weight:bold">*</span>arc;
+	<span style="color:#458;font-weight:bold">char</span> a[<span style="color:#099">3</span>];
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">\n</span><span style="color:#d14">请输入边信息如ab:</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>arcnum;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">请输入第%d条边:</span><span style="color:#d14">&#34;</span>,i<span style="color:#000;font-weight:bold">+</span><span style="color:#099">1</span>);
+		gets(a); 
+		<span style="color:#000;font-weight:bold">for</span>(j<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[j].vexdata<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span>a[<span style="color:#099">0</span>]<span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span>j<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;j<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>);
+		<span style="color:#000;font-weight:bold">for</span>(k<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[k].vexdata<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span>a[<span style="color:#099">1</span>]<span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span>k<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;k<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>);
+		arc<span style="color:#000;font-weight:bold">=</span>(ArcNode <span style="color:#000;font-weight:bold">*</span>)malloc(<span style="color:#000;font-weight:bold">sizeof</span>(ArcNode));
+		arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>ivex<span style="color:#000;font-weight:bold">=</span>j;
+		arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>jvex<span style="color:#000;font-weight:bold">=</span>k;
+		
+		arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>ilink<span style="color:#000;font-weight:bold">=</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[j].firstdge;
+		adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[j].firstdge<span style="color:#000;font-weight:bold">=</span>arc;
+		
+		arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>jlink<span style="color:#000;font-weight:bold">=</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[k].firstdge;
+		adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[k].firstdge<span style="color:#000;font-weight:bold">=</span>arc;				 
+	}
+	
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">你输入的邻接多重表如下:</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+	ArcNode <span style="color:#000;font-weight:bold">*</span>p;
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">顶点:%c</span><span style="color:#d14">&#34;</span>,adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].vexdata);
+		p <span style="color:#000;font-weight:bold">=</span> adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].firstdge;	
+		<span style="color:#000;font-weight:bold">while</span>(p<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>){
+			<span style="color:#000;font-weight:bold">if</span>(p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>ivex<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span>i){
+				printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">--&gt;%d</span><span style="color:#d14">&#34;</span>,p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>jvex);
+				p<span style="color:#000;font-weight:bold">=</span>p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>ilink;
+			}<span style="color:#000;font-weight:bold">else</span>{
+				printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">--&gt;%d</span><span style="color:#d14">&#34;</span>,p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>ivex);
+				p<span style="color:#000;font-weight:bold">=</span>p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>jlink;
+			}
+				
+		}
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);	
+	} 	
+	<span style="color:#000;font-weight:bold">return</span> adj;	
+} 
+<span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">Statistics</span>(AdjList <span style="color:#000;font-weight:bold">*</span>adj){
+	<span style="color:#458;font-weight:bold">int</span> i; 
+	<span style="color:#458;font-weight:bold">int</span> count;
+	ArcNode <span style="color:#000;font-weight:bold">*</span>p;
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		
+		<span style="color:#000;font-weight:bold">for</span>(p<span style="color:#000;font-weight:bold">=</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].firstdge,count<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;p<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>;count<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+			<span style="color:#000;font-weight:bold">if</span>(p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>ivex<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span>i){
+				p<span style="color:#000;font-weight:bold">=</span>p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>ilink;
+			}<span style="color:#000;font-weight:bold">else</span>{
+				p<span style="color:#000;font-weight:bold">=</span>p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>jlink;
+			}
+		}
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">点%c的度为:%d</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>,adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].vexdata,count);
+	}
+} 
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="/image/Data_structure/21_11.png" alt="这里写图片描述"></p>
+<h3 id="五-边集数组">五. 边集数组</h3>
+<h4 id="1-存储形式-3">1. 存储形式</h4>
+<ul>
+<li>由两个一维数组组成</li>
+<li>一个一维数组存储点</li>
+<li>一个一维数组存储边(起点，终点，权值).</li>
+</ul>
+<h4 id="2-图例-3">2. 图例</h4>
+<p><img src="/image/Data_structure/21_12.png" alt="这里写图片描述"></p>
+<h4 id="3-数据结构的结构体设计-3">3. 数据结构的结构体设计</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#</span><span style="color:#999;font-weight:bold;font-style:italic">include</span><span style="color:#999;font-weight:bold;font-style:italic">&lt;stdlib.h&gt;</span><span style="color:#999;font-weight:bold;font-style:italic">
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span><span style="color:#999;font-weight:bold;font-style:italic">#</span><span style="color:#999;font-weight:bold;font-style:italic">define MAXVEX 30</span><span style="color:#999;font-weight:bold;font-style:italic">
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span><span style="color:#000;font-weight:bold">typedef</span> <span style="color:#458;font-weight:bold">char</span> Vertype;
+<span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span> ArcNode{
+	<span style="color:#458;font-weight:bold">int</span> ivex;<span style="color:#998;font-style:italic">//边的i顶点 
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#458;font-weight:bold">int</span> jvex;<span style="color:#998;font-style:italic">//边的j顶点 
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">struct</span> ArcNode <span style="color:#000;font-weight:bold">*</span>ilink;<span style="color:#998;font-style:italic">//指向同样具有i顶点的边 
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">struct</span> ArcNode <span style="color:#000;font-weight:bold">*</span>jlink;<span style="color:#998;font-style:italic">//指向同样具有j顶点的边
+</span><span style="color:#998;font-style:italic"></span>}ArcNode;
+
+<span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span> VertexNode{
+	Vertype vexdata; <span style="color:#998;font-style:italic">//点 
+</span><span style="color:#998;font-style:italic"></span>	ArcNode <span style="color:#000;font-weight:bold">*</span>firstdge;<span style="color:#998;font-style:italic">//连接以它为弧尾的边 
+</span><span style="color:#998;font-style:italic"></span>}VertexNode;
+
+<span style="color:#000;font-weight:bold">typedef</span> <span style="color:#000;font-weight:bold">struct</span>{
+	VertexNode vertex[MAXVEX];
+	<span style="color:#458;font-weight:bold">int</span> vexnum; <span style="color:#998;font-style:italic">// 顶点数
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#458;font-weight:bold">int</span> arcnum; <span style="color:#998;font-style:italic">//边数 
+</span><span style="color:#998;font-style:italic"></span>}AdjList;
+
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="4-实现有向图的存储并统计出度和入-1">4. 实现有向图的存储，并统计出度和入</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">72
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">AdjList <span style="color:#000;font-weight:bold">*</span><span style="color:#900;font-weight:bold">Create</span>(){
+	AdjList <span style="color:#000;font-weight:bold">*</span>adj;
+	adj <span style="color:#000;font-weight:bold">=</span> (AdjList <span style="color:#000;font-weight:bold">*</span>)malloc(<span style="color:#000;font-weight:bold">sizeof</span>(AdjList));
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">请输入有向图的顶点的数量和边的数量:</span><span style="color:#d14">&#34;</span>);
+	scanf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%d%d</span><span style="color:#d14">&#34;</span>,<span style="color:#000;font-weight:bold">&amp;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum,<span style="color:#000;font-weight:bold">&amp;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>arcnum);
+	
+	<span style="color:#458;font-weight:bold">int</span> i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">请输入点信息:</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		getchar();
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">请输入第%d个顶点:</span><span style="color:#d14">&#34;</span>,i<span style="color:#000;font-weight:bold">+</span><span style="color:#099">1</span>);
+		scanf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%c</span><span style="color:#d14">&#34;</span>,<span style="color:#000;font-weight:bold">&amp;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].vexdata);
+		adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].firstdge<span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>;
+	}
+	
+		getchar();
+	<span style="color:#458;font-weight:bold">int</span> j,k;
+	ArcNode <span style="color:#000;font-weight:bold">*</span>arc;
+	<span style="color:#458;font-weight:bold">char</span> a[<span style="color:#099">3</span>];
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">\n</span><span style="color:#d14">请输入边信息如ab:</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>arcnum;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">请输入第%d条边:</span><span style="color:#d14">&#34;</span>,i<span style="color:#000;font-weight:bold">+</span><span style="color:#099">1</span>);
+		gets(a); 
+		<span style="color:#000;font-weight:bold">for</span>(j<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[j].vexdata<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span>a[<span style="color:#099">0</span>]<span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span>j<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;j<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>);
+		<span style="color:#000;font-weight:bold">for</span>(k<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[k].vexdata<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span>a[<span style="color:#099">1</span>]<span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span>k<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;k<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>);
+		arc<span style="color:#000;font-weight:bold">=</span>(ArcNode <span style="color:#000;font-weight:bold">*</span>)malloc(<span style="color:#000;font-weight:bold">sizeof</span>(ArcNode));
+		arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>ivex<span style="color:#000;font-weight:bold">=</span>j;
+		arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>jvex<span style="color:#000;font-weight:bold">=</span>k;
+		
+		arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>ilink<span style="color:#000;font-weight:bold">=</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[j].firstdge;
+		adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[j].firstdge<span style="color:#000;font-weight:bold">=</span>arc;
+		
+		arc<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>jlink<span style="color:#000;font-weight:bold">=</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[k].firstdge;
+		adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[k].firstdge<span style="color:#000;font-weight:bold">=</span>arc;				 
+	}
+	
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">你输入的邻接多重表如下:</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+	ArcNode <span style="color:#000;font-weight:bold">*</span>p;
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">顶点:%c</span><span style="color:#d14">&#34;</span>,adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].vexdata);
+		p <span style="color:#000;font-weight:bold">=</span> adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].firstdge;	
+		<span style="color:#000;font-weight:bold">while</span>(p<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>){
+			<span style="color:#000;font-weight:bold">if</span>(p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>ivex<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span>i){
+				printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">--&gt;%d</span><span style="color:#d14">&#34;</span>,p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>jvex);
+				p<span style="color:#000;font-weight:bold">=</span>p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>ilink;
+			}<span style="color:#000;font-weight:bold">else</span>{
+				printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">--&gt;%d</span><span style="color:#d14">&#34;</span>,p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>ivex);
+				p<span style="color:#000;font-weight:bold">=</span>p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>jlink;
+			}
+				
+		}
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);	
+	} 	
+	<span style="color:#000;font-weight:bold">return</span> adj;	
+} 
+<span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">Statistics</span>(AdjList <span style="color:#000;font-weight:bold">*</span>adj){
+	<span style="color:#458;font-weight:bold">int</span> i; 
+	<span style="color:#458;font-weight:bold">int</span> count;
+	ArcNode <span style="color:#000;font-weight:bold">*</span>p;
+	<span style="color:#000;font-weight:bold">for</span>(i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;i<span style="color:#000;font-weight:bold">&lt;</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		
+		<span style="color:#000;font-weight:bold">for</span>(p<span style="color:#000;font-weight:bold">=</span>adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].firstdge,count<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;p<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span><span style="color:#0086b3">NULL</span>;count<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+			<span style="color:#000;font-weight:bold">if</span>(p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>ivex<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span>i){
+				p<span style="color:#000;font-weight:bold">=</span>p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>ilink;
+			}<span style="color:#000;font-weight:bold">else</span>{
+				p<span style="color:#000;font-weight:bold">=</span>p<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>jlink;
+			}
+		}
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">点%c的度为:%d</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>,adj<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vertex[i].vexdata,count);
+	}
+} 
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="/image/Data_structure/21_13.png" alt="这里写图片描述"></p>
+<h3 id="六--源码地址">六.  源码地址</h3>
+<p><a href="https://github.com/hsc396612325/Blog">text16中</a></p>
+<h3 id="七--参考资料">七.  参考资料</h3>
+<p>《大话数据结构》
+《数据结构与算法》</p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8420%E5%9B%BE%E7%9A%84%E4%BA%94%E7%A7%8D%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8420%E5%9B%BE%E7%9A%84%E4%BA%94%E7%A7%8D%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8419%E5%9B%BE%E7%9A%84%E5%AE%9A%E4%B9%89%E5%92%8C%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">数据结构19————图的定义和基本概念</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8418%E5%93%88%E5%A4%AB%E6%9B%BC%E6%A0%91/">数据结构18————哈夫曼树</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8417%E6%A0%91%E6%A3%AE%E6%9E%97%E8%BD%AC%E5%8C%96%E4%B8%BA%E4%BA%8C%E5%8F%89%E6%A0%91%E5%AD%A9%E5%AD%90%E5%85%84%E5%BC%9F%E8%A1%A8%E7%A4%BA%E6%B3%95/">数据结构17————树,森林转化为二叉树(孩子兄弟表示法)</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8416%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E7%BA%BF%E7%B4%A2%E5%8C%96/">数据结构16————二叉树的线索化</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8415%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%81%8D%E5%8E%86%E5%92%8C%E5%BB%BA%E7%AB%8B/">数据结构15————二叉树的遍历和建立</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84'>数据结构</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "https://github.com/hsc396612325/HSCBlog/tree/gh-pages"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一-邻接矩阵">一. 邻接矩阵</a>
+      <ul>
+        <li><a href="#1-存储形式">1. 存储形式</a></li>
+        <li><a href="#2-图例">2. 图例</a></li>
+        <li><a href="#3-数据结构的结构体设计">3. 数据结构的结构体设计</a></li>
+        <li><a href="#4-实现有向图的存储并统计出度和入度">4. 实现有向图的存储，并统计出度和入度</a></li>
+      </ul>
+    </li>
+    <li><a href="#二-邻接表">二. 邻接表</a>
+      <ul>
+        <li><a href="#1-存储形式-1">1. 存储形式</a></li>
+        <li><a href="#2-图例-1">2. 图例</a></li>
+        <li><a href="#3-数据结构的结构体设计-1">3. 数据结构的结构体设计</a></li>
+        <li><a href="#4-实现有向图的存储并统计出度和入">4. 实现有向图的存储，并统计出度和入</a></li>
+      </ul>
+    </li>
+    <li><a href="#三-十字链表">三. 十字链表</a>
+      <ul>
+        <li><a href="#1-存储形式-2">1. 存储形式</a></li>
+        <li><a href="#2图例">2.图例</a></li>
+        <li><a href="#3数据结构的结构体设计">3.数据结构的结构体设计</a></li>
+        <li><a href="#4实现有向图的存储并统计出度和入">4.实现有向图的存储，并统计出度和入</a></li>
+      </ul>
+    </li>
+    <li><a href="#四邻接多重表">四.邻接多重表</a>
+      <ul>
+        <li><a href="#1存储形式">1.存储形式</a></li>
+        <li><a href="#2-图例-2">2. 图例</a></li>
+        <li><a href="#3-数据结构的结构体设计-2">3. 数据结构的结构体设计</a></li>
+        <li><a href="#4-实现无向图的存储并统计出度和入">4. 实现无向图的存储，并统计出度和入</a></li>
+      </ul>
+    </li>
+    <li><a href="#五-边集数组">五. 边集数组</a>
+      <ul>
+        <li><a href="#1-存储形式-3">1. 存储形式</a></li>
+        <li><a href="#2-图例-3">2. 图例</a></li>
+        <li><a href="#3-数据结构的结构体设计-3">3. 数据结构的结构体设计</a></li>
+        <li><a href="#4-实现有向图的存储并统计出度和入-1">4. 实现有向图的存储，并统计出度和入</a></li>
+      </ul>
+    </li>
+    <li><a href="#六--源码地址">六.  源码地址</a></li>
+    <li><a href="#七--参考资料">七.  参考资料</a></li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

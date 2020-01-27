@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>数据结构23————图的最短路径Dijkstra算法&amp;Floyd算法 | 冰炭不投day的博客</title>
+    <meta property="og:title" content="数据结构23————图的最短路径Dijkstra算法&amp;Floyd算法 - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2018-05-23T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2018-05-23T22:40:54&#43;08:00'>
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="数据结构23————图的最短路径Dijkstra算法&amp;Floyd算法">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8423%E5%9B%BE%E7%9A%84%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84Dijkstra%E7%AE%97%E6%B3%95Floyd%E7%AE%97%E6%B3%95/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">数据结构23————图的最短路径Dijkstra算法&amp;Floyd算法</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年5月23日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84'>“数据结构&#34;</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h3 id="一-最短路径的概念">一. 最短路径的概念</h3>
+<p>从某顶点(源点)出发到另一顶点(目的点)的路径中,有一条各边(或弧)权值之和最小的路径称为最短路径。</p>
+<p>形式化表述:</p>
+<blockquote>
+<p>设有带权的有向图D=(V,{E})，D中的边权为W(e)。已知源点为v0，求v0到其它各顶点的最短路径。</p>
+</blockquote>
+<p>最短路径有两种算法:迪杰斯特拉(Dijkstra)算法和弗洛伊德(Floyd)算法</p>
+<h3 id="二-迪杰斯特拉算法">二. 迪杰斯特拉算法</h3>
+<h4 id="1-定义概览">1. 定义概览</h4>
+<p>Dijkstra(迪杰斯特拉)算法是典型的单源最短路径算法，用于计算<strong>一个节点到其他所有节点</strong>的最短路径。主要特点是以起始点为中心向外层层扩展，直到扩展到终点为止。</p>
+<p>问题描述：在无向图 G=(V,E) 中，假设每条边 E[i] 的长度为 w[i]，找到由顶点 V0 到其余各点的最短路径。（单源最短路径）</p>
+<h4 id="2-算法思想">2. 算法思想</h4>
+<p>如果源点v0到顶点vi的弧是v0到各点(最短)路径集合中最短者，则一定可以确定的是&lt; v0,vi&gt;是源点v0到vi的最短路径。</p>
+<ul>
+<li>
+<p>第一条最短路径(vo到vi是所有点中路径最短)最短路径的特点:<br>
+这条路径上，必定只含有一条弧，并且这条弧权值最小。</p>
+</li>
+<li>
+<p>下一条(路径次短)的最短路径的特点:
+它只含有两种情况：或者直接从源点到改点vj，或者<strong>从源点到vi，在到达vj</strong></p>
+</li>
+<li>
+<p>再下一条长度次短的特点:<br>
+它可能有两种情况：或者直接从源点到达改点，或者从源点到达vi/cj,然后到达该点</p>
+</li>
+<li>
+<p>其余最短路径的的特点:<br>
+它或者是直接从源点到该点(只含一条弧)； 或者是从源点经过已求得最短路径的顶点，再到达该点</p>
+</li>
+</ul>
+<h4 id="3-算法步骤">3. 算法步骤</h4>
+<ol>
+<li>初始化：S={v},v为源点。U={除V外所有点}</li>
+<li>从U中选择到v距离最小的顶点k，把K加入到S中。</li>
+<li>把k作为新的中间点，更新U中各点到源点的距离</li>
+<li>重复2,3过程直到所有点都在S中</li>
+</ol>
+<h4 id="4-动画演示">4. 动画演示</h4>
+<p><img src="/image/Data_structure/9_0.png" alt="这里写图片描述"></p>
+<h4 id="5-代码实现">5. 代码实现</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">//G--&gt;图，v0--&gt;源点，P[v]表示v前驱顶点下标,D[v]表示V0到v的最短路径长度和 
+</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ShortestPath_Dijkstra</span>(AdjMatrix <span style="color:#000;font-weight:bold">*</span>G,<span style="color:#458;font-weight:bold">int</span> v0,<span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">*</span>P,<span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">*</span>D){
+	<span style="color:#458;font-weight:bold">int</span> v,w,k,min;
+	<span style="color:#458;font-weight:bold">int</span> book[MAXVEX]; <span style="color:#998;font-style:italic">//标记顶点v是否已找到最短路径
+</span><span style="color:#998;font-style:italic"></span>	
+	<span style="color:#000;font-weight:bold">for</span>(v<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;v<span style="color:#000;font-weight:bold">&lt;</span>G<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;v<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){  <span style="color:#998;font-style:italic">//初始化数据 
+</span><span style="color:#998;font-style:italic"></span> 		book[v]<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;
+		P[v]<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;
+		D[v]<span style="color:#000;font-weight:bold">=</span>G<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>acre[<span style="color:#099">0</span>][v]; 
+	} 
+	
+	D[v0]<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>; <span style="color:#998;font-style:italic">//v0到v0距离为0 
+</span><span style="color:#998;font-style:italic"></span>	book[v0]<span style="color:#000;font-weight:bold">=</span><span style="color:#099">1</span>;
+	
+	<span style="color:#998;font-style:italic">//开始主循环，每次求得v0到某个顶点的最短距离
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">for</span>(v<span style="color:#000;font-weight:bold">=</span><span style="color:#099">1</span>;v<span style="color:#000;font-weight:bold">&lt;</span>G<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;v<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		min<span style="color:#000;font-weight:bold">=</span>INFINITY;
+		
+		<span style="color:#000;font-weight:bold">for</span>(w<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;w<span style="color:#000;font-weight:bold">&lt;</span>G<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;w<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){  <span style="color:#998;font-style:italic">//寻找到达v0距离最短的点 
+</span><span style="color:#998;font-style:italic"></span>			<span style="color:#000;font-weight:bold">if</span>(<span style="color:#000;font-weight:bold">!</span>book[w]<span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span>D[w]<span style="color:#000;font-weight:bold">&lt;</span>min){
+				k<span style="color:#000;font-weight:bold">=</span>w;
+				min<span style="color:#000;font-weight:bold">=</span>D[w];
+			}
+		}
+		
+		book[k]<span style="color:#000;font-weight:bold">=</span><span style="color:#099">1</span>; <span style="color:#998;font-style:italic">//将此时找到的点标记 
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#000;font-weight:bold">for</span>(w<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;w<span style="color:#000;font-weight:bold">&lt;</span>G<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;w<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){ <span style="color:#998;font-style:italic">//根据本次找达v0最短的点，更新其他点到v0的距离 
+</span><span style="color:#998;font-style:italic"></span>			
+			<span style="color:#998;font-style:italic">//如果经过顶点k的路径比现在路径更短的话
+</span><span style="color:#998;font-style:italic"></span>			<span style="color:#000;font-weight:bold">if</span>(<span style="color:#000;font-weight:bold">!</span>book[w]<span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span>(min<span style="color:#000;font-weight:bold">+</span>G<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>acre[k][w]<span style="color:#000;font-weight:bold">&lt;</span>D[w])){
+				D[w]<span style="color:#000;font-weight:bold">=</span>min<span style="color:#000;font-weight:bold">+</span>G<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>acre[k][w];
+				P[w]<span style="color:#000;font-weight:bold">=</span>k;
+			} 
+		} 
+	} 
+}
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="/image/Data_structure/9_1.png" alt="这里写图片描述"></p>
+<h3 id="三-弗洛伊德算法">三. 弗洛伊德算法</h3>
+<h4 id="1-定义概览-1">1. 定义概览</h4>
+<p>Floyd-Warshall算法（Floyd-Warshall algorithm）是解决<strong>任意两点间</strong>的最短路径的一种算法，可以正确处理有向图或负权的最短路径问题，同时也被用于计算有向图的传递闭包。Floyd-Warshall算法的时间复杂度为O(N3)，空间复杂度为O(N2)。</p>
+<h4 id="2-算法思想-1">2. 算法思想</h4>
+<p>从vi到vj的所有可能存在的路径中，选出一条长度最短的路径。</p>
+<h4 id="3-算法过程">3. 算法过程</h4>
+<p>定义N阶方阵序列:$D^{-1},D^0,D^1,D^2 &hellip;. D^{n-1}$</p>
+<p>$D^{-1}[i][j] = G.arc[i][j]$</p>
+<p>$ D^k[i][j] = Min{ D^{k-1}[i][j],D^{k-1}[i][K]+D^{k-1}[k][j] }$</p>
+<p>显然: $D^k[i][j]$是从vi到vj的所经顶点的序号不大于k的最短路径长度。
+$D^n$中为所有顶点偶对vi、vj间的最终最短路径长度。</p>
+<h4 id="4-画片演示">4. 画片演示</h4>
+<p>矩阵坐标从0开始
+<img src="/image/Data_structure/9_2.png" alt="这里写图片描述"></p>
+<h4 id="5代码实现">5.代码实现</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">//G--&gt;图，v0--&gt;源点，P[v][w]表示v到其余各点w最短路径，D[v][w]表示v到其余各点w的带权路径长度和 
+</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">ShortestPath_Floyd</span>(AdjMatrix <span style="color:#000;font-weight:bold">*</span>G,<span style="color:#458;font-weight:bold">int</span> P[MAXVEX][MAXVEX],<span style="color:#458;font-weight:bold">int</span> D[MAXVEX][MAXVEX]){
+	<span style="color:#458;font-weight:bold">int</span> v,w,k;
+	
+	<span style="color:#998;font-style:italic">//初始化D和P 
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">for</span>(v<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;v<span style="color:#000;font-weight:bold">&lt;</span>G<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;v<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		<span style="color:#000;font-weight:bold">for</span>(w<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;w<span style="color:#000;font-weight:bold">&lt;</span>G<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;w<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+			D[v][w] <span style="color:#000;font-weight:bold">=</span> G<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>acre[v][w];
+			P[v][w] <span style="color:#000;font-weight:bold">=</span> w; 
+		}
+	}
+	
+	<span style="color:#000;font-weight:bold">for</span>(k<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;k<span style="color:#000;font-weight:bold">&lt;</span>G<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;k<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+		<span style="color:#000;font-weight:bold">for</span>(v<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;v<span style="color:#000;font-weight:bold">&lt;</span>G<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;v<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+			<span style="color:#000;font-weight:bold">for</span>(w<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;w<span style="color:#000;font-weight:bold">&lt;</span>G<span style="color:#000;font-weight:bold">-</span><span style="color:#000;font-weight:bold">&gt;</span>vexnum;w<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>){
+				
+				<span style="color:#000;font-weight:bold">if</span>(D[v][w]<span style="color:#000;font-weight:bold">&gt;</span>D[v][k]<span style="color:#000;font-weight:bold">+</span>D[k][w]){ <span style="color:#998;font-style:italic">//如果经过下标为k的顶点路径比原两点间的路径更短，则更新 
+</span><span style="color:#998;font-style:italic"></span>					D[v][w] <span style="color:#000;font-weight:bold">=</span> D[v][k]<span style="color:#000;font-weight:bold">+</span> D[k][w];
+					P[v][w] <span style="color:#000;font-weight:bold">=</span> P[v][k]; <span style="color:#998;font-style:italic">//路径设置经过下标为k的顶点 
+</span><span style="color:#998;font-style:italic"></span>				}
+			}
+		}
+	}
+
+}
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="/image/Data_structure/9_3.png" alt="这里写图片描述"></p>
+<p>解读路径矩阵P:
+已0到3为例:</p>
+<blockquote>
+<p>p[0][3]=1,所以0&ndash;&gt;1;
+p[1][3]=3,所以1&ndash;&gt;3;
+所以0到3:0&ndash;&gt;1&ndash;&gt;3</p>
+</blockquote>
+<h3 id="四-源码地址">四. 源码地址</h3>
+<p><a href="https://github.com/hsc396612325/Blog/tree/master/text19">点此查看源码</a></p>
+<h3 id="五-参考资料">五. 参考资料</h3>
+<p>《大话数据结构》
+《数据结构与算法》</p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8423%E5%9B%BE%E7%9A%84%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84Dijkstra%E7%AE%97%E6%B3%95Floyd%E7%AE%97%E6%B3%95/">http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8423%E5%9B%BE%E7%9A%84%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84Dijkstra%E7%AE%97%E6%B3%95Floyd%E7%AE%97%E6%B3%95/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8422%E5%9B%BE%E7%9A%84%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91PrimKruskal/">数据结构22————图的最小生成树Prim&amp;Kruskal</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8421%E5%9B%BE%E7%9A%84%E6%B7%B1%E5%BA%A6%E4%BC%98%E5%85%88%E9%81%8D%E5%8E%86DFS%E5%B9%BF%E5%BA%A6%E4%BC%98%E5%85%88%E9%81%8D%E5%8E%86BFS/">数据结构21————图的深度优先遍历(DFS)&amp;广度优先遍历(BFS)</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8420%E5%9B%BE%E7%9A%84%E4%BA%94%E7%A7%8D%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">数据结构20————图的存储结构</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8419%E5%9B%BE%E7%9A%84%E5%AE%9A%E4%B9%89%E5%92%8C%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">数据结构19————图的定义和基本概念</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8418%E5%93%88%E5%A4%AB%E6%9B%BC%E6%A0%91/">数据结构18————哈夫曼树</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84'>数据结构</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "https://github.com/hsc396612325/HSCBlog/tree/gh-pages"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一-最短路径的概念">一. 最短路径的概念</a></li>
+    <li><a href="#二-迪杰斯特拉算法">二. 迪杰斯特拉算法</a>
+      <ul>
+        <li><a href="#1-定义概览">1. 定义概览</a></li>
+        <li><a href="#2-算法思想">2. 算法思想</a></li>
+        <li><a href="#3-算法步骤">3. 算法步骤</a></li>
+        <li><a href="#4-动画演示">4. 动画演示</a></li>
+        <li><a href="#5-代码实现">5. 代码实现</a></li>
+      </ul>
+    </li>
+    <li><a href="#三-弗洛伊德算法">三. 弗洛伊德算法</a>
+      <ul>
+        <li><a href="#1-定义概览-1">1. 定义概览</a></li>
+        <li><a href="#2-算法思想-1">2. 算法思想</a></li>
+        <li><a href="#3-算法过程">3. 算法过程</a></li>
+        <li><a href="#4-画片演示">4. 画片演示</a></li>
+        <li><a href="#5代码实现">5.代码实现</a></li>
+      </ul>
+    </li>
+    <li><a href="#四-源码地址">四. 源码地址</a></li>
+    <li><a href="#五-参考资料">五. 参考资料</a></li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

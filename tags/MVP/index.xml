@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>MVP on 冰炭不投day的博客</title>
+    <link>http://blog.bingtan.online/tags/MVP/</link>
+    <description>Recent content in MVP on 冰炭不投day的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sun, 01 Jul 2018 22:40:54 +0800</lastBuildDate>
+    
+	<atom:link href="http://blog.bingtan.online/tags/MVP/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Android MVP应用程序</title>
+      <link>http://blog.bingtan.online/posts/Android/Android-MVP%E5%BA%94%E7%94%A8/</link>
+      <pubDate>Sun, 01 Jul 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/Android/Android-MVP%E5%BA%94%E7%94%A8/</guid>
+      <description>一.MVP的含义 MVP在我上一个写关于地图的项目时候，在项目开始前也进行过学习，也在项目中也进行了应用。在今年暑假开始写西邮助手的时候，和小伙伴也是计划用MVP打框架。重新查阅资料发现，谷歌官方提供了一个MVP模式的Demo。所以对它进行了学习阅读，同时决定写一篇博客进行记录。 1</description>
+    </item>
+    
+  </channel>
+</rss>

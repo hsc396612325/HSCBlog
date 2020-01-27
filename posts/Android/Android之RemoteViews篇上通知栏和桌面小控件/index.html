@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Android之RemoteViews篇上————通知栏和桌面小控件 | 冰炭不投day的博客</title>
+    <meta property="og:title" content="Android之RemoteViews篇上————通知栏和桌面小控件 - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2018-07-11T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2018-07-11T22:40:54&#43;08:00'>
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="Android之RemoteViews篇上————通知栏和桌面小控件">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/Android/Android%E4%B9%8BRemoteViews%E7%AF%87%E4%B8%8A%E9%80%9A%E7%9F%A5%E6%A0%8F%E5%92%8C%E6%A1%8C%E9%9D%A2%E5%B0%8F%E6%8E%A7%E4%BB%B6/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">Android之RemoteViews篇上————通知栏和桌面小控件</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年7月11日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android'>Android</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h3 id="一remoteviews的概述">一.RemoteViews的概述</h3>
+<p>RemoteView从名字看即为远程的View，RemoteViews表示一个View结构，它可以在其他进程中显示，为了能够更新它的界面，RemoteViews提供了一组基础的操作用于跨进程更新它的界面。</p>
+<p>RemoteViews在Android的使用场景有两种：通知栏和桌面小控件。通知栏是通过NotificationManager的notify方法实现，它除了默认效果，还可以自定义布局。桌面小部件则是通过AppWidgetProvider来实现，AppWidget本质是一个广播。这两个都无法像在Activity中那样直接更新小部件。因为两者都是运行在系统的SystemServer进程。</p>
+<h3 id="二remoteviews在通知栏上的应用">二.RemoteViews在通知栏上的应用</h3>
+<h4 id="1通知栏的基本用法">1.通知栏的基本用法</h4>
+<p>创建一个Notification对象，并进行设置</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Notification notification <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> NotificationCompat<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Builder</span><span style="color:#000;font-weight:bold">(</span>content<span style="color:#000;font-weight:bold">)</span> <span style="color:#998;font-style:italic">//创建
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setContentTitle</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;冰炭不投day&#34;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#998;font-style:italic">//设置标题
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setContentText</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;啦啦啦啦啦&#34;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#998;font-style:italic">//设置正文
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setWhen</span><span style="color:#000;font-weight:bold">(</span>System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">currentTimeMillis</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#998;font-style:italic">//指定被创建时间
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setSmallIcon</span><span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">drawable</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ic_launcher_foreground</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#998;font-style:italic">//设置通知的小图标
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setLargeIcon</span><span style="color:#000;font-weight:bold">(</span>BitmapFactory<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">decodeResource</span><span style="color:#000;font-weight:bold">(</span>getResources<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">,</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">drawable</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">icon</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#998;font-style:italic">//设置大图标
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">build</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+NotificationManager manager <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>NotificationManager<span style="color:#000;font-weight:bold">)</span>getSystemService<span style="color:#000;font-weight:bold">(</span>NOTIFICATION_SERVICE<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+manager<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">notify</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span>notification<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">//启动该通知
+</span></code></pre></td></tr></table>
+</div>
+</div><p>左上角为设置的小图标
+<img src="/image/Android/6_0.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p>大图标 标题 正文如下：
+<img src="/image/Android/6_1.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<h4 id="2添加点击事件">2.添加点击事件</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  Intent intent <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Intent<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">,</span>NotificationActiviy<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        PendingIntent pi <span style="color:#000;font-weight:bold">=</span> PendingIntent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getActivity</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">,</span>0<span style="color:#000;font-weight:bold">,</span>intent<span style="color:#000;font-weight:bold">,</span>0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        Notification notification <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> NotificationCompat<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Builder</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#998;font-style:italic">//创建
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setContentTitle</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;冰炭不投day&#34;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#998;font-style:italic">//设置标题
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setContentText</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;啦啦啦啦啦&#34;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#998;font-style:italic">//设置正文
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setWhen</span><span style="color:#000;font-weight:bold">(</span>System<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">currentTimeMillis</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#998;font-style:italic">//指定被创建时间
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setSmallIcon</span><span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">drawable</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ic_launcher_foreground</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#998;font-style:italic">//设置通知的小图标
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setLargeIcon</span><span style="color:#000;font-weight:bold">(</span>BitmapFactory<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">decodeResource</span><span style="color:#000;font-weight:bold">(</span>getResources<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">,</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">drawable</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">icon</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#998;font-style:italic">//设置大图标
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setContentIntent</span><span style="color:#000;font-weight:bold">(</span>pi<span style="color:#000;font-weight:bold">)</span>
+                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setAutoCancel</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#998;font-style:italic">//点击图标后，通知消失
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">.</span><span style="color:#008080">build</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        NotificationManager manager <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>NotificationManager<span style="color:#000;font-weight:bold">)</span>getSystemService<span style="color:#000;font-weight:bold">(</span>NOTIFICATION_SERVICE<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        manager<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">notify</span><span style="color:#000;font-weight:bold">(</span>1<span style="color:#000;font-weight:bold">,</span>notification<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="3通知栏更多的设置">3.通知栏更多的设置</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setSound</span><span style="color:#000;font-weight:bold">(</span>Uri<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">fromFile</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> File<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;/system/media/audio/ringtones/luna.agg&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#998;font-style:italic">//通知时播放音频
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setVibrate</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> <span style="color:#458;font-weight:bold">long</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000;font-weight:bold">]</span><span style="color:#000;font-weight:bold">{</span>0<span style="color:#000;font-weight:bold">,</span>1000<span style="color:#000;font-weight:bold">,</span>1000<span style="color:#000;font-weight:bold">,</span>1000<span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#998;font-style:italic">//通知使手机震动 数组中的参赛分别表示静止和震动的时长  需要添加权限
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setLights</span><span style="color:#000;font-weight:bold">(</span>Color<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">GREEN</span><span style="color:#000;font-weight:bold">,</span>1000<span style="color:#000;font-weight:bold">,</span>1000<span style="color:#000;font-weight:bold">)</span> <span style="color:#998;font-style:italic">//通知使led灯亮 三个参数分别表示led等的颜色，led等亮起来的时长 led灯灭起来的时常
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setDefaults</span><span style="color:#000;font-weight:bold">(</span>NotificationCompat<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">DEFAULT_ALL</span> <span style="color:#000;font-weight:bold">)</span> <span style="color:#998;font-style:italic">//使用系统默认效果
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setStyle</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> NotificationCompat<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">BigTextStyle</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">bigText</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;,,,,,,,,,&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#998;font-style:italic">//设置大段文字
+</span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setStyle</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> NotificationCompat<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">BigPictureStyle</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">bigPicture</span><span style="color:#000;font-weight:bold">(</span>BitmapFactory<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">decodeResource</span><span style="color:#000;font-weight:bold">(</span>getResources<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">,</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">drawable</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">big_image</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#998;font-style:italic">//设置大图片
+</span></code></pre></td></tr></table>
+</div>
+</div><h3 id="三remoteviews在桌面小控件的应用">三.RemoteViews在桌面小控件的应用</h3>
+<h4 id="1定义小部件界面">1.定义小部件界面</h4>
+<p>在res/layout下新建一个XML文件，命名为widget
+内容如下：
+``xml</p>
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted --></p>
+<pre><code>&lt;ImageView
+    android:id=&quot;@+id/image&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:src=&quot;@drawable/icon&quot; /&gt;
+</code></pre>
+<!-- raw HTML omitted -->
+<p>RemoteViews对象（以及App Widget）可以支持以下布局类：</p>
+<blockquote>
+<p>FrameLayout
+LinearLayout
+RelativeLayout
+GridLayout<br>
+__
+AnalogClock
+Button
+Chronometer
+ImageButton
+ImageView
+ProgressBar
+TextView
+ViewFlipper
+ListView
+GridView
+StackView
+AdapterViewFlipper</p>
+</blockquote>
+<h4 id="2定义小部件配置信息">2.定义小部件配置信息</h4>
+<p>在res/xml下新建appwidget_provider_info.xml（名称随意），添加如下内容</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#999;font-weight:bold;font-style:italic">&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34;?&gt;</span>
+<span style="color:#000080">&lt;appwidget-provider</span> 
+    <span style="color:#008080">xmlns:android=</span><span style="color:#d14">&#34;http://schemas.android.com/apk/res/android&#34;</span>
+    <span style="color:#008080">android:initialLayout=</span><span style="color:#d14">&#34;@layout/widget&#34;</span>
+    <span style="color:#008080">android:minHeight=</span><span style="color:#d14">&#34;84dp&#34;</span>
+    <span style="color:#008080">android:minWidth=</span><span style="color:#d14">&#34;84dp&#34;</span>
+    <span style="color:#008080">android:updatePeriodMillis=</span><span style="color:#d14">&#34;86400000&#34;</span><span style="color:#000080">&gt;</span>
+<span style="color:#000080">&lt;/appwidget-provider&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>以下是appwidget-provider属性摘要：</p>
+<ul>
+<li>minWidth和minHeight 属性的值指定App Widget 默认使用的最小空间量 。默认主屏幕根据具有已定义高度和宽度的单元格网格在其窗口中定位App Widgets。如果App Widget的最小宽度或高度的值与单元格的尺寸不匹配，则App Widget尺寸将向上舍 入到最接近的单元格大小。</li>
+<li>将minResizeWidth和minResizeHeight属性指定应用Widget的绝对最小尺寸。这些值应指定App Widget难以辨认或无法使用的大小。使用这些属性允许用户将窗口小部件的大小调整为可能小于minWidth和minHeight属性定义的默认窗口小部件大小的大小 。在Android 3.1中引入。</li>
+<li>updatePeriodMillis属性定义了App Widget框架应该AppWidgetProvider通过调用 onUpdate() 回调方法来请求更新的频率。实际更新不能保证与此值准确地按时发生，我们建议尽可能不经常更新 - 可能每小时不超过一次以节省电池。您可能还允许用户调整配置中的频率 - 有些人可能希望股票代码每15分钟更新一次，或者一天只能更新四次。</li>
+<li>initialLayout属性指向定义App Widget布局的布局资源。</li>
+<li>configure属性定义在Activity用户添加App Widget时启动，以便他或她配置App Widget属性。这是可选的</li>
+<li>previewImage属性指定应用小部件配置后的外观预览，用户在选择应用小部件时会看到该小部件。如果未提供，则用户会看到应用程序的启动器图标。该字段对应 于文件中元素的 android:previewImage属性。有关使用的更多讨论，请参阅设置预览图像。在Android 3.0中推出。AndroidManifest.xmlpreviewImage</li>
+<li>autoAdvanceViewId属性指定应由窗口小部件主机自动提升的应用窗口小部件子视图的视图ID。在Android 3.0中推出</li>
+<li>resizeMode属性指定可以调整窗口小部件的规则。您可以使用此属性使主屏幕小部件可以水平，垂直或在两个轴上进行调整。用户触摸按住窗口小部件以显示其调整大小手柄，然后拖动水平和/或垂直手柄以更改布局网格上的大小。resizeMode属性的值 包括“horizo​​ntal”，“vertical”和“none”。要将窗口小部件声明为水平和垂直可调整大小，请提供值“horizo​​ntal | vertical”。在Android 3.1中引入。</li>
+</ul>
+<p>更多属性可查看官方文档，链接下文章最后。</p>
+<h4 id="3定义小部件的实现类">3.定义小部件的实现类</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">MyWidgetProvider</span> <span style="color:#000;font-weight:bold">extends</span> AppWidgetProvider <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> String CLICK_ACTION <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;com.heshucheng.remoteviews.click_action&#34;</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">static</span> <span style="color:#000;font-weight:bold">final</span> String TAG <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;MyWidgetProvider&#34;</span><span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">MyWidgetProvider</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onReceive</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">final</span> Context context<span style="color:#000;font-weight:bold">,</span> Intent intent<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onReceive</span><span style="color:#000;font-weight:bold">(</span>context<span style="color:#000;font-weight:bold">,</span> intent<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onReceive: &#34;</span> <span style="color:#000;font-weight:bold">+</span> intent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getAction</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#998;font-style:italic">//这里判断是自己的action，做自己的事情，比如小部件被点击了要干什么
+</span><span style="color:#998;font-style:italic"></span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>intent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getAction</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">equals</span><span style="color:#000;font-weight:bold">(</span>CLICK_ACTION<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            Toast<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">makeText</span><span style="color:#000;font-weight:bold">(</span>context<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;click it&#34;</span><span style="color:#000;font-weight:bold">,</span> Toast<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">LENGTH_SHORT</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">show</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+            <span style="color:#000;font-weight:bold">new</span> Thread<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> Runnable<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+                <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">run</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    Bitmap srcbBitmap <span style="color:#000;font-weight:bold">=</span> BitmapFactory<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">decodeResource</span><span style="color:#000;font-weight:bold">(</span>context<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getResources</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">,</span> R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">drawable</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">icon</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    AppWidgetManager appWidgetManager <span style="color:#000;font-weight:bold">=</span> AppWidgetManager<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getInstance</span><span style="color:#000;font-weight:bold">(</span>context<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&lt;</span> 37<span style="color:#000;font-weight:bold">;</span> i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">{</span>
+                        <span style="color:#458;font-weight:bold">float</span> degree <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>i<span style="color:#000;font-weight:bold">*</span>10<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">%</span>360<span style="color:#000;font-weight:bold">;</span>
+                        RemoteViews remoteViews <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> RemoteViews<span style="color:#000;font-weight:bold">(</span>context<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getPackageName</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">,</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">layout</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">widget</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                        remoteViews<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setImageViewBitmap</span><span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">image</span><span style="color:#000;font-weight:bold">,</span> rotateBitmap<span style="color:#000;font-weight:bold">(</span>context<span style="color:#000;font-weight:bold">,</span>srcbBitmap<span style="color:#000;font-weight:bold">,</span>degree<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                        Intent intentClick <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Intent<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                        intentClick<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setAction</span><span style="color:#000;font-weight:bold">(</span>CLICK_ACTION<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                        PendingIntent pendingIntent <span style="color:#000;font-weight:bold">=</span> PendingIntent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getBroadcast</span><span style="color:#000;font-weight:bold">(</span>context<span style="color:#000;font-weight:bold">,</span>0<span style="color:#000;font-weight:bold">,</span>intentClick<span style="color:#000;font-weight:bold">,</span>0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                        remoteViews<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setOnClickPendingIntent</span><span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">image</span><span style="color:#000;font-weight:bold">,</span>pendingIntent<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                        appWidgetManager<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">updateAppWidget</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> ComponentName<span style="color:#000;font-weight:bold">(</span>context<span style="color:#000;font-weight:bold">,</span>MyWidgetProvider<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">,</span>remoteViews<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                        SystemClock<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sleep</span><span style="color:#000;font-weight:bold">(</span>30<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">start</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#998;font-style:italic">//每次更新都会调用
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onUpdate</span><span style="color:#000;font-weight:bold">(</span>Context context<span style="color:#000;font-weight:bold">,</span> AppWidgetManager appWidgetManager<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000;font-weight:bold">]</span> appWidgetIds<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onUpdate</span><span style="color:#000;font-weight:bold">(</span>context<span style="color:#000;font-weight:bold">,</span> appWidgetManager<span style="color:#000;font-weight:bold">,</span> appWidgetIds<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">i</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;onUpdate&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        RemoteViews remoteViews <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> RemoteViews<span style="color:#000;font-weight:bold">(</span>context<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getPackageName</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">,</span> R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">layout</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">widget</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        Intent intentClick <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Intent<span style="color:#000;font-weight:bold">(</span>CLICK_ACTION<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        PendingIntent pendingIntent <span style="color:#000;font-weight:bold">=</span> PendingIntent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getBroadcast</span><span style="color:#000;font-weight:bold">(</span>context<span style="color:#000;font-weight:bold">,</span> 0<span style="color:#000;font-weight:bold">,</span> intentClick<span style="color:#000;font-weight:bold">,</span> 0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        remoteViews<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setOnClickPendingIntent</span><span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">image</span><span style="color:#000;font-weight:bold">,</span> pendingIntent<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        appWidgetManager<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">updateAppWidget</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> ComponentName<span style="color:#000;font-weight:bold">(</span>context<span style="color:#000;font-weight:bold">,</span> MyWidgetProvider<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">,</span> remoteViews<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#998;font-style:italic">//动画 旋转一周
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">private</span> Bitmap <span style="color:#900;font-weight:bold">rotateBitmap</span><span style="color:#000;font-weight:bold">(</span>Context context<span style="color:#000;font-weight:bold">,</span>Bitmap srcbitmap<span style="color:#000;font-weight:bold">,</span><span style="color:#458;font-weight:bold">float</span> degree <span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        Matrix matrix <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Matrix<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        matrix<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">reset</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        matrix<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setRotate</span><span style="color:#000;font-weight:bold">(</span>degree<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        Bitmap temBitmap <span style="color:#000;font-weight:bold">=</span> Bitmap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">createBitmap</span><span style="color:#000;font-weight:bold">(</span>srcbitmap<span style="color:#000;font-weight:bold">,</span>0<span style="color:#000;font-weight:bold">,</span>0<span style="color:#000;font-weight:bold">,</span>srcbitmap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getWidth</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">,</span>srcbitmap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getHeight</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">,</span>matrix<span style="color:#000;font-weight:bold">,</span><span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">return</span> temBitmap<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>AppWidgetProvider类广播接收器作为一个方便的类来处理应用的Widget广播延伸。AppWidgetProvider仅接收与App Widget相关的事件广播，例如更新，删除，启用和禁用App Widget时。当这些广播事件发生时，AppWidgetProvider会收到以下方法调用：</p>
+<ul>
+<li>onUpdate() 这被调用以按updatePeriodMillis AppWidgetProviderInfo中的属性定义的间隔更新App Widget （请参阅上面的添加AppWidgetProviderInfo数据）。当用户添加App Widget时也会调用此方法，因此它应该执行基本设置，例如为视图定义事件处理程序并Service在必要时启动临时操作 。但是，如果已声明配置Activity，则在用户添加App Widget时不会调用此方法，但会为后续更新调用此方法。配置Activity负责在配置完成时执行第一次更新。（请参阅下面的“ 创建应用程序小组件配置活动”。）</li>
+<li>onAppWidgetOptionsChanged()：首次放置窗口小部件时以及窗口小部件调整大小时调用此方法。你可以使用此回调根据窗口小部件的大小范围显示或隐藏内容。</li>
+<li>onDeleted(Context, int[])：每次从App Widget主机删除App Widget时都会调用此方法。</li>
+<li>onEnabled(Context)：当第一次创建App Widget的实例时调用此方法。</li>
+<li>onDisabled(Context)：当从App Widget主机删除App Widget的最后一个实例时调用此方法。这是您应该清理完成的任何工作的地方 onEnabled(Context)，例如删除临时数据库。</li>
+<li>onReceive(Context,Intent):在每个广播和每个上述回调方法之前调用此方法。您通常不需要实现此方法，因为默认的AppWidgetProvider实现过滤所有App Widget广播并根据需要调用上述方法。</li>
+</ul>
+<h4 id="4androidmanifestxml中声明小部件">4.AndroidManifest.xml中声明小部件</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">  <span style="color:#000080">&lt;intent-filter</span><span style="color:#000080">&gt;</span>
+                <span style="color:#000080">&lt;action</span> <span style="color:#008080">android:name=</span><span style="color:#d14">&#34;com.heshucheng.remoteviews.click_action&#34;</span> <span style="color:#000080">/&gt;</span>
+                <span style="color:#000080">&lt;action</span> <span style="color:#008080">android:name=</span><span style="color:#d14">&#34;android.appwidget.action.APPWIDGET_UPDATE&#34;</span> <span style="color:#000080">/&gt;</span>
+<span style="color:#000080">&lt;/intent-filter&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>上面代码中的两个Action，第一个是用来识别小部件的单击行为，第二个是作为小部件的标识而必须存在的。</p>
+<p><img src="/image/Android/6_2.png?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4NDk5ODU5/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<h3 id="四-pendingintent">四. PendingIntent</h3>
+<p>PendingIntent表示一种处于Pending状态的Intent，pending表示的是即将发生的意思，它是在将来的某个不确定的时刻放生，而Intent是立刻发生。</p>
+<p>PendingIntent支持三种待定意图：启动Activity(getActivity)，启动Service(getService)，发送广播(getBroadcast)。
+<img src="/image/Android/6_3.png?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjY3ODcxMTU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述">
+如图中所示，这三个方法的参数都是一样的，主要理解的是第二个参数requstCode和第四个参数flags,code代表的是发送码，多数情况下为0，而且code会影响到flag，flag常见的有几种我们下面会说，其实最主要是理解匹配规则。</p>
+<p>PendingIntent的匹配规则为：如果两个PendingIntent他们内部的Intent相同并且requstCode也相同的话，那么PendingIntent就是相同的，code比较好理解,那什么情况下Intent相同呢，Intent的匹配规则是：如果两个Intent的ComponentName的匹配过程，只要Intent之间的ComponentName和intent-filter相同,那么这两个intent就相同，需要注意的是Extras不参与匹配过程，只要intent之间的name和intent-filter相同就行，我们再来说下flags的参数含义</p>
+<ul>
+<li>
+<p>FLAG_ONE_SHOT
+当前描述的PendingIntent只能被使用一次,然后他就会被cancel,如果后续还有相同的PendingIntent，那么他的send方法就会失败，对于通知栏的消息来说，如果采用此标记位，那么同类的通知只能使用一次，后续将无法打开</p>
+</li>
+<li>
+<p>FLAG_NO_CREATE
+当前描述的PendingIntent不会主动去创建，如果当前PendingIntent之前不存在，那么getActivity等方法都会直接返回null,即获取PendingIntent失败，这个标记位很少见，他无法单独使用，因此在日常开发当中，并没有太多的意义，这里就不过多的介绍了</p>
+</li>
+<li>
+<p>FLAG_CANCEL_CURRENT
+当前描述的PendingIntent如果已经存在，那么就会被cancel,然后系统创建一个新的PendingIntent，对于通知栏来说，那些被cancel的消息将无法被打开</p>
+</li>
+<li>
+<p>FLAG_UPDATE_CURRENT
+当前描述的PendingIntent如果已经存在的话，那么他们就会被更新，他们的intent中的extras会被替换成新的</p>
+</li>
+</ul>
+<p>从上面的分析看还是不太好理解这四个标记位，下面结合实际的项目来，这里分析两种情况，如下代码，如果notify的第一个参数id是常量，那么多次通知就只能弹出一个通知，后续会把前面的替换掉，如果每次不一样，就会多弹出几个通知</p>
+<p>如果notify方法的id是常量，那么不管PendingIntent是否匹配，后面的通知会替换前面的通知，这个很好理解</p>
+<p>如果notify方法的id每次不同，那么当PendingIntent不匹配时，这里的匹配是指PendingIntent中Intent相同切requstCode相同，在这种情况下不管采用了何种标记位，这些通知之间不互相干扰。如果PendingIntent处于匹配状态，这个时候要分情况讨论，如果采用FLAG_ONE_SHOT标记位，那么后续通知中，PendingIntent会和第一条通知保持一致，包括其中的Extras,单击任何一条通知，剩余的都无法打开当所有的通知被清除后，会重复这个过程，如果采用FLAG_CANCEL_CURRENT标记位，那么只有最新的通知可以打开，之前弹出的所有通知均无法打开，如果采用FLAG_UPDATE_CURRENT标记位。那么之前弹出的通知PendingIntent会被更新，最终他们和最新的一条通知保持一致，包括其中的Extras,那么这些通知都可以被打开</p>
+<h3 id="五参考资料">五.参考资料</h3>
+<p>《第一行代码》
+《android艺术开发探索》
+<a href="https://developer.android.com/guide/topics/appwidgets/">官方文档</a></p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/Android/Android%E4%B9%8BRemoteViews%E7%AF%87%E4%B8%8A%E9%80%9A%E7%9F%A5%E6%A0%8F%E5%92%8C%E6%A1%8C%E9%9D%A2%E5%B0%8F%E6%8E%A7%E4%BB%B6/">http://blog.bingtan.online/posts/Android/Android%E4%B9%8BRemoteViews%E7%AF%87%E4%B8%8A%E9%80%9A%E7%9F%A5%E6%A0%8F%E5%92%8C%E6%A1%8C%E9%9D%A2%E5%B0%8F%E6%8E%A7%E4%BB%B6/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/Android/Android%E4%B9%8B%E8%BE%85%E5%8A%A9%E6%9C%8D%E5%8A%A1%E4%B8%8B%E7%AF%87AccessibilityServic%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">Android之辅助服务下篇————AccessibilityServic源码分析</a></li>
+        
+        <li><a href="/posts/Android/Android%E4%B9%8B%E8%BE%85%E5%8A%A9%E6%9C%8D%E5%8A%A1%E4%B8%8A%E7%AF%87AccessibilityService%E4%BD%BF%E7%94%A8/">Android之辅助服务上篇————AccessibilityService使用</a></li>
+        
+        <li><a href="/posts/Android/Android%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BBGestureDetectory/">Android源码阅读————GestureDetectory</a></li>
+        
+        <li><a href="/posts/Android/Android%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0Activity%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%92%8C%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/">Android学习笔记————Activity的生命周期和启动模式</a></li>
+        
+        <li><a href="/posts/Android/Android%E5%B0%8F%E9%A1%B9%E7%9B%AE%E8%81%8A%E5%A4%A9%E5%AE%A4%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%AF%87/">Android小项目————聊天室（网络编程篇)</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/Android'>Android</a></li>
+                
+                <li><a href='http://blog.bingtan.online/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB'>源码阅读</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "https://github.com/hsc396612325/HSCBlog/tree/gh-pages"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一remoteviews的概述">一.RemoteViews的概述</a></li>
+    <li><a href="#二remoteviews在通知栏上的应用">二.RemoteViews在通知栏上的应用</a>
+      <ul>
+        <li><a href="#1通知栏的基本用法">1.通知栏的基本用法</a></li>
+        <li><a href="#2添加点击事件">2.添加点击事件</a></li>
+        <li><a href="#3通知栏更多的设置">3.通知栏更多的设置</a></li>
+      </ul>
+    </li>
+    <li><a href="#三remoteviews在桌面小控件的应用">三.RemoteViews在桌面小控件的应用</a>
+      <ul>
+        <li><a href="#1定义小部件界面">1.定义小部件界面</a></li>
+        <li><a href="#2定义小部件配置信息">2.定义小部件配置信息</a></li>
+        <li><a href="#3定义小部件的实现类">3.定义小部件的实现类</a></li>
+        <li><a href="#4androidmanifestxml中声明小部件">4.AndroidManifest.xml中声明小部件</a></li>
+      </ul>
+    </li>
+    <li><a href="#四-pendingintent">四. PendingIntent</a></li>
+    <li><a href="#五参考资料">五.参考资料</a></li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>随笔 on 冰炭不投day的博客</title>
+    <link>http://blog.bingtan.online/tags/%E9%9A%8F%E7%AC%94/</link>
+    <description>Recent content in 随笔 on 冰炭不投day的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Wed, 01 Jan 2020 22:40:54 +0800</lastBuildDate>
+    
+	<atom:link href="http://blog.bingtan.online/tags/%E9%9A%8F%E7%AC%94/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>2019年回顾——2020年计划</title>
+      <link>http://blog.bingtan.online/posts/%E9%9A%8F%E7%AC%94/2019%E5%B9%B4%E5%9B%9E%E9%A1%BE2020%E5%B9%B4%E8%AE%A1%E5%88%92/</link>
+      <pubDate>Wed, 01 Jan 2020 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E9%9A%8F%E7%AC%94/2019%E5%B9%B4%E5%9B%9E%E9%A1%BE2020%E5%B9%B4%E8%AE%A1%E5%88%92/</guid>
+      <description>热烈庆祝银河系-猎户座旋臂-太阳系第三环上的一颗行星，即将完成一次公转。 在地球公转这一圈的时候，回顾一下，这一年我干了什么。 2019年回顾 先看看年初我的2019计划 计算机网络博客，在年初完成所有博客 Android继续深入了解。这个应该算完成吧 java并发，完成 java虚拟机汇总，</description>
+    </item>
+    
+    <item>
+      <title>Android客户端——秋招总结</title>
+      <link>http://blog.bingtan.online/posts/%E9%9A%8F%E7%AC%94/Android%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%A7%8B%E6%8B%9B%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Mon, 16 Sep 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E9%9A%8F%E7%AC%94/Android%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%A7%8B%E6%8B%9B%E6%80%BB%E7%BB%93/</guid>
+      <description>Android客户端——秋招总结 一.面试准备 和春招准备相比，多了如下内容： 腾讯实习经历：androidq适配 Android Audio系统源码 Android Surface系统源码 剑指offer大部分题思路 android 各版本变化 &amp;hellip;. 二.秋招回顾 总的来说 腾讯转正成功，9.16发的意向书。 上海抖音经历4面技术面+ hr面。9</description>
+    </item>
+    
+    <item>
+      <title>Android客户端——春招实习小结（已收到阿里和腾讯的offer）</title>
+      <link>http://blog.bingtan.online/posts/%E9%9A%8F%E7%AC%94/Android%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%98%A5%E6%8B%9B%E5%AE%9E%E4%B9%A0%E5%B0%8F%E7%BB%93%E5%B7%B2%E6%94%B6%E5%88%B0%E9%98%BF%E9%87%8C%E5%92%8C%E8%85%BE%E8%AE%AF%E7%9A%84offer/</link>
+      <pubDate>Mon, 08 Apr 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E9%9A%8F%E7%AC%94/Android%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%98%A5%E6%8B%9B%E5%AE%9E%E4%B9%A0%E5%B0%8F%E7%BB%93%E5%B7%B2%E6%94%B6%E5%88%B0%E9%98%BF%E9%87%8C%E5%92%8C%E8%85%BE%E8%AE%AF%E7%9A%84offer/</guid>
+      <description>Android客户端——春招实习小结（已收到阿里和腾讯的offer） 一.絮絮叨叨的一些话 在去年1月份结束百度实习之后，就开始准备春招实习。在寒假的时候，系统的学习了计算机网络，继续加深了一些技能栈。 在3月初的时候，投了阿里和腾讯两家的实习。运气还是不错，分别在3.27号和4.4号</description>
+    </item>
+    
+    <item>
+      <title>2018年总结——2019年计划</title>
+      <link>http://blog.bingtan.online/posts/%E9%9A%8F%E7%AC%94/2018%E5%B9%B4%E6%80%BB%E7%BB%932019%E5%B9%B4%E8%AE%A1%E5%88%92/</link>
+      <pubDate>Tue, 01 Jan 2019 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E9%9A%8F%E7%AC%94/2018%E5%B9%B4%E6%80%BB%E7%BB%932019%E5%B9%B4%E8%AE%A1%E5%88%92/</guid>
+      <description>2018年转眼而逝，今天是2019年的第一天，回顾一些2018年的收获和遗憾 2018年成就 计算机操作系统 计算机网络 Android艺术开发的探索 jvm 几个第三方库源码 百度实习 半程马拉松 累计跑量726.7[今年130.99 没怎跑] 博客84[公开]+21[私有] 百词斩391天[后期准备面试</description>
+    </item>
+    
+    <item>
+      <title>Android客户端——寒假实习面经-实习初体验</title>
+      <link>http://blog.bingtan.online/posts/%E9%9A%8F%E7%AC%94/Android%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%AF%92%E5%81%87%E5%AE%9E%E4%B9%A0%E9%9D%A2%E7%BB%8F-%E5%AE%9E%E4%B9%A0%E5%88%9D%E4%BD%93%E9%AA%8C/</link>
+      <pubDate>Wed, 05 Dec 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E9%9A%8F%E7%AC%94/Android%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%AF%92%E5%81%87%E5%AE%9E%E4%B9%A0%E9%9D%A2%E7%BB%8F-%E5%AE%9E%E4%B9%A0%E5%88%9D%E4%BD%93%E9%AA%8C/</guid>
+      <description>Android客户端——寒假实习面经-实习初体验 一.絮絮叨叨的一些话 好久没有写博客了，前段时间一直在忙实习的事，耽搁了一阵子，现在忙的差不多了，所以打算在实习期间抽些，继续写写博客，为明年的春招和秋招做好知识储备。加深技能栈，在这之前，现回顾一下我大概两周的面试和实习经历。 在大三</description>
+    </item>
+    
+    <item>
+      <title>2017年总结——2018年计划</title>
+      <link>http://blog.bingtan.online/posts/%E9%9A%8F%E7%AC%94/2017%E5%B9%B4%E6%80%BB%E7%BB%932018%E5%B9%B4%E8%AE%A1%E5%88%92/</link>
+      <pubDate>Mon, 01 Jan 2018 22:40:54 +0800</pubDate>
+      
+      <guid>http://blog.bingtan.online/posts/%E9%9A%8F%E7%AC%94/2017%E5%B9%B4%E6%80%BB%E7%BB%932018%E5%B9%B4%E8%AE%A1%E5%88%92/</guid>
+      <description>2017年度总结 2017年这一年匆匆一晃眼，就过去了，总的来说这一年来说过的满意而充实。感觉到了一年盘点收获的时刻，很开心，也挺有成就感的。 2017时间轴 大一下: 学习c语言下半册,和上学期一样，把所有习题和例题都动手敲了一遍. 跟着知乎童晶老师做了些c语言小游戏,贪吃蛇，flapp</description>
+    </item>
+    
+  </channel>
+</rss>

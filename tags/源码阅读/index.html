@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>源码阅读 | 冰炭不投day的博客</title>
+    <meta property="og:title" content="源码阅读 - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="源码阅读">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <link rel="alternate" type="application/rss+xml+xml" href="http://blog.bingtan.online/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/index.xml" title="冰炭不投day的博客" />
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <h3 class="archive-title">
+        包含标签
+        <span class="keyword">源码阅读</span>
+        的文章
+    </h3>
+    
+
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://blog.bingtan.online/posts/Android/Android%E4%B9%8BRemoteViews%E7%AF%87%E4%B8%8BRemoteViews%E7%9A%84%E5%86%85%E9%83%A8%E6%9C%BA%E5%88%B6/">Android之RemoteViews篇下————RemoteViews的内部机制</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年7月12日
+        </date>
+        
+        <div class="post-meta meta-category">
+            |
+            
+            <a href='http://blog.bingtan.online/categories/Android'>Android</a>
+            
+        </div>
+        
+        <div class="post-content">
+            一.remoteViews概述 上一篇博客中讲了通知栏和桌面小部件的简单使用，它们分别由otificationManager和AppWidgetProvider管理，而NotificationManager和AppWidgetProvider通过Binder分别为SystemSer……
+            <p class="readmore"><a href="http://blog.bingtan.online/posts/Android/Android%E4%B9%8BRemoteViews%E7%AF%87%E4%B8%8BRemoteViews%E7%9A%84%E5%86%85%E9%83%A8%E6%9C%BA%E5%88%B6/">阅读全文</a></p>
+        </div>
+    </article>
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://blog.bingtan.online/posts/Android/Android%E4%B9%8BRemoteViews%E7%AF%87%E4%B8%8A%E9%80%9A%E7%9F%A5%E6%A0%8F%E5%92%8C%E6%A1%8C%E9%9D%A2%E5%B0%8F%E6%8E%A7%E4%BB%B6/">Android之RemoteViews篇上————通知栏和桌面小控件</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年7月11日
+        </date>
+        
+        <div class="post-meta meta-category">
+            |
+            
+            <a href='http://blog.bingtan.online/categories/Android'>Android</a>
+            
+        </div>
+        
+        <div class="post-content">
+            一.RemoteViews的概述 RemoteView从名字看即为远程的View，RemoteViews表示一个View结构，它可以在其他进程中显示，为了能够更新它的界面，RemoteViews提供了一组基础的操作用于跨进程更新它的界面。 RemoteViews在Android的使用……
+            <p class="readmore"><a href="http://blog.bingtan.online/posts/Android/Android%E4%B9%8BRemoteViews%E7%AF%87%E4%B8%8A%E9%80%9A%E7%9F%A5%E6%A0%8F%E5%92%8C%E6%A1%8C%E9%9D%A2%E5%B0%8F%E6%8E%A7%E4%BB%B6/">阅读全文</a></p>
+        </div>
+    </article>
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://blog.bingtan.online/posts/Android/Android%E4%B9%8B%E8%BE%85%E5%8A%A9%E6%9C%8D%E5%8A%A1%E4%B8%8B%E7%AF%87AccessibilityServic%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">Android之辅助服务下篇————AccessibilityServic源码分析</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年7月10日
+        </date>
+        
+        <div class="post-meta meta-category">
+            |
+            
+            <a href='http://blog.bingtan.online/categories/Android'>Android</a>
+            
+        </div>
+        
+        <div class="post-content">
+            一.前言 在上一篇博客中，我介绍了辅助服务的大致使用。这一篇我们来看看AccessibilityServic的原理。 通过上篇，我们知道将AccessibilityServic配置完成后。之后的使用可以分为下面三个步骤 onAccessibilityEvent接收事件(屏幕变化，点击事……
+            <p class="readmore"><a href="http://blog.bingtan.online/posts/Android/Android%E4%B9%8B%E8%BE%85%E5%8A%A9%E6%9C%8D%E5%8A%A1%E4%B8%8B%E7%AF%87AccessibilityServic%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">阅读全文</a></p>
+        </div>
+    </article>
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://blog.bingtan.online/posts/Android/Android%E4%B9%8B%E8%BE%85%E5%8A%A9%E6%9C%8D%E5%8A%A1%E4%B8%8A%E7%AF%87AccessibilityService%E4%BD%BF%E7%94%A8/">Android之辅助服务上篇————AccessibilityService使用</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年7月9日
+        </date>
+        
+        <div class="post-meta meta-category">
+            |
+            
+            <a href='http://blog.bingtan.online/categories/Android'>Android</a>
+            
+        </div>
+        
+        <div class="post-content">
+            一.前言 最近好久没写博客了，特别是Android系统启动这一个系列，虽然过程已经理了很多遍了，但是由于实习期间是在抽不出时间，没办法输出文章。最近接触了Android辅助服务，即AccessibilityService的相关内容，也算是解决了我一直一来的困惑——微信抢红包插件是怎……
+            <p class="readmore"><a href="http://blog.bingtan.online/posts/Android/Android%E4%B9%8B%E8%BE%85%E5%8A%A9%E6%9C%8D%E5%8A%A1%E4%B8%8A%E7%AF%87AccessibilityService%E4%BD%BF%E7%94%A8/">阅读全文</a></p>
+        </div>
+    </article>
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://blog.bingtan.online/posts/Android/Android%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BBGestureDetectory/">Android源码阅读————GestureDetectory</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年7月8日
+        </date>
+        
+        <div class="post-meta meta-category">
+            |
+            
+            <a href='http://blog.bingtan.online/categories/Android'>Android</a>
+            
+        </div>
+        
+        <div class="post-content">
+            一.前言 目前接触Android也差不多一年了，一直处于知其然不知其所以然，所以也是希望从源码的角度出发，理解更多关于Android的知识。 这个系列我希望可以一直写下去，增强我对Android的理解。 开头的第一篇我选择了一个不是很长的源码，GestureDetector手势控制器来……
+            <p class="readmore"><a href="http://blog.bingtan.online/posts/Android/Android%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BBGestureDetectory/">阅读全文</a></p>
+        </div>
+    </article>
+    
+
+    
+
+
+
+
+
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://blog.bingtan.online/posts/%E6%96%87%E7%AB%A0%E5%AF%BC%E8%88%AA/" title="文章导航">文章导航</a>
+    </li>
+    
+    <li>
+        <a href="http://blog.bingtan.online/posts/%E9%9A%8F%E7%AC%94/2019%E5%B9%B4%E5%9B%9E%E9%A1%BE2020%E5%B9%B4%E8%AE%A1%E5%88%92/" title="2019年回顾——2020年计划">2019年回顾——2020年计划</a>
+    </li>
+    
+    <li>
+        <a href="http://blog.bingtan.online/posts/%E9%9A%8F%E7%AC%94/Android%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%A7%8B%E6%8B%9B%E6%80%BB%E7%BB%93/" title="Android客户端——秋招总结">Android客户端——秋招总结</a>
+    </li>
+    
+    <li>
+        <a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC6Binder3-Framework%E5%B1%82%E5%88%86%E6%9E%90/" title="Android之IPC6————Binder3 Framework层分析">Android之IPC6————Binder3 Framework层分析</a>
+    </li>
+    
+    <li>
+        <a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC5Binder2-Native%E5%B1%82%E5%88%86%E6%9E%90/" title="Android之IPC5————Binder2 Native层分析">Android之IPC5————Binder2 Native层分析</a>
+    </li>
+    
+    <li>
+        <a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC4Binder1-%E6%A6%82%E8%BF%B0%E4%B8%8EBinder%E9%A9%B1%E5%8A%A8/" title="Android之IPC4————Binder1 概述与Bander驱动">Android之IPC4————Binder1 概述与Bander驱动</a>
+    </li>
+    
+    <li>
+        <a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC3%E5%BA%8F%E5%88%97%E5%8C%96/" title="Android之IPC3————序列化">Android之IPC3————序列化</a>
+    </li>
+    
+    <li>
+        <a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC2AIDL/" title="Android之IPC2————AIDL">Android之IPC2————AIDL</a>
+    </li>
+    
+    <li>
+        <a href="http://blog.bingtan.online/posts/AndroidIPC/Android%E4%B9%8BIPC1Service/" title="Android之IPC1————Service">Android之IPC1————Service</a>
+    </li>
+    
+    <li>
+        <a href="http://blog.bingtan.online/posts/AndroidRxjava/Android%E4%B9%8BRxjava2.X-11Rxjava%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB3/" title="Android之Rxjava2.X 11————Rxjava源码阅读3">Android之Rxjava2.X 11————Rxjava源码阅读3</a>
+    </li>
+    
+</ul>
+    </section>
+    
+
+    
+    
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li><a href="http://blog.bingtan.online/categories/Android/">Android (46)</a></li>
+    
+    <li><a href="http://blog.bingtan.online/categories/Android%E4%B9%8BIPC/">Android之IPC (6)</a></li>
+    
+    <li><a href="http://blog.bingtan.online/categories/Android%E4%B9%8BRxjava/">Android之Rxjava (11)</a></li>
+    
+    <li><a href="http://blog.bingtan.online/categories/Android%E4%B9%8BView/">Android之View (6)</a></li>
+    
+    <li><a href="http://blog.bingtan.online/categories/Android%E4%B9%8B%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/">Android之网络请求 (11)</a></li>
+    
+    <li><a href="http://blog.bingtan.online/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">“数据结构&#34; (26)</a></li>
+    
+    <li><a href="http://blog.bingtan.online/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络 (6)</a></li>
+    
+    <li><a href="http://blog.bingtan.online/categories/%E9%9A%8F%E7%AC%94/">随笔 (6)</a></li>
+    
+</ul>
+    </section>
+    
+   
+    
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="http://blog.bingtan.online/tags/Android/">Android</a>
+    
+    <a href="http://blog.bingtan.online/tags/IPC/">IPC</a>
+    
+    <a href="http://blog.bingtan.online/tags/MVP/">MVP</a>
+    
+    <a href="http://blog.bingtan.online/tags/Rxjava/">Rxjava</a>
+    
+    <a href="http://blog.bingtan.online/tags/View/">View</a>
+    
+    <a href="http://blog.bingtan.online/tags/%E5%B0%8F%E9%A1%B9%E7%9B%AE/">小项目</a>
+    
+    <a href="http://blog.bingtan.online/tags/%E5%BD%95%E9%9F%B3/">录音</a>
+    
+    <a href="http://blog.bingtan.online/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+    
+    <a href="http://blog.bingtan.online/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/">源码阅读</a>
+    
+    <a href="http://blog.bingtan.online/tags/%E7%BD%91%E7%BB%9C/">网络</a>
+    
+    <a href="http://blog.bingtan.online/tags/%E9%9A%8F%E7%AC%94/">随笔</a>
+    
+</div>
+    </section>
+    
+
+    
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://blog.csdn.net/qq_38499859" title="csdn博客链接">冰炭不投的博客</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="http://yuedu.baidu.com/ebook/14a722970740be1e640e9a3e" title="Android Gradle权威指南">Android Gradle权威指南</a>
+        </li>
+        
+    </ul>
+</section>
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

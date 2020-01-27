@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>数据结构13————树的基本概念和存储 | 冰炭不投day的博客</title>
+    <meta property="og:title" content="数据结构13————树的基本概念和存储 - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2018-05-13T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2018-05-13T22:40:54&#43;08:00'>
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="数据结构13————树的基本概念和存储">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8413%E6%A0%91%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AD%98%E5%82%A8/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">数据结构13————树的基本概念和存储</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年5月13日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84'>“数据结构&#34;</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h3 id="一内容">一.内容</h3>
+<ol>
+<li>树的定义</li>
+<li>树的相关术语</li>
+<li>树的ADT</li>
+<li>树的存储</li>
+</ol>
+<h3 id="二树的定义">二.树的定义</h3>
+<h4 id="1形式化定义">1.形式化定义：</h4>
+<blockquote>
+<p>树（tree）是包含n（n&gt;0）个结点的有穷集，其中：<br>
+（1）每个元素称为结点（node）；<br>
+（2）有一个特定的结点被称为根结点或树根（root）。<br>
+（3）除根结点之外的其余数据元素被分为m（m≥0）个互不相交的集合T1，T2，……Tm-1，其中每一个集合Ti（1&lt;=i&lt;=m）本身也是一棵树，被称作原树的子树（subtree）。</p>
+</blockquote>
+<h4 id="2需要注意的一些问题">2.需要注意的一些问题</h4>
+<p>a. n&gt;0时，根节点唯一，不可能存在多个根节点
+b. m&gt;0时，子树的个数没有限制，但是它们一定不能相交</p>
+<h4 id="3举例">3.举例</h4>
+<p><img src="/image/Data_structure/0_0.png" alt="这里写图片描述"></p>
+<ul>
+<li>如图所示，是T是一个典型的树，节点A是树的根节点</li>
+<li>其余元素集合(BCDEF)被分为两个集合，T1(BDEF)和T2(CG),T1和T2本身也是一棵树，也满足树的定义</li>
+</ul>
+<p><img src="/image/Data_structure/0_1.png" alt="这里写图片描述"></p>
+<ul>
+<li>如图所示，此时m分出两个子树相交，所以这一个图不是树。</li>
+</ul>
+<h3 id="三树的相关术语">三.树的相关术语</h3>
+<h4 id="1节点相关">1.节点相关</h4>
+<ul>
+<li>节点的度：节点拥有子树的个数</li>
+<li>叶子节点/终端节点: 度为0的节点。(子树个数为0)</li>
+<li>分支节点/非终端节点:度不为0的节点。</li>
+<li>树的度：树内个节点的度的最大值
+<img src="/image/Data_structure/0_2.png" alt="这里写图片描述">
+在树T中: A根节点,ABC为分支节点,DEFG为叶子节点,树T中节点D度最大为3,所以树T的度为3</li>
+</ul>
+<h4 id="2节点间关系">2.节点间关系</h4>
+<ul>
+<li>节点的孩子与双亲：节点子树的根称为该节点的孩子，相应的该节点称为孩子的双亲</li>
+<li>节点的兄弟: 同一双亲的孩子互称为兄弟</li>
+<li>节点的祖先: 从根的到该节点的所经分支的所以节点</li>
+<li>节点的子孙：所以该节点为根的子树的所有节点，都是该节点子孙</li>
+</ul>
+<p><img src="/image/Data_structure/0_3.png" alt="这里写图片描述">
+在树T中 ；B是DEF的双亲节点,DEF是B的孩子节点,DEF互为兄弟节点，BA是D的祖先，BCDEFG都是A的子孙</p>
+<h4 id="3其他相关概念">3.其他相关概念</h4>
+<ul>
+<li>节点的层次：从根节点开始定义，根节点为第一层，根的孩子为第二层，根的孩子的孩子为第三层，以此类推</li>
+<li>节点的堂兄弟： 双亲在同一层次的节点互称为堂兄弟</li>
+<li>树的深度：节点的最大层次</li>
+<li>无序树和有序树:子树从左到右有大小关系不可以互换，称为有序树，反之称为无序树</li>
+<li>森林：m(m&gt;=0)不相交树的集合</li>
+</ul>
+<p><img src="/image/Data_structure/0_4.png" alt="这里写图片描述">
+在树T中: A是第一层，BC是第二层,DEFG是第三层,FG互为堂兄弟,树的深度为3</p>
+<h3 id="四树的adt">四.树的ADT</h3>
+<blockquote>
+<p>ADT 树(tree)<br>
+Data<br>
+树是由一个根节点和若干子树构成.树的节点拥有相同的数据类型及层次结构<br>
+Operation<br>
+①InitTree(Tree);<br>
+②DestoryTree(Tree);<br>
+③CreatTree(Tree);<br>
+④TreeEmpty(Tree);<br>
+⑤Root(Tree);<br>
+⑥Parent(Tree,x);<br>
+⑦FirstChild(Tree,x);<br>
+⑧NextSibling(Tree,x);<br>
+⑨InsertChild(Tree,p,Child);<br>
+⑩DeleteChild(Tree,p,Child);<br>
+endADT</p>
+</blockquote>
+<h3 id="五树的存储">五.树的存储</h3>
+<p>主要介绍: 双亲表示法,孩子表示法,孩子兄弟表示法</p>
+<h4 id="1双亲表示法">1.双亲表示法</h4>
+<p><strong>a.存储形式</strong>
+使用连续存储空间(数组),将每个节点存储进去，并且对于每个节点，将他们的双亲节点的信息存储进去。
+<strong>b.举例</strong>
+-1表示不存在
+<img src="/image/Data_structure/0_5.png" alt="这里写图片描述">
+<strong>c.扩充</strong>
+对于上面的结构而言,还可以添加更多的附加信息，比如说添加第一个孩子的信息，或者添加有兄弟的信息
+<img src="/image/Data_structure/0_6.png" alt="这里写图片描述"></p>
+<h4 id="2孩子表示法">2.孩子表示法</h4>
+<p><strong>存储形式</strong>
+将一个节点和它所有孩子的节点使用指针链接起来</p>
+<p><strong>举例</strong>
+<strong>方案a:</strong>
+树的度为树节点的最大值，所以设置节点指针域的个数为树的度
+<img src="/image/Data_structure/0_7.png" alt="这里写图片描述"></p>
+<p><img src="/image/Data_structure/0_8.png" alt="这里写图片描述">
+<strong>方案b</strong>
+方案a中并不是每个节点都达到了树的度，造成了很大浪费，对方案a进行改进，增加一个表示孩子个数的变量</p>
+<p><img src="/image/Data_structure/0_9.png" alt="这里写图片描述"></p>
+<p><img src="/image/Data_structure/0_10.png" alt="这里写图片描述">
+<strong>方案C:</strong>
+方案b依然有些不足，由于每个节点的链表是不同的结构，加之要维护表示节点的度的数组，也增加时间的消耗。我们使用数组链表结合的方法来表示他的孩子</p>
+<p><img src="/image/Data_structure/0_11.png" alt="这里写图片描述"></p>
+<p><img src="/image/Data_structure/0_12.png" alt="这里写图片描述"></p>
+<h4 id="3孩子兄弟法">3.孩子兄弟法</h4>
+<p><strong>a.存储形式</strong>
+对于任意一个节点，第一个节点存储它的第一个孩子，第二个节点存它的右兄弟</p>
+<p><strong>b.举例</strong>
+<img src="/image/Data_structure/0_13.png" alt="这里写图片描述"></p>
+<p><img src="/image/Data_structure/0_14.png" alt="这里写图片描述">
+孩子兄弟法最大的好处是将树转换为二叉树，关于二叉树可以看我的下一篇博客</p>
+<h3 id="六参考资料">六参考资料</h3>
+<p>&lt;大话数据结构&gt;，&lt;数据结构与算法&gt;</p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8413%E6%A0%91%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AD%98%E5%82%A8/">http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8413%E6%A0%91%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AD%98%E5%82%A8/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8412%E9%A9%AC%E9%9E%8D%E7%82%B9%E9%97%AE%E9%A2%98%E4%B8%89%E5%85%83%E7%BB%84%E7%A8%80%E7%96%8F%E7%9F%A9%E9%98%B5%E5%8D%81%E5%AD%97%E9%93%BE%E8%A1%A8%E7%A8%80%E7%96%8F%E9%93%BE%E8%A1%A8%E7%9A%84%E5%8A%A0%E5%87%8F%E6%B3%95/">数据结构12————马鞍点问题&amp;三元组稀疏矩阵&amp;十字链表稀疏链表的加减法</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8411%E4%B8%B2%E7%9A%84BF%E5%8C%B9%E9%85%8D%E6%A8%A1%E5%BC%8F%E5%92%8CKMP%E5%8C%B9%E9%85%8D%E6%A8%A1%E5%BC%8F/">数据结构11————串的BF匹配模式和KMP匹配模式</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8410%E4%B8%B2-%E4%BB%8Ec%E8%AF%AD%E8%A8%80String%E5%BA%93%E6%BA%90%E7%A0%81%E6%9D%A5%E5%AD%A6%E4%B9%A0/">数据结构10————串-从c语言String库源码来学习</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%849%E6%A0%88%E7%9A%84%E5%BA%94%E7%94%A83-%E5%90%8E%E7%BC%80%E8%A1%A8%E8%BE%BE%E5%BC%8F/">数据结构9————栈的应用3-后缀表达式</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%848%E6%A0%88%E7%9A%84%E5%BA%94%E7%94%A82-%E9%9D%9E%E9%80%92%E5%BD%92%E8%A7%A3%E5%86%B3%E8%BF%B7%E5%AE%AB%E5%92%8C%E9%A9%AC%E8%B8%8F%E6%A3%8B%E7%9B%98%E9%97%AE%E9%A2%98/">数据结构8————栈的应用2-非递归解决迷宫和马踏棋盘问题</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84'>数据结构</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "https://github.com/hsc396612325/HSCBlog/tree/gh-pages"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一内容">一.内容</a></li>
+    <li><a href="#二树的定义">二.树的定义</a>
+      <ul>
+        <li><a href="#1形式化定义">1.形式化定义：</a></li>
+        <li><a href="#2需要注意的一些问题">2.需要注意的一些问题</a></li>
+        <li><a href="#3举例">3.举例</a></li>
+      </ul>
+    </li>
+    <li><a href="#三树的相关术语">三.树的相关术语</a>
+      <ul>
+        <li><a href="#1节点相关">1.节点相关</a></li>
+        <li><a href="#2节点间关系">2.节点间关系</a></li>
+        <li><a href="#3其他相关概念">3.其他相关概念</a></li>
+      </ul>
+    </li>
+    <li><a href="#四树的adt">四.树的ADT</a></li>
+    <li><a href="#五树的存储">五.树的存储</a>
+      <ul>
+        <li><a href="#1双亲表示法">1.双亲表示法</a></li>
+        <li><a href="#2孩子表示法">2.孩子表示法</a></li>
+        <li><a href="#3孩子兄弟法">3.孩子兄弟法</a></li>
+      </ul>
+    </li>
+    <li><a href="#六参考资料">六参考资料</a></li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

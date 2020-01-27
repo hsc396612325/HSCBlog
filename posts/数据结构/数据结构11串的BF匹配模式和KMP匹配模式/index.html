@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>数据结构11————串的BF匹配模式和KMP匹配模式 | 冰炭不投day的博客</title>
+    <meta property="og:title" content="数据结构11————串的BF匹配模式和KMP匹配模式 - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2018-05-11T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2018-05-11T22:40:54&#43;08:00'>
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="数据结构11————串的BF匹配模式和KMP匹配模式">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8411%E4%B8%B2%E7%9A%84BF%E5%8C%B9%E9%85%8D%E6%A8%A1%E5%BC%8F%E5%92%8CKMP%E5%8C%B9%E9%85%8D%E6%A8%A1%E5%BC%8F/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">数据结构11————串的BF匹配模式和KMP匹配模式</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年5月11日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84'>“数据结构&#34;</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h3 id="一前面一些絮絮叨叨的话">一.前面一些絮絮叨叨的话</h3>
+<h4 id="1名称解释">1.名称解释</h4>
+<ul>
+<li>子串：串中任意连续字符组成的子序列组成的</li>
+<li>主串：包含子串的相应的串</li>
+<li>前缀子串：S=a1&hellip;ab U=a1&hellip;.an 当1&lt;=n&lt; b时，称U为S的前缀子串</li>
+<li>后缀子串：S=a1&hellip;ab U=an&hellip;.ab 当1 &lt; n &lt; b时，称U为S的后缀子串</li>
+</ul>
+<blockquote>
+<p>例：<br>
+S：abaabca<br>
+S的前缀子串:a ab aba abaa abaab abaabc<br>
+S的后缀子串:a ca bca abca aabca baabca</p>
+</blockquote>
+<ul>
+<li>匹配模式：计算主串中子串的位置。</li>
+</ul>
+<h4 id="2博客内容概要">2.博客内容概要</h4>
+<ul>
+<li>BF匹配模式(蛮力匹配)</li>
+<li>KMP匹配模式</li>
+<li>KMP匹配模式优化</li>
+</ul>
+<h4 id="3其他">3.其他</h4>
+<ul>
+<li>文中所有代码只是核心部分，完整部分见文末的链接</li>
+</ul>
+<h3 id="二bf匹配模式">二.BF匹配模式</h3>
+<h4 id="1思路">1.思路</h4>
+<ul>
+<li>思路很简单，从主串的第一位开始和子串第一位比较。</li>
+<li>如果相同，继续比较子串和主串的下一位，如果将子串比较完毕都成功，说明匹配成功，子串在主串第一位。</li>
+<li>如果中间有一个不匹配，i回退到上次匹配首位的下一位，j回退到0。</li>
+</ul>
+<h4 id="2图示">2.图示：</h4>
+<ol>
+<li>主串：goodgoogle</li>
+<li>子串：google
+<img src="/image/Data_structure/12_0.png" alt="这里写图片描述"></li>
+</ol>
+<h4 id="3代码">3.代码</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#</span><span style="color:#999;font-weight:bold;font-style:italic">include</span> <span style="color:#999;font-weight:bold;font-style:italic">&lt;stdio.h&gt;</span><span style="color:#999;font-weight:bold;font-style:italic">
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span><span style="color:#998;font-style:italic">//str1--&gt;主串，str2--&gt;子串。
+</span><span style="color:#998;font-style:italic"></span><span style="color:#998;font-style:italic">//返回子串在主串第pos个字符之后的位置。 如果不存在，返回-1 
+</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">Index</span>(<span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>str1,<span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>str2,<span style="color:#458;font-weight:bold">int</span> pos){
+	
+	<span style="color:#458;font-weight:bold">int</span> i<span style="color:#000;font-weight:bold">=</span>pos;  
+	<span style="color:#458;font-weight:bold">int</span> j<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>; 
+	
+	<span style="color:#000;font-weight:bold">while</span>(str1[i]<span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span>str2[j]){
+		
+		<span style="color:#000;font-weight:bold">if</span>(str1[i]<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span>str2[j]){ <span style="color:#998;font-style:italic">//如果此时主串和子串相等，继续向下比较 
+</span><span style="color:#998;font-style:italic"></span>			i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;
+			j<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>; 
+		}<span style="color:#000;font-weight:bold">else</span>{
+			i<span style="color:#000;font-weight:bold">=</span>i<span style="color:#000;font-weight:bold">-</span>j<span style="color:#000;font-weight:bold">+</span><span style="color:#099">2</span>;   <span style="color:#998;font-style:italic">//如果不相等 i回退到上次匹配的首位。
+</span><span style="color:#998;font-style:italic"></span>			j<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;       <span style="color:#998;font-style:italic">//j回退到子串的首位。 
+</span><span style="color:#998;font-style:italic"></span>		}
+	}
+	
+	<span style="color:#000;font-weight:bold">if</span>(str2[j]<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>) <span style="color:#998;font-style:italic">//如果退出循环时，j指向子串末尾。则说明匹配成功 
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#000;font-weight:bold">return</span> i<span style="color:#000;font-weight:bold">-</span>j;
+	<span style="color:#000;font-weight:bold">else</span>
+		<span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>; 
+}
+<span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>(<span style="color:#458;font-weight:bold">void</span>){
+	<span style="color:#458;font-weight:bold">char</span> str1[<span style="color:#099">100</span>];
+	<span style="color:#458;font-weight:bold">char</span> str2[<span style="color:#099">30</span>];
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">请输入主串:</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+	gets(str1);
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">请输入子串</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>); 
+	gets(str2);
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%d</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>,Index(str1,str2,<span style="color:#099">0</span>));
+}
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="4性能分析">4.性能分析</h4>
+<ul>
+<li>
+<p>主串：abcdefgh&hellip;（后面还有）</p>
+</li>
+<li>
+<p>子串：abcdefX</p>
+</li>
+<li>
+<p>下图是按照BF模式匹配的示意图。
+<img src="/image/Data_structure/12_1.png" alt="这里写图片描述"></p>
+</li>
+<li>
+<p>仔细研究就会发现，在BF模式中，i的回溯很浪费时间，上一次的匹配所得结果完全没有用上。如果i不回溯可以吗？</p>
+</li>
+<li>
+<p>在这个匹配中，是完全可以的，子串的首位是a，而上次匹配到子串的X前失败，说明<strong>子串X前和主串f前</strong>的字符都是一样的，因为<strong>子串6个字符都是不同的</strong>，所以主串f前5个也是不同的，所以<strong>主串中a&ndash;f之间肯定没有a</strong>。</p>
+</li>
+<li>
+<p>所以②~⑤完全是不必要的。可以直接①&ndash;&gt;⑥
+<img src="/image/Data_structure/12_2.png" alt="这里写图片描述"></p>
+</li>
+<li>
+<p>在这次匹配中由于子串很特殊，可以不用回溯i，如果子串没那么特殊，子串中含有重复的字符，那也可以做的不回溯i吗？</p>
+</li>
+<li>
+<p>是的，可以的。可以做到这一点的就是KMP匹配模式。</p>
+</li>
+</ul>
+<h3 id="三-kmp匹配模式">三. KMP匹配模式</h3>
+<h4 id="1思路-1">1.思路</h4>
+<ul>
+<li>思路和BF模差不多。</li>
+<li>不同的地方在于，匹配失败后<strong>i不回溯，只回溯j</strong>。</li>
+<li>匹配失败后，不同失败的地方j回溯的位置不同。所以将每个位置匹配失败后，j回溯的位置存入next数组。</li>
+<li>所以KMP的重点是next数组的求解。</li>
+</ul>
+<h4 id="2next数组的求解">2.next数组的求解</h4>
+<ul>
+<li>首先我们来试一下，不同子串匹配失败后，j应该回溯到哪？
+<img src="/image/Data_structure/12_3.png" alt="这里写图片描述"></li>
+<li>有没有发现一些什么规律？</li>
+<li>我呢发现，回溯的长度=子串前部和后部分一样的长度中最大值。</li>
+<li>标准说法是：（匹配失败字符前面的所有字符构成）子串的前缀表达子串和后缀子串中相同子串的最长的长度。</li>
+</ul>
+<blockquote>
+<p>例：ababax<br>
+前缀子串:a ab aba abab<br>
+后缀子串:b ba aba baba<br>
+公共子串：aba<br>
+所以j回溯到3</p>
+</blockquote>
+<h4 id="3next代码">3.next代码</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#998;font-style:italic">//计算子串str2的next数组
+</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">get_next</span>(<span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>str2,<span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">*</span>next){
+	<span style="color:#458;font-weight:bold">int</span> i,k;
+	i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;
+	k<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;
+	next[<span style="color:#099">0</span>]<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;
+	<span style="color:#000;font-weight:bold">while</span>(str2[i]){
+		
+		<span style="color:#000;font-weight:bold">if</span>(k<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span><span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span>str2[i]<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span>str2[k]){ <span style="color:#998;font-style:italic">//str2[i]--&gt;后缀的单个字符 
+</span><span style="color:#998;font-style:italic"></span>			i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;                     <span style="color:#998;font-style:italic">//str2[j]--&gt;前缀的单个字符  
+</span><span style="color:#998;font-style:italic"></span>			k<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;
+			next[i]<span style="color:#000;font-weight:bold">=</span>k;
+		}<span style="color:#000;font-weight:bold">else</span>{
+			k<span style="color:#000;font-weight:bold">=</span>next[k];
+		}
+	}
+} 
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="4next代码解释">4.next代码解释</h4>
+<p>求解ABABABCX中X对应的next值。
+<img src="/image/Data_structure/12_4.png" alt="这里写图片描述"></p>
+<h4 id="5核心代码">5.核心代码</h4>
+<p>代码和BF差不多</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">Index_KMP</span>(<span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>str1,<span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>str2,<span style="color:#458;font-weight:bold">int</span> pos){
+	
+	<span style="color:#458;font-weight:bold">int</span> i<span style="color:#000;font-weight:bold">=</span>pos;  
+	<span style="color:#458;font-weight:bold">int</span> j<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>; 
+	<span style="color:#458;font-weight:bold">int</span> next[<span style="color:#099">100</span>]; 
+	get_next(str2,next);<span style="color:#998;font-style:italic">//计算子串的next数组 
+</span><span style="color:#998;font-style:italic"></span>	
+	printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">\n</span><span style="color:#d14">子串next数组:</span><span style="color:#d14">\n</span><span style="color:#d14">&#34;</span>);
+	<span style="color:#458;font-weight:bold">int</span> k; 
+	<span style="color:#000;font-weight:bold">for</span>(k<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;str2[k];k<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>)
+		printf(<span style="color:#d14"></span><span style="color:#d14">&#34;</span><span style="color:#d14">%d </span><span style="color:#d14">&#34;</span>,next[k]); 
+	
+	<span style="color:#000;font-weight:bold">while</span>((str1[i]<span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span>str2[j])<span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span>j<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>){
+		
+		<span style="color:#000;font-weight:bold">if</span>(j<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span><span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span>str1[i]<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span>str2[j]){ <span style="color:#998;font-style:italic">//如果此时主串和子串相等，继续向下比较 
+</span><span style="color:#998;font-style:italic"></span>			i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;
+			j<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>; 
+		}<span style="color:#000;font-weight:bold">else</span>{
+			<span style="color:#998;font-style:italic">//i=i-j+2;   //i不需要回溯 
+</span><span style="color:#998;font-style:italic"></span>			<span style="color:#998;font-style:italic">//j=0;        
+</span><span style="color:#998;font-style:italic"></span>			j<span style="color:#000;font-weight:bold">=</span>next[j]; <span style="color:#998;font-style:italic">//j回退到对应的next中的值   
+</span><span style="color:#998;font-style:italic"></span>		}
+	}
+	
+	<span style="color:#000;font-weight:bold">if</span>(str2[j]<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>) <span style="color:#998;font-style:italic">//如果退出循环时，j指向子串末尾。则说明匹配成功 
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#000;font-weight:bold">return</span> i<span style="color:#000;font-weight:bold">-</span>j;
+	<span style="color:#000;font-weight:bold">else</span>
+		<span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>; 
+}
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="6性能分析">6.性能分析</h4>
+<p>比起BF算法来说，KMP算法的i不用回溯，优化了很多，但它真的完美吗？我们来看个例子。</p>
+<ul>
+<li>主串：aaaaafgh</li>
+<li>子串：aaaaax
+<img src="/image/Data_structure/12_5.png" alt="这里写图片描述"></li>
+<li>上图就是按照KMP算法进行匹配时的示意图。可以看出来j从5回溯到4，然后回溯到3，然后2.。。到最后回溯到0。</li>
+<li>在这个子串中，其实j回溯到321完全没有必要。子串X前5个字符相同。当f和第五个a匹配失败后，那么f和前4个a完全没有必要匹配。所以j应该直接从②到⑥。</li>
+<li>在这里比较极端的例子中，我们发现KMP中j的有些回溯是完全没有必要的。那么该如何减少一些不必要的j回溯呢？</li>
+</ul>
+<h3 id="四kmp匹配模式的优化">四.KMP匹配模式的优化</h3>
+<h4 id="1思路-2">1.思路</h4>
+<ul>
+<li>我们发现，如果j回溯后和j回溯前的两个字符相同，那么这一次回溯四完全没有必要的。(j回溯前匹配失败，回溯后肯定也是失败的)</li>
+<li>我们将优化的KMPj需要回溯的值放入nextval中</li>
+<li>nextval和next相比，多了一个条件，假设str字符串中字符c的nextval计算的是k，如果str[k]==c,那么c的naxtval=nextval[k]。</li>
+</ul>
+<blockquote>
+<p>ababa<br>
+计算第二个a的nextval值<br>
+a的naxtval是0，因为naxtval[0] == &lsquo;a&rsquo;,所以a的nextval=nextval[0]=-1</p>
+</blockquote>
+<h4 id="2求naxtval值的代码">2.求naxtval值的代码</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#999;font-weight:bold;font-style:italic">#</span><span style="color:#999;font-weight:bold;font-style:italic">include</span> <span style="color:#999;font-weight:bold;font-style:italic">&lt;stdio.h&gt;</span><span style="color:#999;font-weight:bold;font-style:italic">
+</span><span style="color:#999;font-weight:bold;font-style:italic"></span><span style="color:#998;font-style:italic">//计算子串str2的next数组
+</span><span style="color:#998;font-style:italic"></span><span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">get_next</span>(<span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>str2,<span style="color:#458;font-weight:bold">int</span> <span style="color:#000;font-weight:bold">*</span>nextval){
+	<span style="color:#458;font-weight:bold">int</span> i,k;
+	i<span style="color:#000;font-weight:bold">=</span><span style="color:#099">0</span>;
+	k<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;
+	nextval[<span style="color:#099">0</span>]<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>;
+	<span style="color:#000;font-weight:bold">while</span>(str2[i]){
+		
+		<span style="color:#000;font-weight:bold">if</span>(k<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span><span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span>str2[i]<span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span>str2[k]){ <span style="color:#998;font-style:italic">//str2[i]--&gt;后缀的单个字符 
+</span><span style="color:#998;font-style:italic"></span>			i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;                     <span style="color:#998;font-style:italic">//str2[j]--&gt;前缀的单个字符  
+</span><span style="color:#998;font-style:italic"></span>			k<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span>;
+			<span style="color:#000;font-weight:bold">if</span>(str2[i]<span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span>str2[k])
+				nextval[i]<span style="color:#000;font-weight:bold">=</span>k;
+			<span style="color:#000;font-weight:bold">else</span>
+				nextval[i] <span style="color:#000;font-weight:bold">=</span> nextval[k];<span style="color:#998;font-style:italic">//当前字符和前缀字符相同，则将前缀
+</span><span style="color:#998;font-style:italic"></span>									    <span style="color:#998;font-style:italic">//nextval值赋给nextval在i的位置 
+</span><span style="color:#998;font-style:italic"></span>		}<span style="color:#000;font-weight:bold">else</span>{
+			k<span style="color:#000;font-weight:bold">=</span>nextval[k];
+		}
+	}
+}
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="五源代码">五.源代码</h3>
+<p><a href="https://github.com/hsc396612325/Blog">test8中</a></p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8411%E4%B8%B2%E7%9A%84BF%E5%8C%B9%E9%85%8D%E6%A8%A1%E5%BC%8F%E5%92%8CKMP%E5%8C%B9%E9%85%8D%E6%A8%A1%E5%BC%8F/">http://blog.bingtan.online/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8411%E4%B8%B2%E7%9A%84BF%E5%8C%B9%E9%85%8D%E6%A8%A1%E5%BC%8F%E5%92%8CKMP%E5%8C%B9%E9%85%8D%E6%A8%A1%E5%BC%8F/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%8410%E4%B8%B2-%E4%BB%8Ec%E8%AF%AD%E8%A8%80String%E5%BA%93%E6%BA%90%E7%A0%81%E6%9D%A5%E5%AD%A6%E4%B9%A0/">数据结构10————串-从c语言String库源码来学习</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%849%E6%A0%88%E7%9A%84%E5%BA%94%E7%94%A83-%E5%90%8E%E7%BC%80%E8%A1%A8%E8%BE%BE%E5%BC%8F/">数据结构9————栈的应用3-后缀表达式</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%848%E6%A0%88%E7%9A%84%E5%BA%94%E7%94%A82-%E9%9D%9E%E9%80%92%E5%BD%92%E8%A7%A3%E5%86%B3%E8%BF%B7%E5%AE%AB%E5%92%8C%E9%A9%AC%E8%B8%8F%E6%A3%8B%E7%9B%98%E9%97%AE%E9%A2%98/">数据结构8————栈的应用2-非递归解决迷宫和马踏棋盘问题</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%847%E9%80%92%E5%BD%92%E8%A7%A3%E5%86%B3%E8%BF%B7%E5%AE%AB%E9%97%AE%E9%A2%98%E5%92%8C%E9%A9%AC%E8%B8%8F%E6%A3%8B%E7%9B%98/">数据结构7————递归解决迷宫问题和马踏棋盘</a></li>
+        
+        <li><a href="/posts/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%846%E9%98%9F%E6%A0%88%E7%9A%84%E5%BA%94%E7%94%A81/">数据结构6————队栈的应用1</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84'>数据结构</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "https://github.com/hsc396612325/HSCBlog/tree/gh-pages"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一前面一些絮絮叨叨的话">一.前面一些絮絮叨叨的话</a>
+      <ul>
+        <li><a href="#1名称解释">1.名称解释</a></li>
+        <li><a href="#2博客内容概要">2.博客内容概要</a></li>
+        <li><a href="#3其他">3.其他</a></li>
+      </ul>
+    </li>
+    <li><a href="#二bf匹配模式">二.BF匹配模式</a>
+      <ul>
+        <li><a href="#1思路">1.思路</a></li>
+        <li><a href="#2图示">2.图示：</a></li>
+        <li><a href="#3代码">3.代码</a></li>
+        <li><a href="#4性能分析">4.性能分析</a></li>
+      </ul>
+    </li>
+    <li><a href="#三-kmp匹配模式">三. KMP匹配模式</a>
+      <ul>
+        <li><a href="#1思路-1">1.思路</a></li>
+        <li><a href="#2next数组的求解">2.next数组的求解</a></li>
+        <li><a href="#3next代码">3.next代码</a></li>
+        <li><a href="#4next代码解释">4.next代码解释</a></li>
+        <li><a href="#5核心代码">5.核心代码</a></li>
+        <li><a href="#6性能分析">6.性能分析</a></li>
+      </ul>
+    </li>
+    <li><a href="#四kmp匹配模式的优化">四.KMP匹配模式的优化</a>
+      <ul>
+        <li><a href="#1思路-2">1.思路</a></li>
+        <li><a href="#2求naxtval值的代码">2.求naxtval值的代码</a></li>
+      </ul>
+    </li>
+    <li><a href="#五源代码">五.源代码</a></li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

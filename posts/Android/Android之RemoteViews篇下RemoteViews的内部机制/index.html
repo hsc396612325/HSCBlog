@@ -1,0 +1,892 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Android之RemoteViews篇下————RemoteViews的内部机制 | 冰炭不投day的博客</title>
+    <meta property="og:title" content="Android之RemoteViews篇下————RemoteViews的内部机制 - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2018-07-12T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2018-07-12T22:40:54&#43;08:00'>
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="Android之RemoteViews篇下————RemoteViews的内部机制">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/Android/Android%E4%B9%8BRemoteViews%E7%AF%87%E4%B8%8BRemoteViews%E7%9A%84%E5%86%85%E9%83%A8%E6%9C%BA%E5%88%B6/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">Android之RemoteViews篇下————RemoteViews的内部机制</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年7月12日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android'>Android</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h3 id="一remoteviews概述">一.remoteViews概述</h3>
+<p>上一篇博客中讲了通知栏和桌面小部件的简单使用，它们分别由otificationManager和AppWidgetProvider管理，而NotificationManager和AppWidgetProvider通过Binder分别为SystemService进程中的NotificationManagerService和AppWidgetService，由此可见，通知栏和小部件实际上是这两个中加载出来的，这就和我们的进程构成了跨进程通信的原理。</p>
+<p><strong>remoteViews构造方法</strong>
+public RemoteViews(String packageName, int layoutId)，第一个参数是当前应用的包名，第二个参数是待加载的布局文件。</p>
+<p><strong>remoteViews原理</strong>
+系统将view操作封装成Action对象，Action同样实现了Parcelable接口，通过Binder传递到SystemServer进程。远程进程通过RemoteViews的apply方法来进行view的更新操作，RemoteViews的apply方法内部则会去遍历所有的action对象并调用它们的apply方法来进行view的更新操作。</p>
+<p>这样做的好处是不需要定义大量的Binder接口，其次批量执行RemoteViews中的更新操作提高了程序性能。\</p>
+<p><strong>remoteViews的工作流程</strong>
+首先RemoteViews会通过Bingder传递到SystemServic进程，因为RemoteViews实现了Parcelable接口，因此他们可以跨进程传输系统会根据RemoteViews的包名信息拿到该应用的资源；然后通过LayoutInflater去加载RemoteViews中的布局文件。接着系统会对View进行一系列界面更新任务，这些任务就是之前我们通过set来提交的。set方法对View的更新并不会立即执行，会记录下来，等到RemoteViews被加载以后才会执行。</p>
+<p><strong>apply和reApply的区别</strong>
+apply会加载布局并更新界面，而reApply则只会更新界面。通知栏和桌面小部件在界面的初始化中会调用apply方法，而在后面的更新界面中会调用reapply方法</p>
+<h3 id="二remoteviews源码">二.RemoteViews源码</h3>
+<p>从setTextViewText中跟进</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">   <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setTextViewText</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> viewId<span style="color:#000;font-weight:bold">,</span> CharSequence text<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        setCharSequence<span style="color:#000;font-weight:bold">(</span>viewId<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;setText&#34;</span><span style="color:#000;font-weight:bold">,</span> text<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>继续跟进</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setCharSequence</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> viewId<span style="color:#000;font-weight:bold">,</span> String methodName<span style="color:#000;font-weight:bold">,</span> CharSequence value<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        addAction<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> ReflectionAction<span style="color:#000;font-weight:bold">(</span>viewId<span style="color:#000;font-weight:bold">,</span> methodName<span style="color:#000;font-weight:bold">,</span> ReflectionAction<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">CHAR_SEQUENCE</span><span style="color:#000;font-weight:bold">,</span> value<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>没有对view直接操作，但是添加了一个ReflectionAction，继续跟进：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">addAction</span><span style="color:#000;font-weight:bold">(</span>Action a<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>hasLandscapeAndPortraitLayouts<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">throw</span> <span style="color:#000;font-weight:bold">new</span> RuntimeException<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;RemoteViews specifying separate landscape and portrait&#34;</span> <span style="color:#000;font-weight:bold">+</span>
+                    <span style="color:#d14">&#34; layouts cannot be modified. Instead, fully configure the landscape and&#34;</span> <span style="color:#000;font-weight:bold">+</span>
+                    <span style="color:#d14">&#34; portrait layouts individually before constructing the combined layout.&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mActions <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            mActions <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> ArrayList<span style="color:#000;font-weight:bold">&lt;</span>Action<span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        mActions<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">add</span><span style="color:#000;font-weight:bold">(</span>a<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#998;font-style:italic">// update the memory usage stats
+</span><span style="color:#998;font-style:italic"></span>        a<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">updateMemoryUsageEstimate</span><span style="color:#000;font-weight:bold">(</span>mMemoryUsageCounter<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这里仅仅是把每一个action存进了list。这时候换一个切入点查看updateAppWidget方法，或者是notificationManager.notify因为跟新视图都要调用者两个方法</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"> <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">updateAppWidget</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> appWidgetId<span style="color:#000;font-weight:bold">,</span> RemoteViews views<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mService <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        updateAppWidget<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">new</span> <span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">{</span> appWidgetId <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">,</span> views<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>继续跟进</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"> <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">updateAppWidget</span><span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000;font-weight:bold">]</span> appWidgetIds<span style="color:#000;font-weight:bold">,</span> RemoteViews views<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mService <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+            mService<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">updateAppWidgetIds</span><span style="color:#000;font-weight:bold">(</span>mPackageName<span style="color:#000;font-weight:bold">,</span> appWidgetIds<span style="color:#000;font-weight:bold">,</span> views<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>RemoteException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">throw</span> e<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">rethrowFromSystemServer</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这时候无法继续查看，这时候我们思考，RemoteViews不是真正的view啊，所以是否可以去AppWidgetHostView看看，调转到updateAppWidget方法：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"> <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">updateAppWidget</span><span style="color:#000;font-weight:bold">(</span>RemoteViews remoteViews<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        applyRemoteViews<span style="color:#000;font-weight:bold">(</span>remoteViews<span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>继续跟进</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">77
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">78
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">79
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">applyRemoteViews</span><span style="color:#000;font-weight:bold">(</span>RemoteViews remoteViews<span style="color:#000;font-weight:bold">,</span> <span style="color:#458;font-weight:bold">boolean</span> useAsyncIfPossible<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>LOGD<span style="color:#000;font-weight:bold">)</span> Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;updateAppWidget called mOld=&#34;</span> <span style="color:#000;font-weight:bold">+</span> mOld<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#458;font-weight:bold">boolean</span> recycled <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+        View content <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+        Exception exception <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#998;font-style:italic">// Capture the old view into a bitmap so we can do the crossfade.
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>CROSSFADE<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mFadeStartTime <span style="color:#000;font-weight:bold">&lt;</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mView <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> width <span style="color:#000;font-weight:bold">=</span> mView<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getWidth</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> height <span style="color:#000;font-weight:bold">=</span> mView<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getHeight</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+                        mOld <span style="color:#000;font-weight:bold">=</span> Bitmap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">createBitmap</span><span style="color:#000;font-weight:bold">(</span>width<span style="color:#000;font-weight:bold">,</span> height<span style="color:#000;font-weight:bold">,</span> Bitmap<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">Config</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ARGB_8888</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>OutOfMemoryError e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        <span style="color:#998;font-style:italic">// we just won&#39;t do the fade
+</span><span style="color:#998;font-style:italic"></span>                        mOld <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mOld <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        <span style="color:#998;font-style:italic">//mView.drawIntoBitmap(mOld);
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mLastExecutionSignal <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            mLastExecutionSignal<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">cancel</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            mLastExecutionSignal <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>remoteViews <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mViewMode <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> VIEW_MODE_DEFAULT<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#998;font-style:italic">// We&#39;ve already done this -- nothing to do.
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">return</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+            content <span style="color:#000;font-weight:bold">=</span> getDefaultView<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            mLayoutId <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">-</span>1<span style="color:#000;font-weight:bold">;</span>
+            mViewMode <span style="color:#000;font-weight:bold">=</span> VIEW_MODE_DEFAULT<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mAsyncExecutor <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span> <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> useAsyncIfPossible<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                inflateAsync<span style="color:#000;font-weight:bold">(</span>remoteViews<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">return</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#998;font-style:italic">// Prepare a local reference to the remote Context so we&#39;re ready to
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#998;font-style:italic">// inflate any requested LayoutParams.
+</span><span style="color:#998;font-style:italic"></span>            mRemoteContext <span style="color:#000;font-weight:bold">=</span> getRemoteContext<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#458;font-weight:bold">int</span> layoutId <span style="color:#000;font-weight:bold">=</span> remoteViews<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getLayoutId</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+            <span style="color:#998;font-style:italic">// If our stale view has been prepared to match active, and the new
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#998;font-style:italic">// layout matches, try recycling it
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>content <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span> <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> layoutId <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> mLayoutId<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+                    remoteViews<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">reapply</span><span style="color:#000;font-weight:bold">(</span>mContext<span style="color:#000;font-weight:bold">,</span> mView<span style="color:#000;font-weight:bold">,</span> mOnClickHandler<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    content <span style="color:#000;font-weight:bold">=</span> mView<span style="color:#000;font-weight:bold">;</span>
+                    recycled <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>LOGD<span style="color:#000;font-weight:bold">)</span> Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;was able to recycle existing layout&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>RuntimeException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    exception <span style="color:#000;font-weight:bold">=</span> e<span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+            <span style="color:#998;font-style:italic">// Try normal RemoteView inflation
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>content <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+                    content <span style="color:#000;font-weight:bold">=</span> remoteViews<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">apply</span><span style="color:#000;font-weight:bold">(</span>mContext<span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">,</span> mOnClickHandler<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>LOGD<span style="color:#000;font-weight:bold">)</span> Log<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">d</span><span style="color:#000;font-weight:bold">(</span>TAG<span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;had to inflate new layout&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>RuntimeException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    exception <span style="color:#000;font-weight:bold">=</span> e<span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+            mLayoutId <span style="color:#000;font-weight:bold">=</span> layoutId<span style="color:#000;font-weight:bold">;</span>
+            mViewMode <span style="color:#000;font-weight:bold">=</span> VIEW_MODE_CONTENT<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        applyContent<span style="color:#000;font-weight:bold">(</span>content<span style="color:#000;font-weight:bold">,</span> recycled<span style="color:#000;font-weight:bold">,</span> exception<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        updateContentDescription<span style="color:#000;font-weight:bold">(</span>mInfo<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>跳转到RemoteViews的reapply方法：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"> <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">reapply</span><span style="color:#000;font-weight:bold">(</span>Context context<span style="color:#000;font-weight:bold">,</span> View v<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        reapply<span style="color:#000;font-weight:bold">(</span>context<span style="color:#000;font-weight:bold">,</span> v<span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>继续跟进</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">reapply</span><span style="color:#000;font-weight:bold">(</span>Context context<span style="color:#000;font-weight:bold">,</span> View v<span style="color:#000;font-weight:bold">,</span> OnClickHandler handler<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        RemoteViews rvToApply <span style="color:#000;font-weight:bold">=</span> getRemoteViewsToApply<span style="color:#000;font-weight:bold">(</span>context<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#998;font-style:italic">// In the case that a view has this RemoteViews applied in one orientation, is persisted
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">// across orientation change, and has the RemoteViews re-applied in the new orientation,
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">// we throw an exception, since the layouts may be completely unrelated.
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>hasLandscapeAndPortraitLayouts<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span>Integer<span style="color:#000;font-weight:bold">)</span> v<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getTag</span><span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">widget_frame</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> rvToApply<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getLayoutId</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">throw</span> <span style="color:#000;font-weight:bold">new</span> RuntimeException<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;Attempting to re-apply RemoteViews to a view that&#34;</span> <span style="color:#000;font-weight:bold">+</span>
+                        <span style="color:#d14">&#34; that does not share the same root layout id.&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        rvToApply<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">performApply</span><span style="color:#000;font-weight:bold">(</span>v<span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">(</span>ViewGroup<span style="color:#000;font-weight:bold">)</span> v<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getParent</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">,</span> handler<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>继续跟进</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">performApply</span><span style="color:#000;font-weight:bold">(</span>View v<span style="color:#000;font-weight:bold">,</span> ViewGroup parent<span style="color:#000;font-weight:bold">,</span> OnClickHandler handler<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mActions <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                handler <span style="color:#000;font-weight:bold">=</span> handler <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span> <span style="color:#000;font-weight:bold">?</span> DEFAULT_ON_CLICK_HANDLER <span style="color:#000;font-weight:bold">:</span> handler<span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> count <span style="color:#000;font-weight:bold">=</span> mActions<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">size</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&lt;</span> count<span style="color:#000;font-weight:bold">;</span> i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    Action a <span style="color:#000;font-weight:bold">=</span> mActions<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">get</span><span style="color:#000;font-weight:bold">(</span>i<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    a<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">apply</span><span style="color:#000;font-weight:bold">(</span>v<span style="color:#000;font-weight:bold">,</span> parent<span style="color:#000;font-weight:bold">,</span> handler<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>刚才我们说吧视图转换成action，现在终于看到了，由于action是抽象类，我们可以看看它子类的实现：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"> <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+            <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">apply</span><span style="color:#000;font-weight:bold">(</span>View root<span style="color:#000;font-weight:bold">,</span> ViewGroup rootParent<span style="color:#000;font-weight:bold">,</span> OnClickHandler handler<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000;font-weight:bold">final</span> View view <span style="color:#000;font-weight:bold">=</span> root<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">findViewById</span><span style="color:#000;font-weight:bold">(</span>viewId<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>view <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">return</span><span style="color:#000;font-weight:bold">;</span>
+                Class<span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000;font-weight:bold">?</span><span style="color:#000;font-weight:bold">&gt;</span> param <span style="color:#000;font-weight:bold">=</span> getParameterType<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>param <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#000;font-weight:bold">throw</span> <span style="color:#000;font-weight:bold">new</span> ActionException<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;bad type: &#34;</span> <span style="color:#000;font-weight:bold">+</span> <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">type</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">try</span> <span style="color:#000;font-weight:bold">{</span>
+                    getMethod<span style="color:#000;font-weight:bold">(</span>view<span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">methodName</span><span style="color:#000;font-weight:bold">,</span> param<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">invoke</span><span style="color:#000;font-weight:bold">(</span>view<span style="color:#000;font-weight:bold">,</span> wrapArg<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">value</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>ActionException e<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#000;font-weight:bold">throw</span> e<span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">catch</span> <span style="color:#000;font-weight:bold">(</span>Exception ex<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#000;font-weight:bold">throw</span> <span style="color:#000;font-weight:bold">new</span> ActionException<span style="color:#000;font-weight:bold">(</span>ex<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#000;font-weight:bold">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="三remoteviews的简单应用">三.RemoteViews的简单应用</h3>
+<p>可以参考桌面小部件的原理，利用RemoteViews来实现两个进程之间View的传递</p>
+<p>首先我们两个Activity分别运行在了两个不同的进程，一个是A，一个是B，其中A扮演的是通知栏的角色，而B则可以不停地发送通知栏消息，当然这是模拟的消息。为了模拟通知栏的效果，我们修改A的process属性使其运行在单独的进程中，这样A和B就构成了多进程通信的情形。我们在B中创建Remoteviews对象，然后通知A显示这个RemoteViews对象。如何通知A显示B中的RemoteViews呢?我们可以像系统一样采用
+Binder来实现，但是这里为了简单起见就采用了广播。B每发送一次模拟通知，就会发送一个特定的广播，然后A接收到广播后就开始显示B中定义的RemoteViews对象，这个过程和系统的通知栏消息的显示过程几乎一致，或者说这里就是复制了通知栏的显示过程而已。</p>
+<p>首先看B的实现，B只要构造RemoteViews对象并将其传输给A即可，这一过程通知栏是采用Binder实现的，但是本例中采用广播来实现，RemoteViews对象通过Intent传输A中，代码如下所示。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">BActivity</span> <span style="color:#000;font-weight:bold">extends</span> Activity <span style="color:#000;font-weight:bold">implements</span> View<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">OnClickListener</span> <span style="color:#000;font-weight:bold">{</span>
+
+    <span style="color:#000;font-weight:bold">private</span> Button btn_send<span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onCreate</span><span style="color:#000;font-weight:bold">(</span>Bundle savedInstanceState<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onCreate</span><span style="color:#000;font-weight:bold">(</span>savedInstanceState<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        setContentView<span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">layout</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">activity_b</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        initView<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">initView</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        btn_send <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>Button<span style="color:#000;font-weight:bold">)</span> findViewById<span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">btn_send</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        btn_send<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setOnClickListener</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onClick</span><span style="color:#000;font-weight:bold">(</span>View v<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">switch</span> <span style="color:#000;font-weight:bold">(</span>v<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getId</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">case</span> R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">btn_send</span><span style="color:#000;font-weight:bold">:</span>
+                RemoteViews remoteViews <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> RemoteViews<span style="color:#000;font-weight:bold">(</span>getPackageName<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">,</span> R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">layout</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">layout_item</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                remoteViews<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setTextViewText</span><span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">textView1</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#d14">&#34;Hello&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                remoteViews<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setImageViewResource</span><span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">imageview1</span><span style="color:#000;font-weight:bold">,</span> R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">mipmap</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ic_launcher</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                PendingIntent pendingIntent <span style="color:#000;font-weight:bold">=</span> PendingIntent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getActivity</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">,</span> 0<span style="color:#000;font-weight:bold">,</span> <span style="color:#000;font-weight:bold">new</span> Intent<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">,</span> TestActivity<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">class</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">,</span> PendingIntent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">FLAG_UPDATE_CURRENT</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                remoteViews<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">setOnClickPendingIntent</span><span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">imageview1</span><span style="color:#000;font-weight:bold">,</span> pendingIntent<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                Intent intent <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> Intent<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;send_bro&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                sendBroadcast<span style="color:#000;font-weight:bold">(</span>intent<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>A的代码比较简单只是接收一个广播就行</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000;font-weight:bold">public</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">AActivity</span> <span style="color:#000;font-weight:bold">extends</span> Activity <span style="color:#000;font-weight:bold">{</span>
+
+    <span style="color:#000;font-weight:bold">private</span> LinearLayout mLinearLayout<span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#000;font-weight:bold">private</span> BroadcastReceiver mBroadcastReceiver <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> BroadcastReceiver<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onReceive</span><span style="color:#000;font-weight:bold">(</span>Context context<span style="color:#000;font-weight:bold">,</span> Intent intent<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            RemoteViews remoteViews <span style="color:#000;font-weight:bold">=</span> intent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getParcelableExtra</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;send_bro&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>remoteViews <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                updateUI<span style="color:#000;font-weight:bold">(</span>remoteViews<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span><span style="color:#000;font-weight:bold">;</span>
+
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">updateUI</span><span style="color:#000;font-weight:bold">(</span>RemoteViews remoteViews<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        View view <span style="color:#000;font-weight:bold">=</span> remoteViews<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">apply</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">,</span> mLinearLayout<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        mLinearLayout<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">addView</span><span style="color:#000;font-weight:bold">(</span>view<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onCreate</span><span style="color:#000;font-weight:bold">(</span>Bundle savedInstanceState<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onCreate</span><span style="color:#000;font-weight:bold">(</span>savedInstanceState<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        setContentView<span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">layout</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">activity_a</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        initView<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">initView</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        mLinearLayout <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>LinearLayout<span style="color:#000;font-weight:bold">)</span> findViewById<span style="color:#000;font-weight:bold">(</span>R<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">id</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">mLinearLayout</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        IntentFilter intent <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> IntentFilter<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;send_bro&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        registerReceiver<span style="color:#000;font-weight:bold">(</span>mBroadcastReceiver<span style="color:#000;font-weight:bold">,</span> intent<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+    <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+    <span style="color:#000;font-weight:bold">protected</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">onDestroy</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onDestroy</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        unregisterReceiver<span style="color:#000;font-weight:bold">(</span>mBroadcastReceiver<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>上述代码很简单，除了注册和解除广播以外，最主要的逻辑其实就是updateUI,当A收到广播后，会从Intent中取出RemoteViews对象，然后通过apply方法加载布局并且执行更新操作，最后将得到的View添加到A的布局中即可。可以发现这个过程很简单，但是通知栏的底层是如何实现的呢？</p>
+<p>木节这个例子是可以在实际中使用的，比如现在有两个应用，一个应用需要能够事更新另一个应用中的某个界面，这个时候我们当然可以选择AIDL去实现，但是如果对界面的更新比较频繁，这个时候就会有效率问题，同时AIDL接口就有可能会变得很复杂。这个时间如果采用RemoteViews来实现就没有这个问题了，当然RemoteViews也有缺点，那就是他只支持一些常见的View，对于自定义View它是不支持的。面对这种问题，到底是采用AIDL还是采用RemoteViews，这个要看具体情况，如果界面中的View都是一些简单的且被RemoteViews支持的View，那么可以考虑采用RemoteViews，否则就不适合用RemoteViews 了。</p>
+<p>如果打算采用RemoteViews来实现两个应用之间的界面更新，那么这里还有一个问题，那就是布局文件的加载问题。在上面的代码中，我们直接通过RemoteViews的的apply方法来加载并更新界面，如下所示。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">View view <span style="color:#000;font-weight:bold">=</span> remoteViews<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">apply</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">,</span> mLinearLayout<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+ mLinearLayout<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">addView</span><span style="color:#000;font-weight:bold">(</span>view<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这种写法在同一个应用的多进程情形下是适用的，但是如果A和B属于不同应用，那么B中的布局文件的资源id传输到A中以后很有可能是无效的，因为A中的这个布局文件的资源id不可能刚好和B中的资源id一样，面对这种情况，我们就要适当的修改Remoteviews的显示过程的代码了。这里给出一种方法，既然资源不相同，那我们就通过资源名称来加载布局文件。首先两个应用要提前约定好RemoteViews中的布局的文件名称，比如“layout simulated notification”，然后在A中根据名称找到并加载，接着再调用Remoteviews 的的reapply方法即可将B中对View所做的一系列更新操作加载到View上了，关于applyHe reapply方法的差别在前面说了，这样历程就OK了</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  <span style="color:#458;font-weight:bold">int</span> layoutId <span style="color:#000;font-weight:bold">=</span> getResources<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getIdentifier</span><span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;layout_simulated_notification&#34;</span><span style="color:#000;font-weight:bold">,</span><span style="color:#d14">&#34;layout&#34;</span><span style="color:#000;font-weight:bold">,</span>getPackageName<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        View view <span style="color:#000;font-weight:bold">=</span> getLayoutInflater<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">.</span><span style="color:#008080">inflate</span><span style="color:#000;font-weight:bold">(</span>layoutId<span style="color:#000;font-weight:bold">,</span>mLinearLayout<span style="color:#000;font-weight:bold">,</span><span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        remoteViews<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">reapply</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">this</span><span style="color:#000;font-weight:bold">,</span>view<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        mLinearLayout<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">addView</span><span style="color:#000;font-weight:bold">(</span>view<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="四参考资料">四.参考资料</h3>
+<p>这篇博客参考了很多其他的博客，这里就当自己的一个笔记好了
+《android艺术开发探索》
+<a href="https://blog.csdn.net/qq_26787115/article/details/54427183">https://blog.csdn.net/qq_26787115/article/details/54427183</a>
+<a href="http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2017/0417/7838.html">RemoteViews详细解释</a></p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/Android/Android%E4%B9%8BRemoteViews%E7%AF%87%E4%B8%8BRemoteViews%E7%9A%84%E5%86%85%E9%83%A8%E6%9C%BA%E5%88%B6/">http://blog.bingtan.online/posts/Android/Android%E4%B9%8BRemoteViews%E7%AF%87%E4%B8%8BRemoteViews%E7%9A%84%E5%86%85%E9%83%A8%E6%9C%BA%E5%88%B6/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/Android/Android%E4%B9%8BRemoteViews%E7%AF%87%E4%B8%8A%E9%80%9A%E7%9F%A5%E6%A0%8F%E5%92%8C%E6%A1%8C%E9%9D%A2%E5%B0%8F%E6%8E%A7%E4%BB%B6/">Android之RemoteViews篇上————通知栏和桌面小控件</a></li>
+        
+        <li><a href="/posts/Android/Android%E4%B9%8B%E8%BE%85%E5%8A%A9%E6%9C%8D%E5%8A%A1%E4%B8%8B%E7%AF%87AccessibilityServic%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">Android之辅助服务下篇————AccessibilityServic源码分析</a></li>
+        
+        <li><a href="/posts/Android/Android%E4%B9%8B%E8%BE%85%E5%8A%A9%E6%9C%8D%E5%8A%A1%E4%B8%8A%E7%AF%87AccessibilityService%E4%BD%BF%E7%94%A8/">Android之辅助服务上篇————AccessibilityService使用</a></li>
+        
+        <li><a href="/posts/Android/Android%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BBGestureDetectory/">Android源码阅读————GestureDetectory</a></li>
+        
+        <li><a href="/posts/Android/Android%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0Activity%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%92%8C%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/">Android学习笔记————Activity的生命周期和启动模式</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/Android'>Android</a></li>
+                
+                <li><a href='http://blog.bingtan.online/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB'>源码阅读</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "https://github.com/hsc396612325/HSCBlog/tree/gh-pages"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一remoteviews概述">一.remoteViews概述</a></li>
+    <li><a href="#二remoteviews源码">二.RemoteViews源码</a></li>
+    <li><a href="#三remoteviews的简单应用">三.RemoteViews的简单应用</a></li>
+    <li><a href="#四参考资料">四.参考资料</a></li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>

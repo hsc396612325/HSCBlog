@@ -1,0 +1,1239 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Android源码阅读————GestureDetectory | 冰炭不投day的博客</title>
+    <meta property="og:title" content="Android源码阅读————GestureDetectory - 冰炭不投day的博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2018-07-08T22:40:54&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2018-07-08T22:40:54&#43;08:00'>
+        
+    <meta name="Keywords" content="Android 冰炭不投day">
+    <meta name="description" content="Android源码阅读————GestureDetectory">
+        
+    <meta name="author" content="冰炭不投day">
+    <meta property="og:url" content="http://blog.bingtan.online/posts/Android/Android%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BBGestureDetectory/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4031353640611810",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://blog.bingtan.online">
+                        冰炭不投day的博客
+                    </a>
+                
+                <p class="description">若向往 我敢往</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://blog.bingtan.online">首页</a>
+                    
+                    <a  href="http://blog.bingtan.online/tools/" title="工具">工具</a>
+                    
+                    <a  href="http://blog.bingtan.online/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://blog.bingtan.online/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">Android源码阅读————GestureDetectory</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2018年7月8日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='http://blog.bingtan.online/categories/Android'>Android</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+
+        
+        
+        <div class="post-content">
+            <h3 id="一前言">一.前言</h3>
+<p>目前接触Android也差不多一年了，一直处于知其然不知其所以然，所以也是希望从源码的角度出发，理解更多关于Android的知识。</p>
+<p>这个系列我希望可以一直写下去，增强我对Android的理解。</p>
+<p>开头的第一篇我选择了一个不是很长的源码，GestureDetector手势控制器来开始阅读。</p>
+<p>参考资料:<a href="https://blog.csdn.net/totond/article/details/77881180">Android手势检测——GestureDetector全面分析</a></p>
+<h3 id="二-gesturedetectory的作用">二. GestureDetectory的作用</h3>
+<p>关于GestureDetectory的作用及使用，我的上一篇博客中有讲到
+<a href="https://blog.csdn.net/qq_38499859/article/details/80436683">Android艺术开发探索学习笔记2————初识View</a>
+这里我就不再赘述了。</p>
+<h3 id="三接口">三.接口</h3>
+<p>在GestureDetector有4个接口
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-wK8Fhm3v-1579948777215)(/image/Android/2_0.png)]
+接口中每个方法的作用在上一篇博客中也有讲到过。</p>
+<h3 id="四初始化处理">四.初始化处理</h3>
+<h4 id="1构造方法">1.构造方法</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">//构造方法共有4个，但底层调用都是下面那一个
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">public</span> <span style="color:#900;font-weight:bold">GestureDetector</span><span style="color:#000;font-weight:bold">(</span>Context context<span style="color:#000;font-weight:bold">,</span> OnGestureListener listener<span style="color:#000;font-weight:bold">,</span>Handler handler<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#998;font-style:italic">//设置handler
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>handler <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            mHandler <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> GestureHandler<span style="color:#000;font-weight:bold">(</span>handler<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+            mHandler <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">new</span> GestureHandler<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+	<span style="color:#998;font-style:italic">//设置listener
+</span><span style="color:#998;font-style:italic"></span>        mListener <span style="color:#000;font-weight:bold">=</span> listener<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>listener <span style="color:#000;font-weight:bold">instanceof</span> OnDoubleTapListener<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            setOnDoubleTapListener<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span>OnDoubleTapListener<span style="color:#000;font-weight:bold">)</span> listener<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>listener <span style="color:#000;font-weight:bold">instanceof</span> OnContextClickListener<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            setContextClickListener<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span>OnContextClickListener<span style="color:#000;font-weight:bold">)</span> listener<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        init<span style="color:#000;font-weight:bold">(</span>context<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="2gesturehandler方法">2.GestureHandler方法</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"> <span style="color:#000;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">class</span> <span style="color:#458;font-weight:bold">GestureHandler</span> <span style="color:#000;font-weight:bold">extends</span> Handler <span style="color:#000;font-weight:bold">{</span>
+        GestureHandler<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        GestureHandler<span style="color:#000;font-weight:bold">(</span>Handler handler<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">super</span><span style="color:#000;font-weight:bold">(</span>handler<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getLooper</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#3c5d5d;font-weight:bold">@Override</span>
+        <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">handleMessage</span><span style="color:#000;font-weight:bold">(</span>Message msg<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">switch</span> <span style="color:#000;font-weight:bold">(</span>msg<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">what</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">case</span> SHOW_PRESS<span style="color:#000;font-weight:bold">:</span>
+               <span style="color:#998;font-style:italic">//手指轻触屏幕的一瞬间，尚未松开，调用接口中的onShowPress
+</span><span style="color:#998;font-style:italic"></span>                mListener<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onShowPress</span><span style="color:#000;font-weight:bold">(</span>mCurrentDownEvent<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+                
+            <span style="color:#000;font-weight:bold">case</span> LONG_PRESS<span style="color:#000;font-weight:bold">:</span>
+	           <span style="color:#998;font-style:italic">//长按
+</span><span style="color:#998;font-style:italic"></span>                dispatchLongPress<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+                
+            <span style="color:#000;font-weight:bold">case</span> TAP<span style="color:#000;font-weight:bold">:</span>
+                <span style="color:#998;font-style:italic">// If the user&#39;s finger is still down, do not count it as a tap
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">//这里控制SingleTapConfirmed的回调，
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mDoubleTapListener <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">!</span>mStillDown<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                     <span style="color:#998;font-style:italic">//回调onSingleTapConfirmed
+</span><span style="color:#998;font-style:italic"></span>                         mDoubleTapListener<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onSingleTapConfirmed</span><span style="color:#000;font-weight:bold">(</span>mCurrentDownEvent<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#998;font-style:italic">//如果处理Message的时候还没松开，就设置mDeferConfirmSingleTap为true，在UP事件的时候调用SingleTapConfirme
+</span><span style="color:#998;font-style:italic"></span>                        mDeferConfirmSingleTap <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+<span style="color:#900;font-weight:bold">
+</span><span style="color:#900;font-weight:bold">            default:</span>
+                <span style="color:#000;font-weight:bold">throw</span> <span style="color:#000;font-weight:bold">new</span> RuntimeException<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;Unknown message &#34;</span> <span style="color:#000;font-weight:bold">+</span> msg<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">//never
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+
+<span style="color:#998;font-style:italic">//长按处理
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">dispatchLongPress</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        mHandler<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">removeMessages</span><span style="color:#000;font-weight:bold">(</span>TAP<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        mDeferConfirmSingleTap <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+        mInLongPress <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+        mListener<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onLongPress</span><span style="color:#000;font-weight:bold">(</span>mCurrentDownEvent<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="3setondoubletaplistenersetcontextclicklistener方法">3.setOnDoubleTapListener&amp;setContextClickListener方法</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">   <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setOnDoubleTapListener</span><span style="color:#000;font-weight:bold">(</span>OnDoubleTapListener onDoubleTapListener<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        mDoubleTapListener <span style="color:#000;font-weight:bold">=</span> onDoubleTapListener<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+
+    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">setContextClickListener</span><span style="color:#000;font-weight:bold">(</span>OnContextClickListener onContextClickListener<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        mContextClickListener <span style="color:#000;font-weight:bold">=</span> onContextClickListener<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="4init方法">4.init方法</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">void</span> <span style="color:#900;font-weight:bold">init</span><span style="color:#000;font-weight:bold">(</span>Context context<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mListener <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">throw</span> <span style="color:#000;font-weight:bold">new</span> NullPointerException<span style="color:#000;font-weight:bold">(</span><span style="color:#d14">&#34;OnGestureListener must not be null&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        mIsLongpressEnabled <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#998;font-style:italic">// 获取设置，边界距离，用于判断是否属于滑动，是否属于双击。
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#458;font-weight:bold">int</span> touchSlop<span style="color:#000;font-weight:bold">,</span> doubleTapSlop<span style="color:#000;font-weight:bold">,</span> doubleTapTouchSlop<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>context <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#998;font-style:italic">//noinspection deprecation
+</span><span style="color:#998;font-style:italic"></span>            touchSlop <span style="color:#000;font-weight:bold">=</span> ViewConfiguration<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getTouchSlop</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            doubleTapTouchSlop <span style="color:#000;font-weight:bold">=</span> touchSlop<span style="color:#000;font-weight:bold">;</span> <span style="color:#998;font-style:italic">// Hack rather than adding a hiden method for this
+</span><span style="color:#998;font-style:italic"></span>            doubleTapSlop <span style="color:#000;font-weight:bold">=</span> ViewConfiguration<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getDoubleTapSlop</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#998;font-style:italic">//noinspection deprecation
+</span><span style="color:#998;font-style:italic"></span>            mMinimumFlingVelocity <span style="color:#000;font-weight:bold">=</span> ViewConfiguration<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getMinimumFlingVelocity</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            mMaximumFlingVelocity <span style="color:#000;font-weight:bold">=</span> ViewConfiguration<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getMaximumFlingVelocity</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">final</span> ViewConfiguration configuration <span style="color:#000;font-weight:bold">=</span> ViewConfiguration<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">get</span><span style="color:#000;font-weight:bold">(</span>context<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            touchSlop <span style="color:#000;font-weight:bold">=</span> configuration<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getScaledTouchSlop</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            doubleTapTouchSlop <span style="color:#000;font-weight:bold">=</span> configuration<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getScaledDoubleTapTouchSlop</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            doubleTapSlop <span style="color:#000;font-weight:bold">=</span> configuration<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getScaledDoubleTapSlop</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            mMinimumFlingVelocity <span style="color:#000;font-weight:bold">=</span> configuration<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getScaledMinimumFlingVelocity</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            mMaximumFlingVelocity <span style="color:#000;font-weight:bold">=</span> configuration<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getScaledMaximumFlingVelocity</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        mTouchSlopSquare <span style="color:#000;font-weight:bold">=</span> touchSlop <span style="color:#000;font-weight:bold">*</span> touchSlop<span style="color:#000;font-weight:bold">;</span>
+        mDoubleTapTouchSlopSquare <span style="color:#000;font-weight:bold">=</span> doubleTapTouchSlop <span style="color:#000;font-weight:bold">*</span> doubleTapTouchSlop<span style="color:#000;font-weight:bold">;</span>
+        mDoubleTapSlopSquare <span style="color:#000;font-weight:bold">=</span> doubleTapSlop <span style="color:#000;font-weight:bold">*</span> doubleTapSlop<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="五-输入处理">五. 输入处理</h3>
+<p>初始化完之后，就是看它如何处理输入。</p>
+<h4 id="1ontouchevent">1.onTouchEvent</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"> <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">onTouchEvent</span><span style="color:#000;font-weight:bold">(</span>MotionEvent ev<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+ <span style="color:#998;font-style:italic">//检查事件输入的一致性,log出来一致性的信息，如：有事件只有up没有down
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mInputEventConsistencyVerifier <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            mInputEventConsistencyVerifier<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onTouchEvent</span><span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">,</span> 0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> action <span style="color:#000;font-weight:bold">=</span> ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getAction</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#998;font-style:italic">//开始速度检测
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mVelocityTracker <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            mVelocityTracker <span style="color:#000;font-weight:bold">=</span> VelocityTracker<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">obtain</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        mVelocityTracker<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">addMovement</span><span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#998;font-style:italic">//检测是否非主要指针抬起动作（如果是多点触摸）
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">boolean</span> pointerUp <span style="color:#000;font-weight:bold">=</span>
+                <span style="color:#000;font-weight:bold">(</span>action <span style="color:#000;font-weight:bold">&amp;</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_MASK</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_POINTER_UP</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> skipIndex <span style="color:#000;font-weight:bold">=</span> pointerUp <span style="color:#000;font-weight:bold">?</span> ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getActionIndex</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">-</span>1<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">boolean</span> isGeneratedGesture <span style="color:#000;font-weight:bold">=</span>
+                <span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getFlags</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">&amp;</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">FLAG_IS_GENERATED_GESTURE</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#998;font-style:italic">// Determine focal point
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#998;font-style:italic">//是非主要指针抬起动作会跳过
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#458;font-weight:bold">float</span> sumX <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">,</span> sumY <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> count <span style="color:#000;font-weight:bold">=</span> ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getPointerCount</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#998;font-style:italic">//把所有还在触摸顶点手指的位置x，y加起来，求平均值。
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&lt;</span> count<span style="color:#000;font-weight:bold">;</span> i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>skipIndex <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> i<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">continue</span><span style="color:#000;font-weight:bold">;</span>
+            sumX <span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">=</span> ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getX</span><span style="color:#000;font-weight:bold">(</span>i<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            sumY <span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">=</span> ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getY</span><span style="color:#000;font-weight:bold">(</span>i<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> div <span style="color:#000;font-weight:bold">=</span> pointerUp <span style="color:#000;font-weight:bold">?</span> count <span style="color:#000;font-weight:bold">-</span> 1 <span style="color:#000;font-weight:bold">:</span> count<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">float</span> focusX <span style="color:#000;font-weight:bold">=</span> sumX <span style="color:#000;font-weight:bold">/</span> div<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">float</span> focusY <span style="color:#000;font-weight:bold">=</span> sumY <span style="color:#000;font-weight:bold">/</span> div<span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#458;font-weight:bold">boolean</span> handled <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#000;font-weight:bold">switch</span> <span style="color:#000;font-weight:bold">(</span>action <span style="color:#000;font-weight:bold">&amp;</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_MASK</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">case</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_POINTER_DOWN</span><span style="color:#000;font-weight:bold">:</span>
+            <span style="color:#998;font-style:italic">//...多点触摸动作
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#000;font-weight:bold">case</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_POINTER_UP</span><span style="color:#000;font-weight:bold">:</span>
+            <span style="color:#998;font-style:italic">//...多点离开动作
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#000;font-weight:bold">case</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_DOWN</span><span style="color:#000;font-weight:bold">:</span>
+            <span style="color:#998;font-style:italic">//...单点触摸动作
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#000;font-weight:bold">case</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_MOVE</span><span style="color:#000;font-weight:bold">:</span>
+            <span style="color:#998;font-style:italic">//...触摸点移动动作
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#000;font-weight:bold">case</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_UP</span><span style="color:#000;font-weight:bold">:</span>
+            <span style="color:#998;font-style:italic">//...单点触摸离开动作
+</span><span style="color:#998;font-style:italic"></span>            <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#000;font-weight:bold">case</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_CANCEL</span><span style="color:#000;font-weight:bold">:</span><span style="color:#998;font-style:italic">//触摸动作取消
+</span><span style="color:#998;font-style:italic"></span>            cancel<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+            <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+		<span style="color:#998;font-style:italic">//对未被处理的事件进行一次一致性检测
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">!</span>handled <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> mInputEventConsistencyVerifier <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            mInputEventConsistencyVerifier<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onUnhandledEvent</span><span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">,</span> 0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">return</span> handled<span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>onTouchEvent()的主要思路就是先对输入事件做出统一处理，提取一些共有的信息，如多个点同时触摸时候的中心焦点和滑动速度等，然后根据事件的分类做出相应的处理。</p>
+<h4 id="2down事件处理">2.DOWN事件处理</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">77
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">78
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">79
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">             <span style="color:#000;font-weight:bold">case</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_DOWN</span><span style="color:#000;font-weight:bold">:</span>
+                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mDoubleTapListener <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#998;font-style:italic">//处理双击
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#998;font-style:italic">//取消TAP事件
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#458;font-weight:bold">boolean</span> hadTapMessage <span style="color:#000;font-weight:bold">=</span> mHandler<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">hasMessages</span><span style="color:#000;font-weight:bold">(</span>TAP<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>hadTapMessage<span style="color:#000;font-weight:bold">)</span> mHandler<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">removeMessages</span><span style="color:#000;font-weight:bold">(</span>TAP<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#998;font-style:italic">//判断是否是双击事件,isConsideredDoubleTap函数在下
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span>mCurrentDownEvent <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">(</span>mPreviousUpEvent <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> hadTapMessage <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span>
+                            isConsideredDoubleTap<span style="color:#000;font-weight:bold">(</span>mCurrentDownEvent<span style="color:#000;font-weight:bold">,</span> mPreviousUpEvent<span style="color:#000;font-weight:bold">,</span> ev<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        <span style="color:#998;font-style:italic">// This is a second tap 双击
+</span><span style="color:#998;font-style:italic"></span>                        mIsDoubleTapping <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+                        <span style="color:#998;font-style:italic">// Give a callback with the first tap of the double-tap
+</span><span style="color:#998;font-style:italic"></span>                        <span style="color:#998;font-style:italic">//双击回调
+</span><span style="color:#998;font-style:italic"></span>                        handled <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">=</span> mDoubleTapListener<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onDoubleTap</span><span style="color:#000;font-weight:bold">(</span>mCurrentDownEvent<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                        <span style="color:#998;font-style:italic">// Give a callback with down event of the double-tap
+</span><span style="color:#998;font-style:italic"></span>                        handled <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">=</span> mDoubleTapListener<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onDoubleTapEvent</span><span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+                        <span style="color:#998;font-style:italic">// This is a first tap
+</span><span style="color:#998;font-style:italic"></span>                        <span style="color:#998;font-style:italic">//延时发出单击事件，如果到了时间（300ms）还没有取消的话就确认是TAP事件了
+</span><span style="color:#998;font-style:italic"></span>                        mHandler<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sendEmptyMessageDelayed</span><span style="color:#000;font-weight:bold">(</span>TAP<span style="color:#000;font-weight:bold">,</span> DOUBLE_TAP_TIMEOUT<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">}</span>
+
+                mDownFocusX <span style="color:#000;font-weight:bold">=</span> mLastFocusX <span style="color:#000;font-weight:bold">=</span> focusX<span style="color:#000;font-weight:bold">;</span>
+                mDownFocusY <span style="color:#000;font-weight:bold">=</span> mLastFocusY <span style="color:#000;font-weight:bold">=</span> focusY<span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#998;font-style:italic">//重置CurrentDownEvent
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mCurrentDownEvent <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    mCurrentDownEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">recycle</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+                mCurrentDownEvent <span style="color:#000;font-weight:bold">=</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">obtain</span><span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                mAlwaysInTapRegion <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+                mAlwaysInBiggerTapRegion <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+                mStillDown <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+                mInLongPress <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+                mDeferConfirmSingleTap <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+
+                <span style="color:#998;font-style:italic">//处理长按
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">//先检测用户是否允许检测长按
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mIsLongpressEnabled<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    mHandler<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">removeMessages</span><span style="color:#000;font-weight:bold">(</span>LONG_PRESS<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#998;font-style:italic">//延时发送长按事件
+</span><span style="color:#998;font-style:italic"></span>                    mHandler<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sendEmptyMessageAtTime</span><span style="color:#000;font-weight:bold">(</span>LONG_PRESS<span style="color:#000;font-weight:bold">,</span>
+                            mCurrentDownEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getDownTime</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">+</span> LONGPRESS_TIMEOUT<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#998;font-style:italic">//延时发送showPress事件
+</span><span style="color:#998;font-style:italic"></span>                mHandler<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">sendEmptyMessageAtTime</span><span style="color:#000;font-weight:bold">(</span>SHOW_PRESS<span style="color:#000;font-weight:bold">,</span>
+                        mCurrentDownEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getDownTime</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">+</span> TAP_TIMEOUT<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                handled <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">=</span> mListener<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onDown</span><span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+
+
+
+    <span style="color:#998;font-style:italic">//判断第二次点击是否是有效点击
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">private</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">isConsideredDoubleTap</span><span style="color:#000;font-weight:bold">(</span>MotionEvent firstDown<span style="color:#000;font-weight:bold">,</span> MotionEvent firstUp<span style="color:#000;font-weight:bold">,</span>
+                                          MotionEvent secondDown<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">!</span>mAlwaysInBiggerTapRegion<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#998;font-style:italic">//判断两次点击事件间隔是否符合要求
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">long</span> deltaTime <span style="color:#000;font-weight:bold">=</span> secondDown<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getEventTime</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">-</span> firstUp<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getEventTime</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>deltaTime <span style="color:#000;font-weight:bold">&gt;</span> DOUBLE_TAP_TIMEOUT <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span> deltaTime <span style="color:#000;font-weight:bold">&lt;</span> DOUBLE_TAP_MIN_TIME<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+
+        <span style="color:#998;font-style:italic">//判断两次点击距离是否在有效范围内
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#458;font-weight:bold">int</span> deltaX <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">)</span> firstDown<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getX</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">-</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">)</span> secondDown<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getX</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#458;font-weight:bold">int</span> deltaY <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">)</span> firstDown<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getY</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">-</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">)</span> secondDown<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getY</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#998;font-style:italic">//MotionEvent.FLAG_IS_GENERATED_GESTURE标识表示GestureDector不使用任何触摸
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">boolean</span> isGeneratedGesture <span style="color:#000;font-weight:bold">=</span>
+                <span style="color:#000;font-weight:bold">(</span>firstDown<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getFlags</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">&amp;</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">FLAG_IS_GENERATED_GESTURE</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#458;font-weight:bold">int</span> slopSquare <span style="color:#000;font-weight:bold">=</span> isGeneratedGesture <span style="color:#000;font-weight:bold">?</span> 0 <span style="color:#000;font-weight:bold">:</span> mDoubleTapSlopSquare<span style="color:#000;font-weight:bold">;</span>
+
+        <span style="color:#998;font-style:italic">//判断第二次点击是否在附近，在附近才被认为是双击
+</span><span style="color:#998;font-style:italic"></span>        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">(</span>deltaX <span style="color:#000;font-weight:bold">*</span> deltaX <span style="color:#000;font-weight:bold">+</span> deltaY <span style="color:#000;font-weight:bold">*</span> deltaY <span style="color:#000;font-weight:bold">&lt;</span> slopSquare<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>在DOWN事件中涉及到</p>
+<ul>
+<li>处理单击事件，如果收到一次Down事件，并且前端时间也没有DOWN事件的话，会发送一个延时的TAP信息，而一段时间（300ms）之后没有取消的话,就执行GestureHandler里面的TAP单击确认操作</li>
+<li>处理双击事件，如果前面有一次DOWN事件，而且也符合isConsideredDoubleTap()的条件（第一次点击后没有移动超出范围，第二次点击也在附近），就可以确认双击，执行onDoubleTap()和onDoubleTapEvent()的回调。</li>
+<li>处理长按事件：先看用户是否允许检查长按，然后发送一个延时LONG_PRESS信息，如果到时候还没取消，就回调长按方法。</li>
+<li>处理showPress判断：这个和长按差不多，只是短一些。</li>
+</ul>
+<h4 id="3-move事件处理">3. MOVE事件处理</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">            <span style="color:#000;font-weight:bold">case</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_MOVE</span><span style="color:#000;font-weight:bold">:</span>
+                <span style="color:#998;font-style:italic">//如果是正在长按和点击了鼠标右键
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mInLongPress <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span> mInContextClick<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">float</span> scrollX <span style="color:#000;font-weight:bold">=</span> mLastFocusX <span style="color:#000;font-weight:bold">-</span> focusX<span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">float</span> scrollY <span style="color:#000;font-weight:bold">=</span> mLastFocusY <span style="color:#000;font-weight:bold">-</span> focusY<span style="color:#000;font-weight:bold">;</span>
+
+                <span style="color:#998;font-style:italic">//如果是第二次点击的话，把移动事件也当做双击事件
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mIsDoubleTapping<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#998;font-style:italic">// Give the move events of the double-tap
+</span><span style="color:#998;font-style:italic"></span>                    handled <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">=</span> mDoubleTapListener<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onDoubleTapEvent</span><span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mAlwaysInTapRegion<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+
+                    <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> deltaX <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">(</span>focusX <span style="color:#000;font-weight:bold">-</span> mDownFocusX<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> deltaY <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">(</span>focusY <span style="color:#000;font-weight:bold">-</span> mDownFocusY<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#458;font-weight:bold">int</span> distance <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>deltaX <span style="color:#000;font-weight:bold">*</span> deltaX<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">+</span> <span style="color:#000;font-weight:bold">(</span>deltaY <span style="color:#000;font-weight:bold">*</span> deltaY<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#458;font-weight:bold">int</span> slopSquare <span style="color:#000;font-weight:bold">=</span> isGeneratedGesture <span style="color:#000;font-weight:bold">?</span> 0 <span style="color:#000;font-weight:bold">:</span> mTouchSlopSquare<span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#998;font-style:italic">//mTouchSlopSquare是一个距离的平方，表示滑动的时候，手的移动要大于这个距离才认为是Scroll事件
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>distance <span style="color:#000;font-weight:bold">&gt;</span> slopSquare<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        <span style="color:#998;font-style:italic">//进入滑动模式
+</span><span style="color:#998;font-style:italic"></span>                        handled <span style="color:#000;font-weight:bold">=</span> mListener<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onScroll</span><span style="color:#000;font-weight:bold">(</span>mCurrentDownEvent<span style="color:#000;font-weight:bold">,</span> ev<span style="color:#000;font-weight:bold">,</span> scrollX<span style="color:#000;font-weight:bold">,</span> scrollY<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                        mLastFocusX <span style="color:#000;font-weight:bold">=</span> focusX<span style="color:#000;font-weight:bold">;</span>
+                        mLastFocusY <span style="color:#000;font-weight:bold">=</span> focusY<span style="color:#000;font-weight:bold">;</span>
+                        mAlwaysInTapRegion <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+                        mHandler<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">removeMessages</span><span style="color:#000;font-weight:bold">(</span>TAP<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                        mHandler<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">removeMessages</span><span style="color:#000;font-weight:bold">(</span>SHOW_PRESS<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                        mHandler<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">removeMessages</span><span style="color:#000;font-weight:bold">(</span>LONG_PRESS<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                    <span style="color:#458;font-weight:bold">int</span> doubleTapSlopSquare <span style="color:#000;font-weight:bold">=</span> isGeneratedGesture <span style="color:#000;font-weight:bold">?</span> 0 <span style="color:#000;font-weight:bold">:</span> mDoubleTapTouchSlopSquare<span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#998;font-style:italic">//如果移动距离超过允许范围，则不再认为移动事件是双击的
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>distance <span style="color:#000;font-weight:bold">&gt;</span> doubleTapSlopSquare<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        mAlwaysInBiggerTapRegion <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span>Math<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">abs</span><span style="color:#000;font-weight:bold">(</span>scrollX<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">=</span> 1<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span> <span style="color:#000;font-weight:bold">(</span>Math<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">abs</span><span style="color:#000;font-weight:bold">(</span>scrollY<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">=</span> 1<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#998;font-style:italic">//后续的Scroll移动，前面的是进入Scroll移动
+</span><span style="color:#998;font-style:italic"></span>                    handled <span style="color:#000;font-weight:bold">=</span> mListener<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onScroll</span><span style="color:#000;font-weight:bold">(</span>mCurrentDownEvent<span style="color:#000;font-weight:bold">,</span> ev<span style="color:#000;font-weight:bold">,</span> scrollX<span style="color:#000;font-weight:bold">,</span> scrollY<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    mLastFocusX <span style="color:#000;font-weight:bold">=</span> focusX<span style="color:#000;font-weight:bold">;</span>
+                    mLastFocusY <span style="color:#000;font-weight:bold">=</span> focusY<span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>MOVE事件涉及到</p>
+<ul>
+<li>onDoubleTapEvent() 回调：只要确认是双击之后，mIsDoubleTapping为true，除了长按，后面的MOVE事件都会只回调onDoubleTapEvent().</li>
+<li>onScroll回调：当MOVE不是长按时，不是DoubleTapEvent之后，当移动距离大于移动距离之后，就会进入Scroll模式，然后两个MOVE事件的位移距离scrollX或者scroolY大于1px，就会调用onScroll。</li>
+</ul>
+<h4 id="4up事件的处理">4.UP事件的处理</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">            <span style="color:#000;font-weight:bold">case</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_UP</span><span style="color:#000;font-weight:bold">:</span>
+                mStillDown <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+                MotionEvent currentUpEvent <span style="color:#000;font-weight:bold">=</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">obtain</span><span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mIsDoubleTapping<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#998;font-style:italic">// Finally, give the up event of the double-tap
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#998;font-style:italic">//双击事件，回调onDoubleTapEvent
+</span><span style="color:#998;font-style:italic"></span>                    handled <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">=</span> mDoubleTapListener<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onDoubleTapEvent</span><span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mInLongPress<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#998;font-style:italic">//长按结束
+</span><span style="color:#998;font-style:italic"></span>                    mHandler<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">removeMessages</span><span style="color:#000;font-weight:bold">(</span>TAP<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    mInLongPress <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mAlwaysInTapRegion <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">!</span>mIgnoreNextUpEvent<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    handled <span style="color:#000;font-weight:bold">=</span> mListener<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onSingleTapUp</span><span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#998;font-style:italic">//处理单击确认，具体逻辑在GestureHandler如何处理TAP事件
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mDeferConfirmSingleTap <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> mDoubleTapListener <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        mDoubleTapListener<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onSingleTapConfirmed</span><span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">}</span> <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">!</span>mIgnoreNextUpEvent<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#998;font-style:italic">//处理Fling，如果速度符合要求,就回调fling
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#998;font-style:italic">// A fling must travel the minimum tap distance
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#000;font-weight:bold">final</span> VelocityTracker velocityTracker <span style="color:#000;font-weight:bold">=</span> mVelocityTracker<span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> pointerId <span style="color:#000;font-weight:bold">=</span> ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getPointerId</span><span style="color:#000;font-weight:bold">(</span>0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    velocityTracker<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">computeCurrentVelocity</span><span style="color:#000;font-weight:bold">(</span>1000<span style="color:#000;font-weight:bold">,</span> mMaximumFlingVelocity<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">float</span> velocityY <span style="color:#000;font-weight:bold">=</span> velocityTracker<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getYVelocity</span><span style="color:#000;font-weight:bold">(</span>pointerId<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">float</span> velocityX <span style="color:#000;font-weight:bold">=</span> velocityTracker<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getXVelocity</span><span style="color:#000;font-weight:bold">(</span>pointerId<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+                    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">(</span>Math<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">abs</span><span style="color:#000;font-weight:bold">(</span>velocityY<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">&gt;</span> mMinimumFlingVelocity<span style="color:#000;font-weight:bold">)</span>
+                            <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span> <span style="color:#000;font-weight:bold">(</span>Math<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">abs</span><span style="color:#000;font-weight:bold">(</span>velocityX<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">&gt;</span> mMinimumFlingVelocity<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        handled <span style="color:#000;font-weight:bold">=</span> mListener<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onFling</span><span style="color:#000;font-weight:bold">(</span>mCurrentDownEvent<span style="color:#000;font-weight:bold">,</span> ev<span style="color:#000;font-weight:bold">,</span> velocityX<span style="color:#000;font-weight:bold">,</span> velocityY<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">}</span>
+
+                <span style="color:#998;font-style:italic">//重置mPreviousUpEvent
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mPreviousUpEvent <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    mPreviousUpEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">recycle</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#998;font-style:italic">// Hold the event we obtained above - listeners may have changed the original.
+</span><span style="color:#998;font-style:italic"></span>                mPreviousUpEvent <span style="color:#000;font-weight:bold">=</span> currentUpEvent<span style="color:#000;font-weight:bold">;</span>
+
+                <span style="color:#998;font-style:italic">//回收mVelocityTracker
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mVelocityTracker <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#998;font-style:italic">// This may have been cleared when we called out to the
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#998;font-style:italic">// application above.
+</span><span style="color:#998;font-style:italic"></span>                    mVelocityTracker<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">recycle</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    mVelocityTracker <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+                mIsDoubleTapping <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+                mDeferConfirmSingleTap <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+                mIgnoreNextUpEvent <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+                mHandler<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">removeMessages</span><span style="color:#000;font-weight:bold">(</span>SHOW_PRESS<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                mHandler<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">removeMessages</span><span style="color:#000;font-weight:bold">(</span>LONG_PRESS<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>UP事件涉及到：</p>
+<ul>
+<li>onDoubleTapEvent()回调：只要确认是双击之后，mIsDoubleTapping为true，除了长按，后面的MOVE事件都会只回调onDoubleTapEvent()。</li>
+<li>onSingleTapUp()回调：DOWN事件之后没有MOVE，或者MOVE的距离没有超出范围，mAlwaysInTapRegion才不会变成false，回调onSingleTapUp()。</li>
+<li>onSingleTapConfirmed()回调</li>
+</ul>
+<h4 id="5多点事件的处理">5.多点事件的处理</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">            <span style="color:#000;font-weight:bold">case</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_POINTER_DOWN</span><span style="color:#000;font-weight:bold">:</span>
+                mDownFocusX <span style="color:#000;font-weight:bold">=</span> mLastFocusX <span style="color:#000;font-weight:bold">=</span> focusX<span style="color:#000;font-weight:bold">;</span>
+                mDownFocusY <span style="color:#000;font-weight:bold">=</span> mLastFocusY <span style="color:#000;font-weight:bold">=</span> focusY<span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#998;font-style:italic">// Cancel long press and taps
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">//如果有多个手指按下，取消长按和点击计时
+</span><span style="color:#998;font-style:italic"></span>                cancelTaps<span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+
+            <span style="color:#000;font-weight:bold">case</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_POINTER_UP</span><span style="color:#000;font-weight:bold">:</span>
+                mDownFocusX <span style="color:#000;font-weight:bold">=</span> mLastFocusX <span style="color:#000;font-weight:bold">=</span> focusX<span style="color:#000;font-weight:bold">;</span>
+                mDownFocusY <span style="color:#000;font-weight:bold">=</span> mLastFocusY <span style="color:#000;font-weight:bold">=</span> focusY<span style="color:#000;font-weight:bold">;</span>
+
+                <span style="color:#998;font-style:italic">// Check the dot product of current velocities.
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">// If the pointer that left was opposing another velocity vector, clear.
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#998;font-style:italic">//计算速度
+</span><span style="color:#998;font-style:italic"></span>                mVelocityTracker<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">computeCurrentVelocity</span><span style="color:#000;font-weight:bold">(</span>1000<span style="color:#000;font-weight:bold">,</span> mMaximumFlingVelocity<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> upIndex <span style="color:#000;font-weight:bold">=</span> ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getActionIndex</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> id1 <span style="color:#000;font-weight:bold">=</span> ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getPointerId</span><span style="color:#000;font-weight:bold">(</span>upIndex<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">float</span> x1 <span style="color:#000;font-weight:bold">=</span> mVelocityTracker<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getXVelocity</span><span style="color:#000;font-weight:bold">(</span>id1<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">float</span> y1 <span style="color:#000;font-weight:bold">=</span> mVelocityTracker<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getYVelocity</span><span style="color:#000;font-weight:bold">(</span>id1<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+                <span style="color:#998;font-style:italic">//如果剩下的手指速度方向和抬起那根手指速度相反方向，就说明不是fling，清空速度监听
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">for</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#458;font-weight:bold">int</span> i <span style="color:#000;font-weight:bold">=</span> 0<span style="color:#000;font-weight:bold">;</span> i <span style="color:#000;font-weight:bold">&lt;</span> count<span style="color:#000;font-weight:bold">;</span> i<span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">+</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>i <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> upIndex<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">continue</span><span style="color:#000;font-weight:bold">;</span>
+
+                    <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> id2 <span style="color:#000;font-weight:bold">=</span> ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getPointerId</span><span style="color:#000;font-weight:bold">(</span>i<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">float</span> x <span style="color:#000;font-weight:bold">=</span> x1 <span style="color:#000;font-weight:bold">*</span> mVelocityTracker<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getXVelocity</span><span style="color:#000;font-weight:bold">(</span>id2<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">float</span> y <span style="color:#000;font-weight:bold">=</span> y1 <span style="color:#000;font-weight:bold">*</span> mVelocityTracker<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getYVelocity</span><span style="color:#000;font-weight:bold">(</span>id2<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+
+                    <span style="color:#998;font-style:italic">//如果速度相反
+</span><span style="color:#998;font-style:italic"></span>                    <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">float</span> dot <span style="color:#000;font-weight:bold">=</span> x <span style="color:#000;font-weight:bold">+</span> y<span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>dot <span style="color:#000;font-weight:bold">&lt;</span> 0<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        mVelocityTracker<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">clear</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                        <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="6-contextclick的处理">6. ContextClick的处理</h4>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#998;font-style:italic">//ContextClick处理事件
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#000;font-weight:bold">public</span> <span style="color:#458;font-weight:bold">boolean</span> <span style="color:#900;font-weight:bold">onGenericMotionEvent</span><span style="color:#000;font-weight:bold">(</span>MotionEvent ev<span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+
+        <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mInputEventConsistencyVerifier <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            mInputEventConsistencyVerifier<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onGenericMotionEvent</span><span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">,</span> 0<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+
+        <span style="color:#000;font-weight:bold">final</span> <span style="color:#458;font-weight:bold">int</span> actionButton <span style="color:#000;font-weight:bold">=</span> ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getActionButton</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">switch</span> <span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">getActionMasked</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#000;font-weight:bold">case</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_BUTTON_PRESS</span><span style="color:#000;font-weight:bold">:</span>
+                <span style="color:#998;font-style:italic">//按下触控笔首选按键或者鼠标右键
+</span><span style="color:#998;font-style:italic"></span>                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mContextClickListener <span style="color:#000;font-weight:bold">!</span><span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">null</span> <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">!</span>mInContextClick <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">!</span>mInLongPress
+                        <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">(</span>actionButton <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">BUTTON_STYLUS_PRIMARY</span>
+                        <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span> actionButton <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">BUTTON_SECONDARY</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mContextClickListener<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">onContextClick</span><span style="color:#000;font-weight:bold">(</span>ev<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                        mInContextClick <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+                        mHandler<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">removeMessages</span><span style="color:#000;font-weight:bold">(</span>LONG_PRESS<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                        mHandler<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">removeMessages</span><span style="color:#000;font-weight:bold">(</span>TAP<span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">;</span>
+                        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+                    <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+
+            <span style="color:#000;font-weight:bold">case</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">ACTION_BUTTON_RELEASE</span><span style="color:#000;font-weight:bold">:</span>
+                <span style="color:#000;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span>mInContextClick <span style="color:#000;font-weight:bold">&amp;</span><span style="color:#000;font-weight:bold">&amp;</span> <span style="color:#000;font-weight:bold">(</span>actionButton <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">BUTTON_STYLUS_PRIMARY</span>
+                        <span style="color:#000;font-weight:bold">|</span><span style="color:#000;font-weight:bold">|</span> actionButton <span style="color:#000;font-weight:bold">=</span><span style="color:#000;font-weight:bold">=</span> MotionEvent<span style="color:#000;font-weight:bold">.</span><span style="color:#008080">BUTTON_SECONDARY</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                    <span style="color:#998;font-style:italic">//无视下一个UP事件，因为它是由鼠标右键或者触控笔键带起的
+</span><span style="color:#998;font-style:italic"></span>                    mInContextClick <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+                    mIgnoreNextUpEvent <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">true</span><span style="color:#000;font-weight:bold">;</span>
+                <span style="color:#000;font-weight:bold">}</span>
+                <span style="color:#000;font-weight:bold">break</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">false</span><span style="color:#000;font-weight:bold">;</span>
+    <span style="color:#000;font-weight:bold">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="六后记">六.后记</h3>
+<p>第一次分析源码，还是有很多的不足，在这其中也是百度了很多，也对其他的博客参考了很多。发现自己阅读代码的能力还是有些薄弱，希望自己可以把阅读源码这个习惯坚持下去，让自己的阅读代码的能卡里更近一层，对Android的了解更加深入.</p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://blog.bingtan.online">冰炭不投day</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://blog.bingtan.online/posts/Android/Android%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BBGestureDetectory/">http://blog.bingtan.online/posts/Android/Android%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BBGestureDetectory/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/posts/Android/Android%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0Activity%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%92%8C%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/">Android学习笔记————Activity的生命周期和启动模式</a></li>
+        
+        <li><a href="/posts/Android/Android%E5%B0%8F%E9%A1%B9%E7%9B%AE%E8%81%8A%E5%A4%A9%E5%AE%A4%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%AF%87/">Android小项目————聊天室（网络编程篇)</a></li>
+        
+        <li><a href="/posts/Android/Android%E5%B0%8F%E9%A1%B9%E7%9B%AE-%E5%86%B0%E7%82%AD%E4%B8%8D%E6%8A%95de%E5%B0%8F%E8%AE%A1%E7%AE%97%E5%99%A8/">Android小项目————冰炭不投de小计算器</a></li>
+        
+        <li><a href="/posts/Android/Android%E5%B0%8F%E9%A1%B9%E7%9B%AE%E8%81%8A%E5%A4%A9%E5%AE%A4UI%E7%AF%87/">Android小项目————聊天室（UI篇）</a></li>
+        
+        <li><a href="/posts/Android/Android%E5%BD%95%E9%9F%B3%E4%B8%8BAudioRecord%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">Android录音下————AudioRecord源码分析</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='http://blog.bingtan.online/tags/Android'>Android</a></li>
+                
+                <li><a href='http://blog.bingtan.online/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB'>源码阅读</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "yourdiscussshortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "https://github.com/hsc396612325/HSCBlog/tree/gh-pages"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://blog.bingtan.online/search/' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://blog.bingtan.online">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">文章目录</h3>
+<ul class="widget-list">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一前言">一.前言</a></li>
+    <li><a href="#二-gesturedetectory的作用">二. GestureDetectory的作用</a></li>
+    <li><a href="#三接口">三.接口</a></li>
+    <li><a href="#四初始化处理">四.初始化处理</a>
+      <ul>
+        <li><a href="#1构造方法">1.构造方法</a></li>
+        <li><a href="#2gesturehandler方法">2.GestureHandler方法</a></li>
+        <li><a href="#3setondoubletaplistenersetcontextclicklistener方法">3.setOnDoubleTapListener&setContextClickListener方法</a></li>
+        <li><a href="#4init方法">4.init方法</a></li>
+      </ul>
+    </li>
+    <li><a href="#五-输入处理">五. 输入处理</a>
+      <ul>
+        <li><a href="#1ontouchevent">1.onTouchEvent</a></li>
+        <li><a href="#2down事件处理">2.DOWN事件处理</a></li>
+        <li><a href="#3-move事件处理">3. MOVE事件处理</a></li>
+        <li><a href="#4up事件的处理">4.UP事件的处理</a></li>
+        <li><a href="#5多点事件的处理">5.多点事件的处理</a></li>
+        <li><a href="#6-contextclick的处理">6. ContextClick的处理</a></li>
+      </ul>
+    </li>
+    <li><a href="#六后记">六.后记</a></li>
+  </ul>
+</nav>
+</ul>
+    </section>
+    
+
+    
+
+    
+
+    
+   
+    
+
+    
+
+    
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://blog.bingtan.online/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer">
+    <div class="container">
+        &copy; 2020 <a href="http://blog.bingtan.online">冰炭不投day的博客 By 冰炭不投day</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/flysnow-org/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+</body>
+
+</html>
